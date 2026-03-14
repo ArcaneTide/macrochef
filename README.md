@@ -1,36 +1,91 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# MacroChef
+
+Macro-accurate meal planning for nutrition coaches.
+
+## What is this?
+
+MacroChef helps nutrition coaches create, manage, and assign macro-accurate meal plans to their clients. Built on verified USDA nutrition data.
+
+## Tech Stack
+
+- **Next.js 14+** (App Router, TypeScript)
+- **PostgreSQL** + **Prisma ORM**
+- **Tailwind CSS** + **shadcn/ui**
+- **USDA FoodData Central** for nutrition data
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
+- Node.js 18+
+- PostgreSQL 15+
+- pnpm (recommended) or npm
+
+### Setup
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+# Clone the repo
+git clone <repo-url>
+cd macrochef
+
+# Install dependencies
+pnpm install
+
+# Set up environment
+cp .env.example .env
+# Edit .env with your DATABASE_URL
+
+# Run database migrations
+pnpm prisma migrate dev
+
+# Seed the database (curated ingredients + sample data)
+pnpm prisma db seed
+
+# Start development server
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+macrochef/
+├── prisma/
+│   ├── schema.prisma          # Database schema
+│   └── seed.ts                # Seed data (ingredients, sample recipes)
+├── src/
+│   ├── app/                   # Next.js App Router
+│   ├── components/            # React components
+│   ├── lib/                   # Utilities (macros, adjustment, db)
+│   └── types/                 # TypeScript types
+├── docs/                      # Documentation
+│   ├── DATABASE_SCHEMA.md     # Schema reference + decisions
+│   ├── MVP_SCOPE.md           # What's in/out of MVP
+│   └── PRODUCT_SPEC.md        # Full product specification
+├── CLAUDE.md                  # AI assistant context file
+└── README.md                  # This file
+```
 
-## Learn More
+## Documentation
 
-To learn more about Next.js, take a look at the following resources:
+| Document | Description |
+|----------|-------------|
+| [CLAUDE.md](./CLAUDE.md) | Full project context for AI-assisted development |
+| [docs/DATABASE_SCHEMA.md](./docs/DATABASE_SCHEMA.md) | Database schema with architecture decisions |
+| [docs/MVP_SCOPE.md](./docs/MVP_SCOPE.md) | MVP feature scope (in/out) |
+| [docs/PRODUCT_SPEC.md](./docs/PRODUCT_SPEC.md) | Product spec with technical decisions |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Key Concepts
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- **Macros are always computed**, never stored flat on recipes
+- **USDA FoodData Central** is the nutrition data source
+- **Dominant-macro scaling** adjusts recipes to client targets
+- **Weekly meal plans** group daily meal assignments via `meal_plans` container
+- **Target profiles** version client macro targets across phases (cut/bulk/maintenance)
+- **Lifecycle statuses** on recipes (draft/published/archived), clients (active/archived), meal plans (draft/active/archived)
+- **Ingredient overrides** (JSONB) allow per-assignment quantity adjustments
+- **8 tables**, reviewed by Claude + ChatGPT + Gemini — ready for development
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Private — not open source.

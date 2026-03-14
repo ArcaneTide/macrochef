@@ -1,15 +1,236 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+// MacroChef Database Schema
+// Prisma ORM for PostgreSQL
+// MVP + Phase 2/3 ready
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
+}
+
+// ─── ENUMS ───────────────────────────────────────────────
+
+enum UserRole {
+  coach
+  client
+  individual
+}
+
+enum MealSlot {
+  breakfast
+  lunch
+  dinner
+  snack1
+  snack2
+}
+
+enum IngredientCategory {
+  protein
+  carb
+  fat
+  vegetable
+  fruit
+  dairy
+  seasoning
+  other
+}
+
+enum MealType {
+  breakfast
+  lunch
+  dinner
+  snack
+}
+
+enum RecipeStatus {
+  draft
+  published
+  archived
+}
+
+enum MealPlanStatus {
+  draft
+  active
+  archived
+}
+
+enum ClientStatus {
+  active
+  archived
+}
+
+// ─── USERS ───────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  name         String
+  passwordHash String   @map("password_hash")
+  role         UserRole @default(coach)
+  coachId      String?  @map("coach_id")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  coach          User?    @relation("CoachClients", fields: [coachId], references: [id])
+  managedUsers   User[]   @relation("CoachClients")
+  recipes        Recipe[]
+  clientProfiles Client[] @relation("CoachClients")
+  linkedClient   Client?  @relation("LinkedUser")
+
+  @@index([coachId])
+  @@map("users")
+}
+
+// ─── INGREDIENTS ─────────────────────────────────────────
+
+model Ingredient {
+  id              String             @id @default(uuid())
+  name            String             @unique
+  usdaFdcId       String?            @map("usda_fdc_id")
+  category        IngredientCategory @default(other)
+  caloriesPer100g Float              @map("calories_per_100g")
+  proteinPer100g  Float              @map("protein_per_100g")
+  carbsPer100g    Float              @map("carbs_per_100g")
+  fatPer100g      Float              @map("fat_per_100g")
+  fiberPer100g    Float?             @map("fiber_per_100g")
+  isVerified      Boolean            @default(false) @map("is_verified")
+  createdAt       DateTime           @default(now()) @map("created_at")
+
+  // Relations
+  recipeIngredients RecipeIngredient[]
+
+  @@index([usdaFdcId])
+  @@map("ingredients")
+}
+
+// ─── RECIPES ─────────────────────────────────────────────
+
+model Recipe {
+  id           String   @id @default(uuid())
+  userId       String   @map("user_id")
+  title        String
+  servings     Int      @default(2)
+  instructions String?
+  cuisine      String?
+  mealType     MealType?     @map("meal_type")
+  status       RecipeStatus  @default(draft)
+  isTemplate   Boolean       @default(false) @map("is_template")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  // Relations
+  user            User               @relation(fields: [userId], references: [id])
+  ingredients     RecipeIngredient[]
+  mealAssignments MealAssignment[]
+
+  @@index([userId])
+  @@map("recipes")
+}
+
+// ─── RECIPE INGREDIENTS (join table) ─────────────────────
+
+model RecipeIngredient {
+  id           String @id @default(uuid())
+  recipeId     String @map("recipe_id")
+  ingredientId String @map("ingredient_id")
+  quantityGrams Float @map("quantity_grams")
+  sortOrder    Int    @default(0) @map("sort_order")
+
+  // Relations
+  recipe     Recipe     @relation(fields: [recipeId], references: [id], onDelete: Cascade)
+  ingredient Ingredient @relation(fields: [ingredientId], references: [id])
+
+  @@unique([recipeId, ingredientId])
+  @@index([recipeId])
+  @@index([ingredientId])
+  @@map("recipe_ingredients")
+}
+
+// ─── CLIENTS ─────────────────────────────────────────────
+
+model Client {
+  id            String       @id @default(uuid())
+  coachId       String       @map("coach_id")
+  userId        String?      @unique @map("user_id")
+  name          String
+  email         String?
+  status        ClientStatus @default(active)
+  notes         String?
+  createdAt     DateTime     @default(now()) @map("created_at")
+  updatedAt     DateTime     @updatedAt @map("updated_at")
+
+  // Relations
+  coach          User                  @relation("CoachClients", fields: [coachId], references: [id])
+  linkedUser     User?                 @relation("LinkedUser", fields: [userId], references: [id])
+  mealPlans      MealPlan[]
+  targetProfiles ClientTargetProfile[]
+
+  @@index([coachId])
+  @@map("clients")
+}
+
+// ─── CLIENT TARGET PROFILES ──────────────────────────────
+
+model ClientTargetProfile {
+  id            String   @id @default(uuid())
+  clientId      String   @map("client_id")
+  label         String?  // e.g. "Cut phase", "Maintenance", "Training day"
+  calorieTarget Int      @map("calorie_target")
+  proteinTarget Float    @map("protein_target")
+  carbsTarget   Float    @map("carbs_target")
+  fatTarget     Float    @map("fat_target")
+  isActive      Boolean  @default(true) @map("is_active")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  // Relations
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([clientId])
+  @@map("client_target_profiles")
+}
+
+// ─── MEAL PLANS ──────────────────────────────────────────
+
+model MealPlan {
+  id        String         @id @default(uuid())
+  clientId  String         @map("client_id")
+  title     String?
+  status    MealPlanStatus @default(draft)
+  startDate DateTime       @map("start_date") @db.Date
+  endDate   DateTime       @map("end_date") @db.Date
+  notes     String?
+  createdAt DateTime       @default(now()) @map("created_at")
+  updatedAt DateTime       @updatedAt @map("updated_at")
+
+  // Relations
+  client          Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  mealAssignments MealAssignment[]
+
+  @@index([clientId])
+  @@map("meal_plans")
+}
+
+// ─── MEAL ASSIGNMENTS ────────────────────────────────────
+
+model MealAssignment {
+  id                  String   @id @default(uuid())
+  mealPlanId          String   @map("meal_plan_id")
+  recipeId            String   @map("recipe_id")
+  dayIndex            Int      @map("day_index") // 0 = first day of plan, 1 = second, etc.
+  mealSlot            MealSlot @map("meal_slot")
+  servings            Float    @default(1)
+  ingredientOverrides Json?    @map("ingredient_overrides") // { ingredientId: quantityGrams }
+  createdAt           DateTime @default(now()) @map("created_at")
+
+  // Relations
+  mealPlan MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
+  recipe   Recipe   @relation(fields: [recipeId], references: [id])
+
+  @@unique([mealPlanId, dayIndex, mealSlot])
+  @@index([mealPlanId])
+  @@map("meal_assignments")
 }
