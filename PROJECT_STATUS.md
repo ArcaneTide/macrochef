@@ -13,12 +13,12 @@
 - [x] Step 2: Documentation pack (7 files: CLAUDE.md, README, schema.prisma, DATABASE_SCHEMA.md, MVP_SCOPE.md, PRODUCT_SPEC.md, ERD HTML)
 - [x] Step 3: Figma prototype (full clickable prototype, exported as React/TS code)
 - [x] Step 4: Curated ingredient library (126 ingredients, 7 categories, USDA FDC IDs, JSON + XLSX)
-- [ ] **Step 5: Git repo + project scaffold** ← CURRENT
-- [ ] Step 6: Database up + seed data
+- [x] Step 5: Git repo + project scaffold
+- [x] Step 6: Database up + seed data
 
 ### Sprint 1 — Core Engine (weeks 1-2)
-- [ ] Step 7: Auth (signup/login)
-- [ ] Step 8: Ingredient library API + UI
+- [x] Step 7: Auth (signup/login)
+- [ ] **Step 8: Ingredient library API + UI** ← CURRENT
 - [ ] Step 9: Recipe CRUD + real-time macro calculation
 - [ ] Step 10: Recipe status workflow (draft → published)
 
