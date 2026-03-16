@@ -15,14 +15,19 @@ export default async function ClientPage({
   const session = await auth();
   if (!session?.user?.id) redirect("/login");
 
-  const client = await db.client.findUnique({
-    where: { id },
-    include: {
-      targetProfiles: {
-        orderBy: { createdAt: "desc" },
+  const [client, plans] = await Promise.all([
+    db.client.findUnique({
+      where: { id },
+      include: {
+        targetProfiles: { orderBy: { createdAt: "desc" } },
       },
-    },
-  });
+    }),
+    db.mealPlan.findMany({
+      where: { clientId: id },
+      orderBy: { startDate: "desc" },
+      select: { id: true, title: true, status: true, startDate: true, endDate: true },
+    }),
+  ]);
 
   if (!client || client.coachId !== session.user.id) {
     notFound();
@@ -56,6 +61,13 @@ export default async function ClientPage({
           fatTarget: p.fatTarget,
           isActive: p.isActive,
           createdAt: p.createdAt.toISOString(),
+        }))}
+        plans={plans.map((p) => ({
+          id: p.id,
+          title: p.title,
+          status: p.status as string,
+          startDate: p.startDate.toISOString(),
+          endDate: p.endDate.toISOString(),
         }))}
       />
     </div>

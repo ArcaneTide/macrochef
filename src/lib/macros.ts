@@ -69,3 +69,14 @@ export function macroCalorieSplit(macros: MacroTotals) {
 export function fmtMacro(n: number): string {
   return n % 1 === 0 ? n.toFixed(0) : n.toFixed(1);
 }
+
+/** Fit score: 0–100. deviation = |actual - target| / target per macro, score = max(0, round((1 - mean) × 100)) */
+export function calcFitScore(actual: MacroTotals, target: MacroTotals): number {
+  const macros: Array<keyof MacroTotals> = ["calories", "protein", "carbs", "fat"];
+  const deviations = macros.map((k) => {
+    if (target[k] === 0) return 0;
+    return Math.abs(actual[k] - target[k]) / target[k];
+  });
+  const mean = deviations.reduce((a, b) => a + b, 0) / deviations.length;
+  return Math.max(0, Math.round((1 - mean) * 100));
+}

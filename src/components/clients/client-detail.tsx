@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Pencil, Plus, Archive, CalendarDays, Loader2 } from "lucide-react";
+import { Pencil, Plus, Archive, CalendarDays, Loader2, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -21,6 +21,14 @@ export type TargetProfile = {
   createdAt: string;
 };
 
+export type MealPlanSummary = {
+  id: string;
+  title: string | null;
+  status: string;
+  startDate: string;
+  endDate: string;
+};
+
 export type ClientDetailProps = {
   client: {
     id: string;
@@ -31,6 +39,7 @@ export type ClientDetailProps = {
     createdAt: string;
   };
   profiles: TargetProfile[];
+  plans: MealPlanSummary[];
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -60,7 +69,13 @@ function MacroRow({
   );
 }
 
-export function ClientDetail({ client, profiles }: ClientDetailProps) {
+const PLAN_STATUS_STYLES: Record<string, string> = {
+  draft: "bg-slate-100 text-slate-600 border-slate-200",
+  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
+  archived: "bg-slate-100 text-slate-400 border-slate-200",
+};
+
+export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingProfile, setIsAddingProfile] = useState(false);
@@ -232,12 +247,67 @@ export function ClientDetail({ client, profiles }: ClientDetailProps) {
         </div>
       )}
 
-      {/* Meal plans placeholder */}
+      {/* Meal Plans */}
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-        <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-3">
-          Meal Plans
-        </h3>
-        <p className="text-sm text-slate-400">No meal plans yet.</p>
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+            Meal Plans
+          </h3>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => router.push(`/clients/${client.id}/plans/new`)}
+            className="gap-1.5"
+          >
+            <Plus className="h-3.5 w-3.5" />
+            New Plan
+          </Button>
+        </div>
+
+        {plans.length === 0 ? (
+          <p className="text-sm text-slate-400">No meal plans yet.</p>
+        ) : (
+          <div className="space-y-2">
+            {plans.map((plan) => (
+              <a
+                key={plan.id}
+                href={`/clients/${client.id}/plans/${plan.id}`}
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors group"
+              >
+                <div>
+                  <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">
+                    {plan.title ?? "Untitled Plan"}
+                  </p>
+                  <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                    <CalendarDays className="h-3 w-3" />
+                    {new Date(plan.startDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                    })}{" "}
+                    –{" "}
+                    {new Date(plan.endDate).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })}
+                  </p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    variant="outline"
+                    className={cn(
+                      "text-xs font-medium border capitalize",
+                      PLAN_STATUS_STYLES[plan.status] ?? PLAN_STATUS_STYLES.draft
+                    )}
+                  >
+                    {plan.status}
+                  </Badge>
+                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                </div>
+              </a>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
