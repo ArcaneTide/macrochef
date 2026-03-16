@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
@@ -37,6 +37,15 @@ export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
 
   return (
     <div className="flex items-center gap-3">
+      <a
+        href={`/api/plans/${planId}/pdf`}
+        download
+        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+      >
+        <Download className="h-3.5 w-3.5" />
+        Download PDF
+      </a>
+
       <Badge
         variant="outline"
         className={cn("text-xs font-medium border capitalize", STATUS_STYLES[status])}
