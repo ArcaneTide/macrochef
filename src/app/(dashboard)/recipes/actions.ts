@@ -21,7 +21,7 @@ const recipeSchema = z.object({
   cuisine: z.string().optional(),
   mealType: z.enum(MEAL_TYPES).nullable().optional(),
   status: z.enum(["draft", "published"]).default("draft"),
-  ingredients: z.array(ingredientRowSchema),
+  ingredients: z.array(ingredientRowSchema).min(1, "At least one ingredient is required"),
 });
 
 export type RecipeFormInput = z.infer<typeof recipeSchema>;
@@ -69,7 +69,7 @@ export async function createRecipe(data: RecipeFormInput): Promise<ActionResult>
     return { success: true, id: recipe.id };
   } catch (err) {
     console.error("createRecipe:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to create recipe" };
+    return { success: false, error: "Failed to create recipe" };
   }
 }
 
@@ -106,7 +106,7 @@ export async function updateRecipe(id: string, data: RecipeFormInput): Promise<A
     return { success: true, id };
   } catch (err) {
     console.error("updateRecipe:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to update recipe" };
+    return { success: false, error: "Failed to update recipe" };
   }
 }
 
@@ -119,7 +119,7 @@ export async function deleteRecipe(id: string): Promise<ActionResult> {
     return { success: true, id };
   } catch (err) {
     console.error("deleteRecipe:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to delete recipe" };
+    return { success: false, error: "Failed to delete recipe" };
   }
 }
 
@@ -135,6 +135,6 @@ export async function updateRecipeStatus(
     return { success: true, id };
   } catch (err) {
     console.error("updateRecipeStatus:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to update status" };
+    return { success: false, error: "Failed to update recipe status" };
   }
 }

@@ -228,7 +228,7 @@ model MealAssignment {
 
   // Relations
   mealPlan MealPlan @relation(fields: [mealPlanId], references: [id], onDelete: Cascade)
-  recipe   Recipe   @relation(fields: [recipeId], references: [id])
+  recipe   Recipe   @relation(fields: [recipeId], references: [id], onDelete: Cascade)
 
   @@unique([mealPlanId, dayIndex, mealSlot])
   @@index([mealPlanId])

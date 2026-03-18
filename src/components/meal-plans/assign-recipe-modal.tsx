@@ -12,7 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { calcFitScore, type MacroTotals } from "@/lib/macros";
+import { calcFitScore, FIT_SCORE_GREEN, FIT_SCORE_AMBER, type MacroTotals } from "@/lib/macros";
 import { assignMeal, type AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
 
 const SLOT_LABELS: Record<string, string> = {
@@ -43,9 +43,9 @@ type Props = {
 
 function FitBadge({ score }: { score: number }) {
   const color =
-    score >= 95
+    score >= FIT_SCORE_GREEN
       ? "text-emerald-700 bg-emerald-50 border-emerald-200"
-      : score >= 90
+      : score >= FIT_SCORE_AMBER
       ? "text-amber-700 bg-amber-50 border-amber-200"
       : "text-red-700 bg-red-50 border-red-200";
   return (

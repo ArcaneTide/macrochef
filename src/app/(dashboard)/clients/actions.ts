@@ -78,7 +78,7 @@ export async function createClient(
     return { success: true, id: result.id };
   } catch (err) {
     console.error("createClient:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to create client" };
+    return { success: false, error: "Failed to create client" };
   }
 }
 
@@ -102,7 +102,7 @@ export async function updateClient(id: string, data: ClientInput): Promise<Actio
     return { success: true, id };
   } catch (err) {
     console.error("updateClient:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to update client" };
+    return { success: false, error: "Failed to update client" };
   }
 }
 
@@ -118,7 +118,7 @@ export async function archiveClient(id: string): Promise<ActionResult> {
     return { success: true, id };
   } catch (err) {
     console.error("archiveClient:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to archive client" };
+    return { success: false, error: "Failed to archive client" };
   }
 }
 
@@ -153,6 +153,6 @@ export async function createTargetProfile(
     return { success: true, id: result.id };
   } catch (err) {
     console.error("createTargetProfile:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to create target profile" };
+    return { success: false, error: "Failed to create target profile" };
   }
 }

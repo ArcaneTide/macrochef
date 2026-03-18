@@ -83,7 +83,7 @@ export async function createMealPlan(
     return { success: true, id: plan.id };
   } catch (err) {
     console.error("createMealPlan:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to create plan" };
+    return { success: false, error: "Failed to create plan" };
   }
 }
 
@@ -105,7 +105,7 @@ export async function updateMealPlanStatus(
     return { success: true, id: planId };
   } catch (err) {
     console.error("updateMealPlanStatus:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to update plan" };
+    return { success: false, error: "Failed to update plan status" };
   }
 }
 
@@ -166,7 +166,7 @@ export async function assignMeal(
     };
   } catch (err) {
     console.error("assignMeal:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to assign meal" };
+    return { success: false, error: "Failed to assign meal" };
   }
 }
 
@@ -184,6 +184,6 @@ export async function removeMeal(
     return { success: true, id: assignmentId };
   } catch (err) {
     console.error("removeMeal:", err);
-    return { success: false, error: err instanceof Error ? err.message : "Failed to remove meal" };
+    return { success: false, error: "Failed to remove meal" };
   }
 }

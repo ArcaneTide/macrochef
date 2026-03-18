@@ -179,12 +179,14 @@ export function WeeklyPlanEditor({
     setRemovingKey(key);
     startRemoveTransition(async () => {
       try {
-        await removeMeal(planId, assignmentId);
-        setCells((prev) => {
-          const next = new Map(prev);
-          next.delete(key);
-          return next;
-        });
+        const result = await removeMeal(planId, assignmentId);
+        if (result.success) {
+          setCells((prev) => {
+            const next = new Map(prev);
+            next.delete(key);
+            return next;
+          });
+        }
       } finally {
         setRemovingKey(null);
       }
