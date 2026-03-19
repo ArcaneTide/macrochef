@@ -113,7 +113,7 @@ model Recipe {
   id           String   @id @default(uuid())
   userId       String   @map("user_id")
   title        String
-  servings     Int      @default(2)
+  servings     Int      @default(1)
   instructions String?
   cuisine      String?
   mealType     MealType?     @map("meal_type")

@@ -101,8 +101,6 @@ export function AssignRecipeModal({
     if (!selectedId) { setError("Select a recipe."); return; }
     const s = parseFloat(servings);
     if (!s || s <= 0) { setError("Enter a valid serving amount."); return; }
-    // must be multiple of 0.5
-    if ((s * 2) % 1 !== 0) { setError("Servings must be in increments of 0.5."); return; }
     setError(null);
     startTransition(async () => {
       try {
@@ -198,6 +196,9 @@ export function AssignRecipeModal({
                     step={0.5}
                     value={servings}
                     onChange={(e) => setServings(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+                    }}
                     className="w-28 bg-white"
                   />
                 </div>
@@ -205,6 +206,9 @@ export function AssignRecipeModal({
                   <div className="text-right">
                     <p className="text-xs text-slate-500 mb-1">Fit score</p>
                     <FitBadge score={fitScore} />
+                    <p className="text-xs text-slate-400 mt-1 max-w-[120px]">
+                      How closely this matches the daily macro target
+                    </p>
                   </div>
                 )}
               </div>

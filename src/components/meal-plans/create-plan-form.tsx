@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -14,6 +14,8 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [startDate, setStartDate] = useState("");
+
+  const today = useMemo(() => new Date().toISOString().slice(0, 10), []);
 
   const endDate = startDate
     ? (() => {
@@ -66,11 +68,12 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
           id="plan-start"
           type="date"
           value={startDate}
+          min={today}
           onChange={(e) => setStartDate(e.target.value)}
         />
         {endDate && (
           <p className="text-xs text-slate-500">
-            Plan runs Mon–Sun · ends{" "}
+            Plan runs 7 days · ends{" "}
             <span className="font-medium text-slate-700">{endDate}</span>
           </p>
         )}

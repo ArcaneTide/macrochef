@@ -12,7 +12,7 @@ import {
 } from "@/components/meal-plans/assign-recipe-modal";
 import type { AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
 
-const DAYS = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+const DAYS_COUNT = 7;
 const SLOTS = ["breakfast", "lunch", "dinner", "snack1", "snack2"] as const;
 const SLOT_LABELS: Record<string, string> = {
   breakfast: "Breakfast",
@@ -144,8 +144,14 @@ export function WeeklyPlanEditor({
   const [removingKey, setRemovingKey] = useState<CellKey | null>(null);
   const [, startRemoveTransition] = useTransition();
 
-  // Compute date labels from startDate
-  const dayDates = Array.from({ length: 7 }, (_, i) => {
+  // Compute day names and date labels from actual start date
+  const dayLabels = Array.from({ length: DAYS_COUNT }, (_, i) => {
+    const d = new Date(startDate + "T00:00:00");
+    d.setDate(d.getDate() + i);
+    return d.toLocaleDateString("en-US", { weekday: "short" });
+  });
+
+  const dayDates = Array.from({ length: DAYS_COUNT }, (_, i) => {
     const d = new Date(startDate + "T00:00:00");
     d.setDate(d.getDate() + i);
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
@@ -193,7 +199,7 @@ export function WeeklyPlanEditor({
     });
   }
 
-  const dailyMacros = DAYS.map((_, i) => {
+  const dailyMacros = Array.from({ length: DAYS_COUNT }, (_, i) => {
     const dayCells = SLOTS.map((s) => cells.get(cellKey(i, s))).filter(Boolean) as AssignmentCell[];
     return sumMacros(dayCells);
   });
@@ -215,12 +221,12 @@ export function WeeklyPlanEditor({
           <thead>
             <tr>
               <th className="w-28 p-2 text-left text-xs font-medium text-slate-400 uppercase tracking-wide" />
-              {DAYS.map((day, i) => (
+              {Array.from({ length: DAYS_COUNT }, (_, i) => (
                 <th
-                  key={day}
+                  key={i}
                   className="p-2 text-center min-w-[140px]"
                 >
-                  <p className="font-semibold text-slate-800">{day}</p>
+                  <p className="font-semibold text-slate-800">{dayLabels[i]}</p>
                   <p className="text-xs font-normal text-slate-400">{dayDates[i]}</p>
                 </th>
               ))}
@@ -232,7 +238,7 @@ export function WeeklyPlanEditor({
                 <td className="p-2 text-xs font-medium text-slate-500 uppercase tracking-wide align-top pt-3">
                   {SLOT_LABELS[slot]}
                 </td>
-                {DAYS.map((_, dayIndex) => {
+                {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => {
                   const key = cellKey(dayIndex, slot);
                   const cell = cells.get(key);
                   const isRemoving = removingKey === key;
@@ -243,7 +249,7 @@ export function WeeklyPlanEditor({
                           <button
                             onClick={() => handleRemove(key, cell.id)}
                             disabled={isRemoving}
-                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600"
+                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 cursor-pointer"
                           >
                             {isRemoving ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
@@ -301,11 +307,11 @@ export function WeeklyPlanEditor({
 
       {/* Mobile: day cards */}
       <div className="lg:hidden space-y-6">
-        {DAYS.map((day, dayIndex) => (
-          <div key={day} className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+        {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => (
+          <div key={dayIndex} className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
             <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-baseline justify-between">
               <div>
-                <span className="font-semibold text-slate-800">{day}</span>
+                <span className="font-semibold text-slate-800">{dayLabels[dayIndex]}</span>
                 <span className="ml-1.5 text-xs text-slate-400">{dayDates[dayIndex]}</span>
               </div>
               <span className="text-sm tabular-nums font-medium text-slate-600">

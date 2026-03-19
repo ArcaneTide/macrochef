@@ -97,7 +97,7 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="hover:bg-slate-50/60 cursor-pointer transition-colors"
+                  className="hover:bg-slate-100 cursor-pointer transition-colors"
                   onClick={() => router.push(`/clients/${client.id}`)}
                 >
                   <td className="px-4 py-3">

@@ -98,25 +98,25 @@ export function CreateClientForm() {
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <Label htmlFor="calories">Calories (kcal)</Label>
-            <Input id="calories" type="number" min={1} value={calorieTarget} onChange={(e) => setCalorieTarget(e.target.value)} placeholder="2000" />
+            <Input id="calories" type="number" min={1} value={calorieTarget} onChange={(e) => setCalorieTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="2000" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="protein">
               Protein <span className="text-blue-500">(g)</span>
             </Label>
-            <Input id="protein" type="number" min={0} value={proteinTarget} onChange={(e) => setProteinTarget(e.target.value)} placeholder="150" />
+            <Input id="protein" type="number" min={0} value={proteinTarget} onChange={(e) => setProteinTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="150" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="carbs">
               Carbs <span className="text-amber-500">(g)</span>
             </Label>
-            <Input id="carbs" type="number" min={0} value={carbsTarget} onChange={(e) => setCarbsTarget(e.target.value)} placeholder="200" />
+            <Input id="carbs" type="number" min={0} value={carbsTarget} onChange={(e) => setCarbsTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="200" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="fat">
               Fat <span className="text-orange-500">(g)</span>
             </Label>
-            <Input id="fat" type="number" min={0} value={fatTarget} onChange={(e) => setFatTarget(e.target.value)} placeholder="70" />
+            <Input id="fat" type="number" min={0} value={fatTarget} onChange={(e) => setFatTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="70" />
           </div>
         </div>
       </div>

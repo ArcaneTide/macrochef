@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useTransition } from "react";
+import { useState, useMemo, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Trash2, ChevronDown, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -92,6 +92,48 @@ const MEAL_TYPE_LABELS: Record<string, string> = {
   dinner: "Dinner",
   snack: "Snack",
 };
+
+// ─── Quantity Input ───────────────────────────────────────
+// Uses local string state so the user can freely edit the field
+// without the value snapping to 1 on every keystroke.
+
+function QuantityInput({
+  value,
+  onChange,
+}: {
+  value: number;
+  onChange: (v: number) => void;
+}) {
+  const [display, setDisplay] = useState(String(value));
+
+  // Keep display in sync if the parent resets the value (e.g. edit mode load)
+  useEffect(() => {
+    setDisplay(String(value));
+  }, [value]);
+
+  return (
+    <Input
+      type="number"
+      min={1}
+      value={display}
+      onChange={(e) => {
+        setDisplay(e.target.value);
+        // Update parent live for real-time macro preview
+        const parsed = parseFloat(e.target.value);
+        if (parsed > 0) onChange(parsed);
+      }}
+      onBlur={() => {
+        const parsed = Math.max(1, parseFloat(display) || 1);
+        setDisplay(String(parsed));
+        onChange(parsed);
+      }}
+      onKeyDown={(e) => {
+        if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+      }}
+      className="h-7 text-right text-sm tabular-nums"
+    />
+  );
+}
 
 // ─── Ingredient Combobox ──────────────────────────────────
 
@@ -263,7 +305,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
 
   // Form state
   const [title, setTitle] = useState(initialData?.title ?? "");
-  const [servings, setServings] = useState(initialData?.servings ?? 2);
+  const [servings, setServings] = useState(initialData?.servings ?? 1);
   const [instructions, setInstructions] = useState(initialData?.instructions ?? "");
   const [cuisine, setCuisine] = useState(initialData?.cuisine ?? "");
   const [mealType, setMealType] = useState<string>(initialData?.mealType ?? "none");
@@ -363,6 +405,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
   const isEditing = !!initialData;
 
   return (
+    <div className="pb-20">
     <div className="flex flex-col lg:flex-row gap-6">
       {/* ── Left: form ── */}
       <div className="flex-1 min-w-0 space-y-6">
@@ -392,6 +435,9 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
                 max={100}
                 value={servings}
                 onChange={(e) => setServings(Math.max(1, parseInt(e.target.value) || 1))}
+                onKeyDown={(e) => {
+                  if (["e", "E", "+", "-", "."].includes(e.key)) e.preventDefault();
+                }}
               />
             </div>
 
@@ -413,7 +459,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
                 <SelectValue placeholder="Select meal type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="none">None</SelectItem>
+                <SelectItem value="none">—</SelectItem>
                 <SelectItem value="breakfast">Breakfast</SelectItem>
                 <SelectItem value="lunch">Lunch</SelectItem>
                 <SelectItem value="dinner">Dinner</SelectItem>
@@ -484,14 +530,9 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
                         <span className="text-orange-500">{fmtMacro(macros.fat)}g F</span>
                       </p>
                     </div>
-                    <Input
-                      type="number"
-                      min={1}
+                    <QuantityInput
                       value={row.quantityGrams}
-                      onChange={(e) =>
-                        updateQuantity(row.key, Math.max(1, parseFloat(e.target.value) || 1))
-                      }
-                      className="h-7 text-right text-sm tabular-nums"
+                      onChange={(v) => updateQuantity(row.key, v)}
                     />
                     <button
                       type="button"
@@ -515,73 +556,6 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
             {error}
           </div>
         )}
-
-        {/* Actions */}
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => router.push("/recipes")}
-              disabled={isPending}
-            >
-              Cancel
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => handleSubmit("draft")}
-              disabled={isPending}
-            >
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-              Save Draft
-            </Button>
-            <Button
-              type="button"
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
-              onClick={() => handleSubmit("published")}
-              disabled={isPending}
-            >
-              {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-              Publish
-            </Button>
-          </div>
-
-          {isEditing && (
-            <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-              <DialogTrigger asChild>
-                <Button variant="destructive" size="sm" disabled={isPending || isDeleting}>
-                  Delete Recipe
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Delete recipe?</DialogTitle>
-                  <DialogDescription>
-                    This will permanently delete &ldquo;{title}&rdquo; and cannot be undone.
-                  </DialogDescription>
-                </DialogHeader>
-                <DialogFooter>
-                  <Button
-                    variant="outline"
-                    onClick={() => setDeleteDialogOpen(false)}
-                    disabled={isDeleting}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleDelete}
-                    disabled={isDeleting}
-                  >
-                    {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                    Delete
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
-          )}
-        </div>
       </div>
 
       {/* ── Right: macro summary ── */}
@@ -609,6 +583,74 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
           )}
         </div>
       </div>
+    </div>
+
+    {/* ── Sticky action bar ── */}
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center justify-between gap-3">
+      <div className="flex items-center gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push("/recipes")}
+          disabled={isPending}
+        >
+          Cancel
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => handleSubmit("draft")}
+          disabled={isPending}
+        >
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+          Save Draft
+        </Button>
+        <Button
+          type="button"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          onClick={() => handleSubmit("published")}
+          disabled={isPending}
+        >
+          {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+          Publish
+        </Button>
+      </div>
+
+      {isEditing && (
+        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+          <DialogTrigger asChild>
+            <Button variant="destructive" size="sm" disabled={isPending || isDeleting}>
+              Delete Recipe
+            </Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Delete recipe?</DialogTitle>
+              <DialogDescription>
+                This will permanently delete &ldquo;{title}&rdquo; and cannot be undone.
+              </DialogDescription>
+            </DialogHeader>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(false)}
+                disabled={isDeleting}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDelete}
+                disabled={isDeleting}
+              >
+                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
+                Delete
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+    </div>
     </div>
   );
 }
