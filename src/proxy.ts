@@ -13,6 +13,6 @@ export const config = {
      * - /_next/static, /_next/image (Next.js internals)
      * - /favicon.ico and other static root files
      */
-    "/((?!login|signup|api/auth|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt).*)",
+    "/((?!login|signup|forgot-password|reset-password|api/auth|_next/static|_next/image|favicon\\.ico|sitemap\\.xml|robots\\.txt).*)",
   ],
 };

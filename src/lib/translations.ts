@@ -51,19 +51,24 @@ const dict = {
   "Active Meal Plans":       { en: "Active Meal Plans",       el: "Ενεργά Πλάνα Γευμάτων" },
   "Recent Activity":         { en: "Recent Activity",         el: "Πρόσφατη Δραστηριότητα" },
 
-  // ── Dashboard ─────────────────────────────────────────────
-  "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες" },
+  // ── Dashboard greetings ───────────────────────────────────
+  "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },
+  "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες ξανά" },
 
-  // ── Welcome / empty state ─────────────────────────────────
-  "Welcome to MacroChef":        { en: "Welcome to MacroChef!",            el: "Καλώς ήρθες στο MacroChef!" },
-  "Get started in three steps":  { en: "Get started in three steps.",       el: "Ξεκίνα με τρία βήματα." },
-  "Create your first recipe":    { en: "Create your first recipe",          el: "Δημιούργησε την πρώτη σου συνταγή" },
-  "Add a client with macro targets": { en: "Add a client with macro targets", el: "Πρόσθεσε πελάτη με στόχους" },
-  "Build a weekly meal plan":    { en: "Build a weekly meal plan",          el: "Φτιάξε εβδομαδιαίο πλάνο γευμάτων" },
+  // ── Welcome / onboarding ──────────────────────────────────
+  "Welcome to MacroChef":        { en: "Welcome to MacroChef!",              el: "Καλώς ήρθες στο MacroChef!" },
+  "Get started in three steps":  { en: "Get started in three steps.",         el: "Ξεκίνα με τρία βήματα." },
+  "Create your first recipe":    { en: "Create your first recipe",            el: "Δημιούργησε την πρώτη σου συνταγή" },
+  "Add a client":                { en: "Add a client with macro targets",      el: "Πρόσθεσε πελάτη με στόχους" },
+  "Build a weekly meal plan":    { en: "Build a weekly meal plan",            el: "Φτιάξε εβδομαδιαίο πλάνο γευμάτων" },
 
   // ── Empty states ──────────────────────────────────────────
   "No recipes yet":          { en: "No recipes yet",          el: "Δεν υπάρχουν συνταγές" },
   "No clients yet":          { en: "No clients yet",          el: "Δεν υπάρχουν πελάτες" },
+
+  // ── Auth ──────────────────────────────────────────────────
+  "Forgot password":         { en: "Forgot password?",        el: "Ξέχασα τον κωδικό" },
+  "Reset password":          { en: "Reset password",          el: "Επαναφορά κωδικού" },
 } as const;
 
 export type TranslationKey = keyof typeof dict;

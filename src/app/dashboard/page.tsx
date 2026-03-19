@@ -68,6 +68,9 @@ export default async function DashboardPage() {
     totalClients,
     totalRecipes,
     totalActivePlans,
+    anyRecipes,
+    anyClients,
+    anyPlans,
     recentRecipes,
     recentClients,
     activeClients,
@@ -77,6 +80,9 @@ export default async function DashboardPage() {
     db.mealPlan.count({
       where: { status: "active", client: { coachId } },
     }),
+    db.recipe.count({ where: { userId: coachId } }),
+    db.client.count({ where: { coachId } }),
+    db.mealPlan.count({ where: { client: { coachId } } }),
     db.recipe.findMany({
       where: { userId: coachId },
       orderBy: { createdAt: "desc" },
@@ -143,7 +149,10 @@ export default async function DashboardPage() {
           <div>
             <h1 className="text-2xl font-semibold text-slate-900">{t("Dashboard", lang)}</h1>
             <p className="text-slate-500 text-sm mt-0.5">
-              {t("Welcome back", lang)}, {session.user.name?.split(" ")[0] ?? "Coach"}
+              {anyRecipes === 0 && anyClients === 0
+                ? t("Welcome", lang)
+                : t("Welcome back", lang)
+              }, {session.user.name?.split(" ")[0] ?? "Coach"}
             </p>
           </div>
           <div className="flex gap-2">
@@ -164,40 +173,44 @@ export default async function DashboardPage() {
           </div>
         </div>
 
-        {/* Welcome state (empty account) */}
-        {totalClients === 0 && totalRecipes === 0 && totalActivePlans === 0 && (
-          <div className="mb-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
-            <div className="flex items-center gap-3 mb-4">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
-                <Sparkles className="h-5 w-5 text-white" />
+        {/* Onboarding card — hides each step as it's completed, hides entirely when all done */}
+        {(anyRecipes === 0 || anyClients === 0 || anyPlans === 0) && (() => {
+          const steps = [
+            { key: 1, done: anyRecipes > 0, label: t("Create your first recipe", lang), href: "/recipes/new", icon: BookOpen },
+            { key: 2, done: anyClients > 0, label: t("Add a client", lang), href: "/clients/new", icon: Users },
+            { key: 3, done: anyPlans > 0,   label: t("Build a weekly meal plan", lang), href: "/clients", icon: CalendarDays },
+          ].filter((s) => !s.done);
+          if (steps.length === 0) return null;
+          return (
+            <div className="mb-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
+                  <Sparkles className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                  <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroChef", lang)}</h2>
+                  <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
+                </div>
               </div>
-              <div>
-                <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroChef", lang)}</h2>
-                <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
-              </div>
+              <ol className="space-y-3">
+                {steps.map(({ key, label, href, icon: Icon }) => (
+                  <li key={key}>
+                    <Link
+                      href={href}
+                      className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all"
+                    >
+                      <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                        {key}
+                      </span>
+                      <Icon className="h-4 w-4 text-slate-400 shrink-0" />
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ol>
             </div>
-            <ol className="space-y-3">
-              {[
-                { step: 1, label: t("Create your first recipe", lang), href: "/recipes/new", icon: BookOpen },
-                { step: 2, label: t("Add a client with macro targets", lang), href: "/clients/new", icon: Users },
-                { step: 3, label: t("Build a weekly meal plan", lang), href: "/clients", icon: CalendarDays },
-              ].map(({ step, label, href, icon: Icon }) => (
-                <li key={step}>
-                  <Link
-                    href={href}
-                    className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all"
-                  >
-                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
-                      {step}
-                    </span>
-                    <Icon className="h-4 w-4 text-slate-400 shrink-0" />
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Stat cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
