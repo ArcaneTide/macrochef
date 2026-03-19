@@ -14,6 +14,8 @@ import { db } from "@/lib/db";
 import { Sidebar } from "@/components/dashboard/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Dashboard — MacroChef" };
 
@@ -57,7 +59,7 @@ const PLAN_STATUS_STYLES: Record<string, string> = {
 // ── page ─────────────────────────────────────────────────
 
 export default async function DashboardPage() {
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const coachId = session.user.id;
@@ -133,15 +135,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex h-screen bg-slate-50">
-      <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} />
+      <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
       <main className="flex-1 overflow-y-auto p-6 sm:p-8">
 
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">Dashboard</h1>
+            <h1 className="text-2xl font-semibold text-slate-900">{t("Dashboard", lang)}</h1>
             <p className="text-slate-500 text-sm mt-0.5">
-              Welcome back, {session.user.name?.split(" ")[0] ?? "Coach"}
+              {t("Welcome back", lang)}, {session.user.name?.split(" ")[0] ?? "Coach"}
             </p>
           </div>
           <div className="flex gap-2">
@@ -150,14 +152,14 @@ export default async function DashboardPage() {
               className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
             >
               <Plus className="h-4 w-4" />
-              New Recipe
+              {t("New Recipe", lang)}
             </Link>
             <Link
               href="/clients/new"
               className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-colors"
             >
               <Plus className="h-4 w-4" />
-              New Client
+              {t("New Client", lang)}
             </Link>
           </div>
         </div>
@@ -170,15 +172,15 @@ export default async function DashboardPage() {
                 <Sparkles className="h-5 w-5 text-white" />
               </div>
               <div>
-                <h2 className="text-base font-semibold text-emerald-900">Welcome to MacroChef!</h2>
-                <p className="text-sm text-emerald-700">Get started in three steps.</p>
+                <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroChef", lang)}</h2>
+                <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
               </div>
             </div>
             <ol className="space-y-3">
               {[
-                { step: 1, label: "Create your first recipe", href: "/recipes/new", icon: BookOpen },
-                { step: 2, label: "Add a client with macro targets", href: "/clients/new", icon: Users },
-                { step: 3, label: "Build a weekly meal plan", href: "/clients", icon: CalendarDays },
+                { step: 1, label: t("Create your first recipe", lang), href: "/recipes/new", icon: BookOpen },
+                { step: 2, label: t("Add a client with macro targets", lang), href: "/clients/new", icon: Users },
+                { step: 3, label: t("Build a weekly meal plan", lang), href: "/clients", icon: CalendarDays },
               ].map(({ step, label, href, icon: Icon }) => (
                 <li key={step}>
                   <Link
@@ -200,21 +202,21 @@ export default async function DashboardPage() {
         {/* Stat cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <StatCard
-            label="Active Clients"
+            label={t("Active Clients", lang)}
             value={totalClients}
             icon={Users}
             href="/clients"
             color="bg-blue-50 text-blue-600"
           />
           <StatCard
-            label="Published Recipes"
+            label={t("Published Recipes", lang)}
             value={totalRecipes}
             icon={BookOpen}
             href="/recipes"
             color="bg-emerald-50 text-emerald-600"
           />
           <StatCard
-            label="Active Meal Plans"
+            label={t("Active Meal Plans", lang)}
             value={totalActivePlans}
             icon={CalendarDays}
             href="/clients"
@@ -228,7 +230,7 @@ export default async function DashboardPage() {
           <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-                Active Clients
+                {t("Active Clients", lang)}
               </h2>
               <Link
                 href="/clients"
@@ -290,7 +292,7 @@ export default async function DashboardPage() {
           <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm">
             <div className="px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-                Recent Activity
+                {t("Recent Activity", lang)}
               </h2>
             </div>
 

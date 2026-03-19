@@ -14,22 +14,31 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
+import { LANG_COOKIE, type Lang } from "@/lib/language-client";
+import { t, type TranslationKey } from "@/lib/translations";
 
-const navItems = [
-  { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/recipes", label: "Recipes", icon: BookOpen },
-  { href: "/clients", label: "Clients", icon: Users },
-  { href: "/ingredients", label: "Ingredients", icon: Package },
-  { href: "/settings", label: "Settings", icon: Settings },
+const navItems: { href: string; key: TranslationKey; icon: React.ElementType }[] = [
+  { href: "/dashboard",   key: "Dashboard",   icon: LayoutDashboard },
+  { href: "/recipes",     key: "Recipes",     icon: BookOpen },
+  { href: "/clients",     key: "Clients",     icon: Users },
+  { href: "/ingredients", key: "Ingredients", icon: Package },
+  { href: "/settings",    key: "Settings",    icon: Settings },
 ];
 
 interface SidebarProps {
   userName: string;
   userEmail?: string;
+  lang: Lang;
 }
 
-export function Sidebar({ userName, userEmail }: SidebarProps) {
+export function Sidebar({ userName, userEmail, lang }: SidebarProps) {
   const pathname = usePathname();
+
+  function toggleLang() {
+    const next: Lang = lang === "en" ? "el" : "en";
+    document.cookie = `${LANG_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
+    window.location.reload();
+  }
 
   return (
     <aside className="flex h-full w-60 flex-col bg-slate-900 text-slate-100">
@@ -52,7 +61,7 @@ export function Sidebar({ userName, userEmail }: SidebarProps) {
 
       {/* Nav */}
       <nav className="flex-1 px-3 py-4 space-y-0.5">
-        {navItems.map(({ href, label, icon: Icon }) => {
+        {navItems.map(({ href, key, icon: Icon }) => {
           const isActive =
             href === "/dashboard"
               ? pathname === "/dashboard"
@@ -69,21 +78,32 @@ export function Sidebar({ userName, userEmail }: SidebarProps) {
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
-              {label}
+              {t(key, lang)}
             </Link>
           );
         })}
       </nav>
 
+      {/* Language toggle */}
+      <div className="px-3 pb-1 border-t border-slate-800 pt-3">
+        <button
+          onClick={toggleLang}
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
+        >
+          <span className="text-base leading-none">{lang === "en" ? "🇬🇷" : "🇬🇧"}</span>
+          <span>{lang === "en" ? "Ελληνικά" : "English"}</span>
+        </button>
+      </div>
+
       {/* Sign out */}
-      <div className="px-3 py-4 border-t border-slate-800">
+      <div className="px-3 py-4">
         <Button
           variant="ghost"
           className="w-full justify-start gap-3 px-3 text-slate-400 hover:bg-slate-800 hover:text-slate-100"
           onClick={() => signOut({ callbackUrl: "/login" })}
         >
           <LogOut className="h-4 w-4 shrink-0" />
-          Sign out
+          {t("Sign out", lang)}
         </Button>
       </div>
     </aside>
