@@ -7,6 +7,7 @@ import {
   Plus,
   ChevronRight,
   Clock,
+  Sparkles,
 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
@@ -132,7 +133,7 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex h-screen bg-slate-50">
-      <Sidebar userName={session.user.name ?? "Coach"} />
+      <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} />
       <main className="flex-1 overflow-y-auto p-6 sm:p-8">
 
         {/* Header */}
@@ -160,6 +161,41 @@ export default async function DashboardPage() {
             </Link>
           </div>
         </div>
+
+        {/* Welcome state (empty account) */}
+        {totalClients === 0 && totalRecipes === 0 && totalActivePlans === 0 && (
+          <div className="mb-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
+                <Sparkles className="h-5 w-5 text-white" />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-emerald-900">Welcome to MacroChef!</h2>
+                <p className="text-sm text-emerald-700">Get started in three steps.</p>
+              </div>
+            </div>
+            <ol className="space-y-3">
+              {[
+                { step: 1, label: "Create your first recipe", href: "/recipes/new", icon: BookOpen },
+                { step: 2, label: "Add a client with macro targets", href: "/clients/new", icon: Users },
+                { step: 3, label: "Build a weekly meal plan", href: "/clients", icon: CalendarDays },
+              ].map(({ step, label, href, icon: Icon }) => (
+                <li key={step}>
+                  <Link
+                    href={href}
+                    className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all"
+                  >
+                    <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
+                      {step}
+                    </span>
+                    <Icon className="h-4 w-4 text-slate-400 shrink-0" />
+                    {label}
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
 
         {/* Stat cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">

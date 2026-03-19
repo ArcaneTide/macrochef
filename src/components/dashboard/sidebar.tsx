@@ -25,9 +25,10 @@ const navItems = [
 
 interface SidebarProps {
   userName: string;
+  userEmail?: string;
 }
 
-export function Sidebar({ userName }: SidebarProps) {
+export function Sidebar({ userName, userEmail }: SidebarProps) {
   const pathname = usePathname();
 
   return (
@@ -44,6 +45,9 @@ export function Sidebar({ userName }: SidebarProps) {
       <div className="px-5 py-4 border-b border-slate-800">
         <p className="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Coach</p>
         <p className="text-sm font-medium text-slate-100 truncate">{userName}</p>
+        {userEmail && (
+          <p className="text-xs text-slate-500 truncate mt-0.5">{userEmail}</p>
+        )}
       </div>
 
       {/* Nav */}

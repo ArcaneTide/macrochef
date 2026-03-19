@@ -47,4 +47,6 @@ next-env.d.ts
 # claude code
 .claude/
 PROJECT_STATUS.md
+CLAUDE.md
+docs/
 !.env.example
