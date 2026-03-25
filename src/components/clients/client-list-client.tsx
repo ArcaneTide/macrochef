@@ -51,11 +51,11 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
             className="pl-9"
           />
         </div>
-        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap">
+        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
           {filtered.length} client{filtered.length !== 1 ? "s" : ""}
         </p>
-        <Link href="/clients/new">
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
+        <Link href="/clients/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
             <Plus className="h-4 w-4" />
             New Client
           </Button>

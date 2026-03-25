@@ -100,7 +100,7 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-40">
+          <SelectTrigger className="w-full sm:w-40">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -110,11 +110,11 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
             <SelectItem value="archived">Archived</SelectItem>
           </SelectContent>
         </Select>
-        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap">
+        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
           {filtered.length} recipe{filtered.length !== 1 ? "s" : ""}
         </p>
-        <Link href="/recipes/new">
-          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
+        <Link href="/recipes/new" className="w-full sm:w-auto">
+          <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
             <Plus className="h-4 w-4" />
             New Recipe
           </Button>

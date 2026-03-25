@@ -29,9 +29,10 @@ interface SidebarProps {
   userName: string;
   userEmail?: string;
   lang: Lang;
+  onClose?: () => void;
 }
 
-export function Sidebar({ userName, userEmail, lang }: SidebarProps) {
+export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   function toggleLang() {
@@ -70,6 +71,7 @@ export function Sidebar({ userName, userEmail, lang }: SidebarProps) {
             <Link
               key={href}
               href={href}
+              onClick={onClose}
               className={cn(
                 "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
                 isActive

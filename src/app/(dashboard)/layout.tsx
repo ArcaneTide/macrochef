@@ -1,6 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { getLang } from "@/lib/language";
 
 export default async function DashboardLayout({
@@ -13,12 +14,24 @@ export default async function DashboardLayout({
 
   return (
     <div className="flex h-screen bg-slate-50">
-      <Sidebar
+      {/* Desktop sidebar — hidden on mobile */}
+      <div className="hidden lg:flex">
+        <Sidebar
+          userName={session.user.name ?? "Coach"}
+          userEmail={session.user.email ?? undefined}
+          lang={lang}
+        />
+      </div>
+
+      {/* Mobile top bar + slide-over */}
+      <MobileNav
         userName={session.user.name ?? "Coach"}
         userEmail={session.user.email ?? undefined}
         lang={lang}
       />
-      <main className="flex-1 overflow-y-auto">{children}</main>
+
+      {/* Main — top padding on mobile to clear the fixed header */}
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0">{children}</main>
     </div>
   );
 }

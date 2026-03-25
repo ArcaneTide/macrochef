@@ -515,7 +515,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
                     <button
                       type="button"
                       onClick={() => removeRow(row.key)}
-                      className="opacity-0 group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all w-7 h-7 flex items-center justify-center rounded"
+                      className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all w-7 h-7 flex items-center justify-center rounded cursor-pointer"
                       aria-label="Remove ingredient"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
@@ -564,7 +564,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
     </div>
 
     {/* ── Sticky action bar ── */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center gap-3">
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 px-4 sm:px-0 flex items-center gap-3">
       <Button
         type="button"
         variant="outline"
