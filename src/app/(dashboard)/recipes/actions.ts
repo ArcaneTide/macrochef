@@ -110,16 +110,16 @@ export async function updateRecipe(id: string, data: RecipeFormInput): Promise<A
   }
 }
 
-export async function deleteRecipe(id: string): Promise<ActionResult> {
+export async function archiveRecipe(id: string): Promise<ActionResult> {
   try {
     const userId = await getAuthedUserId();
     await assertOwnership(id, userId);
-    await db.recipe.delete({ where: { id } });
+    await db.recipe.update({ where: { id }, data: { status: "archived" } });
     revalidatePath("/recipes");
     return { success: true, id };
   } catch (err) {
-    console.error("deleteRecipe:", err);
-    return { success: false, error: "Failed to delete recipe" };
+    console.error("archiveRecipe:", err);
+    return { success: false, error: "Failed to archive recipe" };
   }
 }
 

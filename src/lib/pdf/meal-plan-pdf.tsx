@@ -21,6 +21,7 @@ export type PdfMealSlot = {
   servings: number;
   ingredients: PdfIngredient[];
   macros: MacroTotals;
+  instructions?: string | null;
 };
 
 export type PdfDay = {
@@ -233,6 +234,21 @@ const s = StyleSheet.create({
     color: c.slate400,
     fontStyle: "italic",
   },
+  instructionsLabel: {
+    fontSize: 7,
+    fontFamily: "Helvetica-Bold",
+    color: c.slate500,
+    marginTop: 5,
+    marginBottom: 1,
+    textTransform: "uppercase",
+    letterSpacing: 0.3,
+  },
+  instructionsText: {
+    fontSize: 7,
+    color: c.slate500,
+    fontStyle: "italic",
+    lineHeight: 1.4,
+  },
   // Footer
   footer: {
     position: "absolute",
@@ -309,6 +325,12 @@ function SlotBlock({ slot }: { slot: PdfMealSlot }) {
           </View>
         ))}
         <MacroChips macros={slot.macros} />
+        {slot.instructions && (
+          <View style={{ marginTop: 4 }}>
+            <Text style={s.instructionsLabel}>Preparation</Text>
+            <Text style={s.instructionsText}>{slot.instructions}</Text>
+          </View>
+        )}
       </View>
     </View>
   );

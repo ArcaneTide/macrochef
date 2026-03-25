@@ -144,6 +144,7 @@ export async function GET(
           carbs: Math.round(slotMacros.carbs * 10) / 10,
           fat: Math.round(slotMacros.fat * 10) / 10,
         },
+        instructions: a.recipe.instructions ?? null,
       });
     }
 

@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useTransition, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, ChevronDown, Loader2, AlertCircle } from "lucide-react";
+import { Plus, Trash2, ChevronDown, Loader2, AlertCircle } from "lucide-react"; // ChevronDown kept for potential future use
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -28,15 +28,6 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import {
   calcIngredientMacros,
@@ -47,7 +38,6 @@ import {
 import {
   createRecipe,
   updateRecipe,
-  deleteRecipe,
   type RecipeFormInput,
 } from "@/app/(dashboard)/recipes/actions";
 
@@ -298,10 +288,10 @@ interface RecipeFormProps {
 
 export function RecipeForm({ availableIngredients, initialData }: RecipeFormProps) {
   const router = useRouter();
-  const [isPending, startTransition] = useTransition();
+  const [isDraftPending, startDraftTransition] = useTransition();
+  const [isPublishPending, startPublishTransition] = useTransition();
+  const isAnySavePending = isDraftPending || isPublishPending;
   const [error, setError] = useState<string | null>(null);
-  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [isDeleting, startDeleteTransition] = useTransition();
 
   // Form state
   const [title, setTitle] = useState(initialData?.title ?? "");
@@ -371,7 +361,8 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
       return;
     }
     setError(null);
-    startTransition(async () => {
+    const start = status === "draft" ? startDraftTransition : startPublishTransition;
+    start(async () => {
       try {
         const payload = buildPayload(status);
         const result = initialData
@@ -386,19 +377,6 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
       }
-    });
-  }
-
-  function handleDelete() {
-    if (!initialData) return;
-    startDeleteTransition(async () => {
-      const result = await deleteRecipe(initialData.id);
-      if (!result.success) {
-        setError(result.error);
-        setDeleteDialogOpen(false);
-        return;
-      }
-      router.push("/recipes");
     });
   }
 
@@ -586,70 +564,33 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
     </div>
 
     {/* ── Sticky action bar ── */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center justify-between gap-3">
-      <div className="flex items-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.push("/recipes")}
-          disabled={isPending}
-        >
-          Cancel
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => handleSubmit("draft")}
-          disabled={isPending}
-        >
-          {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-          Save Draft
-        </Button>
-        <Button
-          type="button"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          onClick={() => handleSubmit("published")}
-          disabled={isPending}
-        >
-          {isPending ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-          Publish
-        </Button>
-      </div>
-
-      {isEditing && (
-        <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-          <DialogTrigger asChild>
-            <Button variant="destructive" size="sm" disabled={isPending || isDeleting}>
-              Delete Recipe
-            </Button>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Delete recipe?</DialogTitle>
-              <DialogDescription>
-                This will permanently delete &ldquo;{title}&rdquo; and cannot be undone.
-              </DialogDescription>
-            </DialogHeader>
-            <DialogFooter>
-              <Button
-                variant="outline"
-                onClick={() => setDeleteDialogOpen(false)}
-                disabled={isDeleting}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="destructive"
-                onClick={handleDelete}
-                disabled={isDeleting}
-              >
-                {isDeleting ? <Loader2 className="h-4 w-4 animate-spin mr-1" /> : null}
-                Delete
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
-      )}
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center gap-3">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => router.push("/recipes")}
+        disabled={isAnySavePending}
+      >
+        Cancel
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => handleSubmit("draft")}
+        disabled={isAnySavePending}
+      >
+        {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+        Save Draft
+      </Button>
+      <Button
+        type="button"
+        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        onClick={() => handleSubmit("published")}
+        disabled={isAnySavePending}
+      >
+        {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+        Publish
+      </Button>
     </div>
     </div>
   );

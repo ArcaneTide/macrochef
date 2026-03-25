@@ -75,8 +75,13 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
       const q = search.trim().toLowerCase();
       list = list.filter((r) => r.title.toLowerCase().includes(q));
     }
-    if (statusFilter !== "all") {
+    if (statusFilter === "archived") {
+      list = list.filter((r) => r.status === "archived");
+    } else if (statusFilter !== "all") {
       list = list.filter((r) => r.status === statusFilter);
+    } else {
+      // "all" excludes archived by default; use the "Archived" filter to see them
+      list = list.filter((r) => r.status !== "archived");
     }
     return list;
   }, [recipes, search, statusFilter]);
