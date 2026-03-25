@@ -12,6 +12,7 @@ import {
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { Sidebar } from "@/components/dashboard/sidebar";
+import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
@@ -141,8 +142,15 @@ export default async function DashboardPage() {
 
   return (
     <div className="flex h-screen bg-slate-50">
-      <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
-      <main className="flex-1 overflow-y-auto p-6 sm:p-8">
+      {/* Desktop sidebar — hidden on mobile */}
+      <div className="hidden lg:flex">
+        <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
+      </div>
+
+      {/* Mobile top bar + slide-over */}
+      <MobileNav userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
+
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0 p-6 sm:p-8">
 
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
@@ -155,17 +163,17 @@ export default async function DashboardPage() {
               }, {session.user.name?.split(" ")[0] ?? "Coach"}
             </p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex w-full sm:w-auto gap-2">
             <Link
               href="/recipes/new"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
             >
               <Plus className="h-4 w-4" />
               {t("New Recipe", lang)}
             </Link>
             <Link
               href="/clients/new"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-colors"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-colors"
             >
               <Plus className="h-4 w-4" />
               {t("New Client", lang)}
