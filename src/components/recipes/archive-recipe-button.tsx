@@ -14,8 +14,9 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { archiveRecipe } from "@/app/(dashboard)/recipes/actions";
+import { t, type Lang } from "@/lib/translations";
 
-export function ArchiveRecipeButton({ id, title }: { id: string; title: string }) {
+export function ArchiveRecipeButton({ id, title, lang }: { id: string; title: string; lang: Lang }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -38,20 +39,19 @@ export function ArchiveRecipeButton({ id, title }: { id: string; title: string }
           className="border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300 gap-1.5"
         >
           <Archive className="h-3.5 w-3.5" />
-          Archive
+          {t("Archive", lang)}
         </Button>
       </DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Archive recipe?</DialogTitle>
+          <DialogTitle>{t("Archive recipe?", lang)}</DialogTitle>
           <DialogDescription>
-            This will archive &ldquo;{title}&rdquo;. You can restore it later by selecting
-            the Archived filter on the recipes page.
+            &ldquo;{title}&rdquo; — {t("Archive recipe confirm", lang)}
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <Button variant="outline" onClick={() => setOpen(false)} disabled={isPending}>
-            Cancel
+            {t("Cancel", lang)}
           </Button>
           <Button
             variant="destructive"
@@ -59,7 +59,7 @@ export function ArchiveRecipeButton({ id, title }: { id: string; title: string }
             disabled={isPending}
           >
             {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-            Archive
+            {t("Archive", lang)}
           </Button>
         </DialogFooter>
       </DialogContent>

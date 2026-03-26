@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createClient, updateClient, type ClientInput } from "@/app/(dashboard)/clients/actions";
+import { createClient, updateClient } from "@/app/(dashboard)/clients/actions";
+import { t, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────
 
@@ -20,7 +21,7 @@ export type ClientInitialData = {
 
 // ─── Create Form (with initial target profile) ────────────
 
-export function CreateClientForm() {
+export function CreateClientForm({ lang }: { lang: Lang }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -67,18 +68,18 @@ export function CreateClientForm() {
       {/* Client info */}
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
         <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-          Client Info
+          {t("Client Info", lang)}
         </h2>
         <div className="space-y-1.5">
-          <Label htmlFor="name">Name</Label>
+          <Label htmlFor="name">{t("Name", lang)}</Label>
           <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="email">Email <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="notes">Notes <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="notes">{t("Notes", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
           <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any relevant notes about this client…" rows={3} />
         </div>
       </div>
@@ -87,34 +88,34 @@ export function CreateClientForm() {
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
         <div>
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-            Initial Macro Targets
+            {t("Initial Macro Targets", lang)}
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">Daily targets for this client</p>
+          <p className="text-xs text-slate-400 mt-0.5">{t("Daily targets", lang)}</p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="label">Profile Label <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="label">{t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
           <Input id="label" value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Cut phase, Maintenance" />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
-            <Label htmlFor="calories">Calories (kcal)</Label>
+            <Label htmlFor="calories">{t("Calories", lang)} (kcal)</Label>
             <Input id="calories" type="number" min={1} value={calorieTarget} onChange={(e) => setCalorieTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="2000" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="protein">
-              Protein <span className="text-blue-500">(g)</span>
+              {t("Protein", lang)} <span className="text-blue-500">(g)</span>
             </Label>
             <Input id="protein" type="number" min={0} value={proteinTarget} onChange={(e) => setProteinTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="150" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="carbs">
-              Carbs <span className="text-amber-500">(g)</span>
+              {t("Carbs", lang)} <span className="text-amber-500">(g)</span>
             </Label>
             <Input id="carbs" type="number" min={0} value={carbsTarget} onChange={(e) => setCarbsTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="200" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="fat">
-              Fat <span className="text-orange-500">(g)</span>
+              {t("Fat", lang)} <span className="text-orange-500">(g)</span>
             </Label>
             <Input id="fat" type="number" min={0} value={fatTarget} onChange={(e) => setFatTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="70" />
           </div>
@@ -130,11 +131,11 @@ export function CreateClientForm() {
 
       <div className="flex items-center gap-3">
         <Button variant="outline" onClick={() => router.push("/clients")} disabled={isPending}>
-          Cancel
+          {t("Cancel", lang)}
         </Button>
         <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          Create Client
+          {t("Create Client", lang)}
         </Button>
       </div>
     </div>
@@ -143,7 +144,7 @@ export function CreateClientForm() {
 
 // ─── Edit Form (client info only) ────────────────────────
 
-export function EditClientForm({ initialData, onCancel }: { initialData: ClientInitialData; onCancel: () => void }) {
+export function EditClientForm({ initialData, onCancel, lang }: { initialData: ClientInitialData; onCancel: () => void; lang: Lang }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -173,15 +174,15 @@ export function EditClientForm({ initialData, onCancel }: { initialData: ClientI
   return (
     <div className="space-y-4">
       <div className="space-y-1.5">
-        <Label htmlFor="edit-name">Name</Label>
+        <Label htmlFor="edit-name">{t("Name", lang)}</Label>
         <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="edit-email">Email <span className="text-slate-400 font-normal">(optional)</span></Label>
+        <Label htmlFor="edit-email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
         <Input id="edit-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="edit-notes">Notes</Label>
+        <Label htmlFor="edit-notes">{t("Notes", lang)}</Label>
         <Textarea id="edit-notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
       </div>
       {error && (
@@ -191,10 +192,10 @@ export function EditClientForm({ initialData, onCancel }: { initialData: ClientI
         </div>
       )}
       <div className="flex gap-3">
-        <Button variant="outline" onClick={onCancel} disabled={isPending}>Cancel</Button>
+        <Button variant="outline" onClick={onCancel} disabled={isPending}>{t("Cancel", lang)}</Button>
         <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          Save
+          {t("Save", lang)}
         </Button>
       </div>
     </div>

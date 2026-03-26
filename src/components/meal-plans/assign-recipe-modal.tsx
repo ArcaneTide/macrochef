@@ -14,14 +14,8 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { calcFitScore, FIT_SCORE_GREEN, FIT_SCORE_AMBER, type MacroTotals } from "@/lib/macros";
 import { assignMeal, type AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { t, type Lang } from "@/lib/translations";
 
-const SLOT_LABELS: Record<string, string> = {
-  breakfast: "Breakfast",
-  lunch: "Lunch",
-  dinner: "Dinner",
-  snack1: "Snack 1",
-  snack2: "Snack 2",
-};
 
 export type RecipeOption = {
   id: string;
@@ -39,6 +33,7 @@ type Props = {
   recipes: RecipeOption[];
   targetMacros: MacroTotals | null;
   onAssigned: (assignment: AssignmentResult) => void;
+  lang: Lang;
 };
 
 function FitBadge({ score }: { score: number }) {
@@ -64,12 +59,21 @@ export function AssignRecipeModal({
   recipes,
   targetMacros,
   onAssigned,
+  lang,
 }: Props) {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [servings, setServings] = useState("1");
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
+
+  const SLOT_LABELS: Record<string, string> = {
+    breakfast: t("Breakfast", lang),
+    lunch: t("Lunch", lang),
+    dinner: t("Dinner", lang),
+    snack1: t("Snack 1", lang),
+    snack2: t("Snack 2", lang),
+  };
 
   const filtered = useMemo(
     () =>
@@ -132,7 +136,7 @@ export function AssignRecipeModal({
       <DialogContent className="max-w-lg">
         <DialogHeader>
           <DialogTitle>
-            Assign Recipe — {SLOT_LABELS[mealSlot] ?? mealSlot}
+            {t("Assign Recipe", lang)} — {SLOT_LABELS[mealSlot] ?? mealSlot}
           </DialogTitle>
         </DialogHeader>
 
@@ -142,7 +146,7 @@ export function AssignRecipeModal({
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             <Input
               className="pl-9"
-              placeholder="Search recipes..."
+              placeholder={t("Search recipes…", lang)}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
             />
@@ -151,7 +155,7 @@ export function AssignRecipeModal({
           {/* Recipe list */}
           <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-100">
             {filtered.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">No recipes found.</p>
+              <p className="text-sm text-slate-400 text-center py-6">{t("No recipes found", lang)}</p>
             ) : (
               filtered.map((recipe) => (
                 <button
@@ -172,7 +176,7 @@ export function AssignRecipeModal({
                       <span className="text-blue-500">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
                       <span className="text-amber-500">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
                       <span className="text-orange-500">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
-                      {" "}<span className="text-slate-300">/ serving</span>
+                      {" "}<span className="text-slate-300">{t("/ serving", lang)}</span>
                     </p>
                   </div>
                   {selectedId === recipe.id && (
@@ -188,7 +192,7 @@ export function AssignRecipeModal({
             <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
               <div className="flex items-center gap-4">
                 <div className="flex-1 space-y-1">
-                  <Label htmlFor="servings">Servings</Label>
+                  <Label htmlFor="servings">{t("Servings", lang)}</Label>
                   <Input
                     id="servings"
                     type="number"
@@ -204,10 +208,10 @@ export function AssignRecipeModal({
                 </div>
                 {fitScore !== null && targetMacros && (
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 mb-1">Fit score</p>
+                    <p className="text-xs text-slate-500 mb-1">{t("Fit score", lang)}</p>
                     <FitBadge score={fitScore} />
                     <p className="text-xs text-slate-400 mt-1 max-w-[120px]">
-                      How closely this matches the daily macro target
+                      {t("Fit score help", lang)}
                     </p>
                   </div>
                 )}
@@ -225,19 +229,19 @@ export function AssignRecipeModal({
                     <p className="font-semibold text-blue-600 tabular-nums">
                       {previewMacros.protein}g
                     </p>
-                    <p className="text-slate-400">protein</p>
+                    <p className="text-slate-400">{t("Protein", lang)}</p>
                   </div>
                   <div>
                     <p className="font-semibold text-amber-600 tabular-nums">
                       {previewMacros.carbs}g
                     </p>
-                    <p className="text-slate-400">carbs</p>
+                    <p className="text-slate-400">{t("Carbs", lang)}</p>
                   </div>
                   <div>
                     <p className="font-semibold text-orange-600 tabular-nums">
                       {previewMacros.fat}g
                     </p>
-                    <p className="text-slate-400">fat</p>
+                    <p className="text-slate-400">{t("Fat", lang)}</p>
                   </div>
                 </div>
               )}
@@ -253,7 +257,7 @@ export function AssignRecipeModal({
 
           <div className="flex justify-end gap-3 pt-1">
             <Button variant="outline" onClick={handleClose} disabled={isPending}>
-              Cancel
+              {t("Cancel", lang)}
             </Button>
             <Button
               className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -261,7 +265,7 @@ export function AssignRecipeModal({
               disabled={isPending || !selectedId}
             >
               {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-              Assign
+              {t("Assign", lang)}
             </Button>
           </div>
         </div>

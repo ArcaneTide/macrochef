@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { t, type Lang } from "@/lib/translations";
 
 export type ClientListItem = {
   id: string;
@@ -28,7 +29,7 @@ const STATUS_STYLES: Record<string, string> = {
   archived: "bg-slate-100 text-slate-500 border-slate-200",
 };
 
-export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
+export function ClientListClient({ clients, lang }: { clients: ClientListItem[]; lang: Lang }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
 
@@ -45,7 +46,7 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
           <Input
-            placeholder="Search clients…"
+            placeholder={t("Search clients…", lang)}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -57,7 +58,7 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
         <Link href="/clients/new" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
             <Plus className="h-4 w-4" />
-            New Client
+            {t("New Client", lang)}
           </Button>
         </Link>
       </div>
@@ -66,16 +67,16 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
         <div className="text-center py-16 text-slate-400">
           {clients.length === 0 ? (
             <div className="space-y-3">
-              <p>No clients yet.</p>
+              <p>{t("No clients yet", lang)}</p>
               <Link href="/clients/new">
                 <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
                   <Plus className="h-4 w-4" />
-                  Add your first client
+                  {t("Add your first client", lang)}
                 </Button>
               </Link>
             </div>
           ) : (
-            <p>No clients match your search.</p>
+            <p>{t("No clients match search", lang)}</p>
           )}
         </div>
       ) : (
@@ -84,13 +85,13 @@ export function ClientListClient({ clients }: { clients: ClientListItem[] }) {
           <table className="w-full hidden sm:table">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                <th className="text-left px-4 py-3">Name</th>
-                <th className="text-left px-4 py-3">Status</th>
-                <th className="text-left px-4 py-3">Active Profile</th>
-                <th className="text-right px-4 py-3">Calories</th>
-                <th className="text-right px-4 py-3">Protein</th>
-                <th className="text-right px-4 py-3">Carbs</th>
-                <th className="text-right px-4 py-3">Fat</th>
+                <th className="text-left px-4 py-3">{t("Name", lang)}</th>
+                <th className="text-left px-4 py-3">{t("Status", lang)}</th>
+                <th className="text-left px-4 py-3">{t("Active Macro Targets", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Calories", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Protein", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Carbs", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">

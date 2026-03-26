@@ -40,6 +40,7 @@ import {
   updateRecipe,
   type RecipeFormInput,
 } from "@/app/(dashboard)/recipes/actions";
+import { t, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────
 
@@ -75,13 +76,6 @@ type IngredientRow = {
 function nextKey() {
   return `${Date.now()}-${Math.random()}`;
 }
-
-const MEAL_TYPE_LABELS: Record<string, string> = {
-  breakfast: "Breakfast",
-  lunch: "Lunch",
-  dinner: "Dinner",
-  snack: "Snack",
-};
 
 // ─── Quantity Input ───────────────────────────────────────
 // Uses local string state so the user can freely edit the field
@@ -131,10 +125,12 @@ function IngredientCombobox({
   availableIngredients,
   selectedIds,
   onSelect,
+  lang,
 }: {
   availableIngredients: IngredientOption[];
   selectedIds: Set<string>;
   onSelect: (ingredient: IngredientOption) => void;
+  lang: Lang;
 }) {
   const [open, setOpen] = useState(false);
 
@@ -148,14 +144,14 @@ function IngredientCombobox({
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="gap-1.5">
           <Plus className="h-3.5 w-3.5" />
-          Add Ingredient
+          {t("Add Ingredient", lang)}
         </Button>
       </PopoverTrigger>
       <PopoverContent className="p-0 w-80" align="start">
         <Command>
-          <CommandInput placeholder="Search ingredients…" />
+          <CommandInput placeholder={t("Search ingredients…", lang)} />
           <CommandList>
-            <CommandEmpty>No ingredients found.</CommandEmpty>
+            <CommandEmpty>{t("No ingredients found", lang)}</CommandEmpty>
             <CommandGroup>
               {unselected.map((ing) => (
                 <CommandItem
@@ -186,10 +182,12 @@ function MacroSummary({
   rows,
   ingredientMap,
   servings,
+  lang,
 }: {
   rows: IngredientRow[];
   ingredientMap: Map<string, IngredientOption>;
   servings: number;
+  lang: Lang;
 }) {
   const macros = useMemo(() => {
     const items = rows
@@ -207,11 +205,11 @@ function MacroSummary({
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">Per Serving</h3>
+      <h3 className="text-sm font-semibold text-slate-900 mb-4">{t("Per Serving", lang)}</h3>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">Calories</span>
+          <span className="text-sm text-slate-500">{t("Calories", lang)}</span>
           <span className="text-lg font-semibold text-slate-900 tabular-nums">
             {hasData ? fmtMacro(macros.calories) : "—"}
             {hasData && <span className="text-xs font-normal text-slate-400 ml-1">kcal</span>}
@@ -238,17 +236,17 @@ function MacroSummary({
         <div className="grid grid-cols-3 gap-2 text-center">
           {(
             [
-              { label: "Protein", value: macros.protein, color: "text-blue-600", bg: "bg-blue-50" },
-              { label: "Carbs", value: macros.carbs, color: "text-amber-600", bg: "bg-amber-50" },
-              { label: "Fat", value: macros.fat, color: "text-orange-600", bg: "bg-orange-50" },
-            ] as const
-          ).map(({ label, value, color, bg }) => (
-            <div key={label} className={cn("rounded-lg p-2", bg)}>
+              { labelKey: "Protein" as const, value: macros.protein, color: "text-blue-600", bg: "bg-blue-50" },
+              { labelKey: "Carbs" as const, value: macros.carbs, color: "text-amber-600", bg: "bg-amber-50" },
+              { labelKey: "Fat" as const, value: macros.fat, color: "text-orange-600", bg: "bg-orange-50" },
+            ]
+          ).map(({ labelKey, value, color, bg }) => (
+            <div key={labelKey} className={cn("rounded-lg p-2", bg)}>
               <p className={cn("text-base font-semibold tabular-nums", color)}>
                 {hasData ? fmtMacro(value) : "—"}
                 {hasData && <span className="text-xs font-normal ml-0.5">g</span>}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">{label}</p>
+              <p className="text-xs text-slate-500 mt-0.5">{t(labelKey, lang)}</p>
             </div>
           ))}
         </div>
@@ -272,7 +270,7 @@ function MacroSummary({
 
       {!hasData && (
         <p className="text-xs text-slate-400 text-center mt-3">
-          Add ingredients to see macro breakdown
+          {t("No ingredients yet", lang)}
         </p>
       )}
     </div>
@@ -284,9 +282,10 @@ function MacroSummary({
 interface RecipeFormProps {
   availableIngredients: IngredientOption[];
   initialData?: RecipeInitialData;
+  lang: Lang;
 }
 
-export function RecipeForm({ availableIngredients, initialData }: RecipeFormProps) {
+export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFormProps) {
   const router = useRouter();
   const [isDraftPending, startDraftTransition] = useTransition();
   const [isPublishPending, startPublishTransition] = useTransition();
@@ -390,11 +389,11 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
         {/* Basic info */}
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-            Recipe Details
+            {t("Recipe Details", lang)}
           </h2>
 
           <div className="space-y-1.5">
-            <Label htmlFor="title">Title</Label>
+            <Label htmlFor="title">{t("Title", lang)}</Label>
             <Input
               id="title"
               value={title}
@@ -405,7 +404,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-1.5">
-              <Label htmlFor="servings">Servings</Label>
+              <Label htmlFor="servings">{t("Servings", lang)}</Label>
               <Input
                 id="servings"
                 type="number"
@@ -420,7 +419,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="cuisine">Cuisine</Label>
+              <Label htmlFor="cuisine">{t("Cuisine", lang)}</Label>
               <Input
                 id="cuisine"
                 value={cuisine}
@@ -431,23 +430,23 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
           </div>
 
           <div className="space-y-1.5">
-            <Label>Meal Type</Label>
+            <Label>{t("Meal Type", lang)}</Label>
             <Select value={mealType} onValueChange={setMealType}>
               <SelectTrigger className="w-full">
                 <SelectValue placeholder="Select meal type" />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">—</SelectItem>
-                <SelectItem value="breakfast">Breakfast</SelectItem>
-                <SelectItem value="lunch">Lunch</SelectItem>
-                <SelectItem value="dinner">Dinner</SelectItem>
-                <SelectItem value="snack">Snack</SelectItem>
+                <SelectItem value="breakfast">{t("Breakfast", lang)}</SelectItem>
+                <SelectItem value="lunch">{t("Lunch", lang)}</SelectItem>
+                <SelectItem value="dinner">{t("Dinner", lang)}</SelectItem>
+                <SelectItem value="snack">{t("Snack", lang)}</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="instructions">Instructions</Label>
+            <Label htmlFor="instructions">{t("Instructions", lang)}</Label>
             <Textarea
               id="instructions"
               value={instructions}
@@ -463,7 +462,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-                Ingredients
+                {t("Ingredients", lang)}
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
                 Quantities are for all {servings} serving{servings !== 1 ? "s" : ""}
@@ -473,19 +472,20 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
               availableIngredients={availableIngredients}
               selectedIds={selectedIds}
               onSelect={addIngredient}
+              lang={lang}
             />
           </div>
 
           {rows.length === 0 ? (
             <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
-              No ingredients yet. Click &ldquo;Add Ingredient&rdquo; to start.
+              {t("No ingredients yet", lang)}
             </div>
           ) : (
             <div className="space-y-1">
               {/* Table header */}
               <div className="grid grid-cols-[1fr_100px_auto] gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase tracking-wide">
-                <span>Ingredient</span>
-                <span className="text-right">Grams</span>
+                <span>{t("Ingredients", lang)}</span>
+                <span className="text-right">{t("Grams", lang)}</span>
                 <span className="w-7" />
               </div>
 
@@ -539,11 +539,11 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
       {/* ── Right: macro summary ── */}
       <div className="lg:w-64 lg:shrink-0">
         <div className="lg:sticky lg:top-8">
-          <MacroSummary rows={rows} ingredientMap={ingredientMap} servings={servings} />
+          <MacroSummary rows={rows} ingredientMap={ingredientMap} servings={servings} lang={lang} />
 
           {isEditing && (
             <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-400 mb-2">Status</p>
+              <p className="text-xs text-slate-400 mb-2">{t("Status", lang)}</p>
               <Badge
                 className={cn(
                   "text-xs font-medium",
@@ -571,7 +571,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
         onClick={() => router.push("/recipes")}
         disabled={isAnySavePending}
       >
-        Cancel
+        {t("Cancel", lang)}
       </Button>
       <Button
         type="button"
@@ -580,7 +580,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
         disabled={isAnySavePending}
       >
         {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-        Save Draft
+        {t("Save Draft", lang)}
       </Button>
       <Button
         type="button"
@@ -589,7 +589,7 @@ export function RecipeForm({ availableIngredients, initialData }: RecipeFormProp
         disabled={isAnySavePending}
       >
         {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-        Publish
+        {t("Publish", lang)}
       </Button>
     </div>
     </div>

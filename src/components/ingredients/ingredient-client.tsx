@@ -20,6 +20,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
+import { t, type Lang } from "@/lib/translations";
 
 type IngredientCategory =
   | "protein"
@@ -55,18 +56,7 @@ const CATEGORY_STYLES: Record<IngredientCategory, string> = {
   other: "bg-slate-100 text-slate-500 border-slate-200",
 };
 
-const CATEGORY_LABELS: Record<IngredientCategory, string> = {
-  protein: "Protein",
-  carb: "Carb",
-  fat: "Fat",
-  vegetable: "Vegetable",
-  fruit: "Fruit",
-  dairy: "Dairy",
-  seasoning: "Seasoning",
-  other: "Other",
-};
-
-const CATEGORIES = Object.keys(CATEGORY_LABELS) as IngredientCategory[];
+const CATEGORIES = ["protein", "carb", "fat", "vegetable", "fruit", "dairy", "seasoning", "other"] as IngredientCategory[];
 
 function fmt(n: number) {
   return n % 1 === 0 ? n.toFixed(0) : n.toFixed(1);
@@ -74,13 +64,25 @@ function fmt(n: number) {
 
 interface Props {
   ingredients: Ingredient[];
+  lang: Lang;
 }
 
-export function IngredientClient({ ingredients }: Props) {
+export function IngredientClient({ ingredients, lang }: Props) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState<IngredientCategory | "all">("all");
   const [sortKey, setSortKey] = useState<SortKey>("name");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("asc");
+
+  const CATEGORY_LABELS: Record<IngredientCategory, string> = {
+    protein: t("cat:protein", lang),
+    carb: t("cat:carb", lang),
+    fat: t("cat:fat", lang),
+    vegetable: t("cat:vegetable", lang),
+    fruit: t("cat:fruit", lang),
+    dairy: t("cat:dairy", lang),
+    seasoning: t("cat:seasoning", lang),
+    other: t("cat:other", lang),
+  };
 
   const filtered = useMemo(() => {
     let list = ingredients;
@@ -132,7 +134,7 @@ export function IngredientClient({ ingredients }: Props) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
           <Input
-            placeholder="Search ingredients…"
+            placeholder={t("Search ingredients…", lang)}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -143,10 +145,10 @@ export function IngredientClient({ ingredients }: Props) {
           onValueChange={(v) => setCategory(v as IngredientCategory | "all")}
         >
           <SelectTrigger className="w-44">
-            <SelectValue placeholder="All categories" />
+            <SelectValue placeholder={t("All categories", lang)} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All categories</SelectItem>
+            <SelectItem value="all">{t("All categories", lang)}</SelectItem>
             {CATEGORIES.map((c) => (
               <SelectItem key={c} value={c}>
                 {CATEGORY_LABELS[c]}
@@ -166,28 +168,28 @@ export function IngredientClient({ ingredients }: Props) {
             <TableRow className="bg-slate-50 hover:bg-slate-50">
               <TableHead className="w-[280px]">
                 <span className="flex items-center gap-2">
-                  Name <SortButton col="name" />
+                  {t("Name", lang)} <SortButton col="name" />
                 </span>
               </TableHead>
-              <TableHead>Category</TableHead>
+              <TableHead>{t("Category", lang)}</TableHead>
               <TableHead className="text-right">
                 <span className="flex items-center justify-end gap-2">
-                  Calories <SortButton col="caloriesPer100g" />
-                </span>
-              </TableHead>
-              <TableHead className="text-right">
-                <span className="flex items-center justify-end gap-2">
-                  Protein <SortButton col="proteinPer100g" />
+                  {t("Calories", lang)} <SortButton col="caloriesPer100g" />
                 </span>
               </TableHead>
               <TableHead className="text-right">
                 <span className="flex items-center justify-end gap-2">
-                  Carbs <SortButton col="carbsPer100g" />
+                  {t("Protein", lang)} <SortButton col="proteinPer100g" />
                 </span>
               </TableHead>
               <TableHead className="text-right">
                 <span className="flex items-center justify-end gap-2">
-                  Fat <SortButton col="fatPer100g" />
+                  {t("Carbs", lang)} <SortButton col="carbsPer100g" />
+                </span>
+              </TableHead>
+              <TableHead className="text-right">
+                <span className="flex items-center justify-end gap-2">
+                  {t("Fat", lang)} <SortButton col="fatPer100g" />
                 </span>
               </TableHead>
               <TableHead className="w-12 text-center">USDA</TableHead>
@@ -197,7 +199,7 @@ export function IngredientClient({ ingredients }: Props) {
             {filtered.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-12 text-slate-400">
-                  No ingredients found.
+                  {t("No ingredients found", lang)}
                 </TableCell>
               </TableRow>
             ) : (
@@ -235,14 +237,14 @@ export function IngredientClient({ ingredients }: Props) {
           </TableBody>
         </Table>
         <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400 bg-slate-50">
-          All values per 100g
+          {t("All values per 100g", lang)}
         </div>
       </div>
 
       {/* Mobile cards */}
       <div className="sm:hidden space-y-2">
         {filtered.length === 0 ? (
-          <p className="text-center py-12 text-slate-400">No ingredients found.</p>
+          <p className="text-center py-12 text-slate-400">{t("No ingredients found", lang)}</p>
         ) : (
           filtered.map((ing) => (
             <div
@@ -265,19 +267,19 @@ export function IngredientClient({ ingredients }: Props) {
               </div>
               <div className="grid grid-cols-4 gap-2 text-sm">
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">Calories</p>
+                  <p className="text-slate-400 text-xs">{t("Calories", lang)}</p>
                   <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.caloriesPer100g)}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">Protein</p>
+                  <p className="text-slate-400 text-xs">{t("Protein", lang)}</p>
                   <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.proteinPer100g)}g</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">Carbs</p>
+                  <p className="text-slate-400 text-xs">{t("Carbs", lang)}</p>
                   <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.carbsPer100g)}g</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">Fat</p>
+                  <p className="text-slate-400 text-xs">{t("Fat", lang)}</p>
                   <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.fatPer100g)}g</p>
                 </div>
               </div>

@@ -3,11 +3,13 @@ import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { calcRecipeMacrosPerServing } from "@/lib/macros";
 import { RecipeListClient } from "@/components/recipes/recipe-list-client";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Recipes — MacroChef" };
 
 export default async function RecipesPage() {
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const recipes = await db.recipe.findMany({
@@ -40,12 +42,12 @@ export default async function RecipesPage() {
   return (
     <div className="p-6 sm:p-8 max-w-7xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Recipes</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">{t("Recipes", lang)}</h1>
         <p className="text-slate-500 text-sm mt-1">
-          Create and manage your macro-accurate recipes
+          {t("Recipes page description", lang)}
         </p>
       </div>
-      <RecipeListClient recipes={recipeItems} />
+      <RecipeListClient recipes={recipeItems} lang={lang} />
     </div>
   );
 }

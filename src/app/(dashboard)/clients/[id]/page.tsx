@@ -2,6 +2,8 @@ import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ClientDetail } from "@/components/clients/client-detail";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Client — MacroChef" };
 
@@ -12,7 +14,7 @@ export default async function ClientPage({
 }) {
   const { id } = await params;
 
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const [client, plans] = await Promise.all([
@@ -37,7 +39,7 @@ export default async function ClientPage({
     <div className="p-6 sm:p-8">
       <div className="mb-6">
         <p className="text-sm text-slate-400 mb-1">
-          <a href="/clients" className="hover:text-slate-600 transition-colors">Clients</a>
+          <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
           {" / "}
           <span className="text-slate-600">{client.name}</span>
         </p>
@@ -69,6 +71,7 @@ export default async function ClientPage({
           startDate: p.startDate.toISOString(),
           endDate: p.endDate.toISOString(),
         }))}
+        lang={lang}
       />
     </div>
   );

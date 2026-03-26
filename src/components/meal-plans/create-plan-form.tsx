@@ -7,8 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createMealPlan } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { t, type Lang } from "@/lib/translations";
 
-export function CreatePlanForm({ clientId }: { clientId: string }) {
+export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lang }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
@@ -52,7 +53,7 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
     <div className="max-w-md space-y-5">
       <div className="space-y-1.5">
         <Label htmlFor="plan-title">
-          Plan Title <span className="text-slate-400 font-normal">(optional)</span>
+          {t("Plan Title", lang)} <span className="text-slate-400 font-normal">(optional)</span>
         </Label>
         <Input
           id="plan-title"
@@ -63,7 +64,7 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
       </div>
 
       <div className="space-y-1.5">
-        <Label htmlFor="plan-start">Start Date</Label>
+        <Label htmlFor="plan-start">{t("Start Date", lang)}</Label>
         <Input
           id="plan-start"
           type="date"
@@ -73,7 +74,7 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
         />
         {endDate && (
           <p className="text-xs text-slate-500">
-            Plan runs 7 days · ends{" "}
+            {t("Plan runs 7 days", lang)}{" "}
             <span className="font-medium text-slate-700">{endDate}</span>
           </p>
         )}
@@ -92,7 +93,7 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
           onClick={() => router.back()}
           disabled={isPending}
         >
-          Cancel
+          {t("Cancel", lang)}
         </Button>
         <Button
           className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -100,7 +101,7 @@ export function CreatePlanForm({ clientId }: { clientId: string }) {
           disabled={isPending}
         >
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          Create Plan
+          {t("Create Plan", lang)}
         </Button>
       </div>
     </div>

@@ -7,13 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { createTargetProfile } from "@/app/(dashboard)/clients/actions";
+import { t, type Lang } from "@/lib/translations";
 
 export function NewProfileForm({
   clientId,
   onCancel,
+  lang,
 }: {
   clientId: string;
   onCancel: () => void;
+  lang: Lang;
 }) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
@@ -52,7 +55,7 @@ export function NewProfileForm({
     <div className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="p-label">
-          Label <span className="text-slate-400 font-normal">(optional)</span>
+          {t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span>
         </Label>
         <Input
           id="p-label"
@@ -63,7 +66,7 @@ export function NewProfileForm({
       </div>
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-1.5">
-          <Label htmlFor="p-calories">Calories (kcal)</Label>
+          <Label htmlFor="p-calories">{t("Calories", lang)} (kcal)</Label>
           <Input
             id="p-calories"
             type="number"
@@ -75,7 +78,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-protein">
-            Protein <span className="text-blue-500">(g)</span>
+            {t("Protein", lang)} <span className="text-blue-500">(g)</span>
           </Label>
           <Input
             id="p-protein"
@@ -88,7 +91,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-carbs">
-            Carbs <span className="text-amber-500">(g)</span>
+            {t("Carbs", lang)} <span className="text-amber-500">(g)</span>
           </Label>
           <Input
             id="p-carbs"
@@ -101,7 +104,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-fat">
-            Fat <span className="text-orange-500">(g)</span>
+            {t("Fat", lang)} <span className="text-orange-500">(g)</span>
           </Label>
           <Input
             id="p-fat"
@@ -123,7 +126,7 @@ export function NewProfileForm({
 
       <div className="flex gap-3">
         <Button variant="outline" onClick={onCancel} disabled={isPending}>
-          Cancel
+          {t("Cancel", lang)}
         </Button>
         <Button
           className="bg-emerald-600 hover:bg-emerald-700 text-white"
@@ -131,7 +134,7 @@ export function NewProfileForm({
           disabled={isPending}
         >
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          Set as Active Profile
+          {t("Set as Active Profile", lang)}
         </Button>
       </div>
     </div>

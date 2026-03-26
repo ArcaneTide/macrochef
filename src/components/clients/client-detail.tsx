@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 import { EditClientForm, type ClientInitialData } from "@/components/clients/client-form";
 import { NewProfileForm } from "@/components/clients/new-profile-form";
 import { archiveClient } from "@/app/(dashboard)/clients/actions";
+import { t, type Lang } from "@/lib/translations";
 
 export type TargetProfile = {
   id: string;
@@ -40,6 +41,7 @@ export type ClientDetailProps = {
   };
   profiles: TargetProfile[];
   plans: MealPlanSummary[];
+  lang: Lang;
 };
 
 const STATUS_STYLES: Record<string, string> = {
@@ -75,7 +77,7 @@ const PLAN_STATUS_STYLES: Record<string, string> = {
   archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 
-export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
+export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProps) {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [isAddingProfile, setIsAddingProfile] = useState(false);
@@ -99,11 +101,12 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
         {isEditing ? (
           <>
             <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-5">
-              Edit Client
+              {t("Edit Client", lang)}
             </h2>
             <EditClientForm
               initialData={client as ClientInitialData}
               onCancel={() => setIsEditing(false)}
+              lang={lang}
             />
           </>
         ) : (
@@ -134,7 +137,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
                   className="gap-1.5"
                 >
                   <Pencil className="h-3.5 w-3.5" />
-                  Edit
+                  {t("Edit", lang)}
                 </Button>
                 {client.status === "active" && (
                   <Button
@@ -149,7 +152,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
                     ) : (
                       <Archive className="h-3.5 w-3.5" />
                     )}
-                    Archive
+                    {t("Archive", lang)}
                   </Button>
                 )}
               </div>
@@ -168,7 +171,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-              Active Macro Targets
+              {t("Active Macro Targets", lang)}
             </h3>
             {activeProfile?.label && (
               <p className="text-xs text-emerald-600 font-medium mt-0.5">{activeProfile.label}</p>
@@ -182,7 +185,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
               className="gap-1.5"
             >
               <Plus className="h-3.5 w-3.5" />
-              New Profile
+              {t("New Profile", lang)}
             </Button>
           )}
         </div>
@@ -191,17 +194,18 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
           <NewProfileForm
             clientId={client.id}
             onCancel={() => setIsAddingProfile(false)}
+            lang={lang}
           />
         ) : activeProfile ? (
           <div className="divide-y divide-slate-100">
-            <MacroRow label="Calories" value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900" />
-            <MacroRow label="Protein" value={activeProfile.proteinTarget} unit="g" color="text-blue-600" />
-            <MacroRow label="Carbs" value={activeProfile.carbsTarget} unit="g" color="text-amber-600" />
-            <MacroRow label="Fat" value={activeProfile.fatTarget} unit="g" color="text-orange-600" />
+            <MacroRow label={t("Calories", lang)} value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900" />
+            <MacroRow label={t("Protein", lang)} value={activeProfile.proteinTarget} unit="g" color="text-blue-600" />
+            <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-amber-600" />
+            <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-orange-600" />
           </div>
         ) : (
           <p className="text-sm text-slate-400 text-center py-4">
-            No active profile. Create one above.
+            {t("No active profile", lang)}
           </p>
         )}
       </div>
@@ -210,7 +214,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
       {pastProfiles.length > 0 && (
         <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
-            Profile History
+            {t("Profile History", lang)}
           </h3>
           <div className="space-y-3">
             {pastProfiles.map((profile) => (
@@ -220,7 +224,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
               >
                 <div>
                   <p className="text-sm font-medium text-slate-700">
-                    {profile.label ?? "Untitled profile"}
+                    {profile.label ?? t("Untitled profile", lang)}
                   </p>
                   <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
@@ -251,7 +255,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
       <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-            Meal Plans
+            {t("Meal Plans", lang)}
           </h3>
           <Button
             variant="outline"
@@ -260,12 +264,12 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
             className="gap-1.5"
           >
             <Plus className="h-3.5 w-3.5" />
-            New Plan
+            {t("New Plan", lang)}
           </Button>
         </div>
 
         {plans.length === 0 ? (
-          <p className="text-sm text-slate-400">No meal plans yet.</p>
+          <p className="text-sm text-slate-400">{t("No meal plans yet", lang)}</p>
         ) : (
           <div className="space-y-2">
             {plans.map((plan) => (
@@ -276,7 +280,7 @@ export function ClientDetail({ client, profiles, plans }: ClientDetailProps) {
               >
                 <div>
                   <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">
-                    {plan.title ?? "Untitled Plan"}
+                    {plan.title ?? t("Untitled Plan", lang)}
                   </p>
                   <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
