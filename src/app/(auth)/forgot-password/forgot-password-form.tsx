@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { ChefHat, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Lock, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,7 +16,7 @@ function SubmitButton({ lang }: { lang: Lang }) {
     <Button
       type="submit"
       disabled={pending}
-      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-lg font-medium transition-colors"
+      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-xl font-medium transition-colors"
     >
       {pending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
       {pending ? t("Sending…", lang) : t("Send reset link", lang)}
@@ -28,19 +28,19 @@ export function ForgotPasswordForm({ lang }: { lang: Lang }) {
   const [state, action] = useActionState(forgotPasswordAction, null);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-2">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
-            <ChefHat className="h-5 w-5" />
+            <Lock className="h-5 w-5" />
           </div>
-          <h1 className="text-xl font-semibold text-slate-900">MacroChef</h1>
+          <h1 className="text-xl font-semibold text-slate-900">MacroLock</h1>
           <p className="text-sm text-slate-500">{t("Reset password", lang)}</p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
           {state?.message ? (
             <div className="flex flex-col items-center gap-3 py-2 text-center">
               <CheckCircle2 className="h-8 w-8 text-emerald-600" />

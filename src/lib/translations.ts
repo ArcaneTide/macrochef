@@ -91,7 +91,7 @@ const dict = {
   "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες ξανά" },
 
   // ── Welcome / onboarding ──────────────────────────────────
-  "Welcome to MacroChef":        { en: "Welcome to MacroChef!",              el: "Καλώς ήρθες στο MacroChef!" },
+  "Welcome to MacroLock":        { en: "Welcome to MacroLock!",              el: "Καλώς ήρθες στο MacroLock!" },
   "Get started in three steps":  { en: "Get started in three steps.",         el: "Ξεκίνα με τρία βήματα." },
   "Create your first recipe":    { en: "Create your first recipe",            el: "Δημιούργησε την πρώτη σου συνταγή" },
   "Add a client":                { en: "Add a client with macro targets",      el: "Πρόσθεσε πελάτη με στόχους" },

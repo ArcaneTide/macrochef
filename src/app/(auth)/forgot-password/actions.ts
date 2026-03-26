@@ -40,7 +40,7 @@ export async function forgotPasswordAction(
     // TODO: send email — for now log to console
     const baseUrl = process.env.NEXTAUTH_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : "http://localhost:3000");
     const resetUrl = `${baseUrl}/reset-password?token=${token}`;
-    console.log("\n[MacroChef] Password reset link for", email, ":\n", resetUrl, "\n");
+    console.log("\n[MacroLock] Password reset link for", email, ":\n", resetUrl, "\n");
 
     return { message: successMessage };
   } catch {

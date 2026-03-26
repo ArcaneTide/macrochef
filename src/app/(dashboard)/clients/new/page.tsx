@@ -2,7 +2,7 @@ import { CreateClientForm } from "@/components/clients/client-form";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "New Client — MacroChef" };
+export const metadata = { title: "New Client — MacroLock" };
 
 export default async function NewClientPage() {
   const lang = await getLang();

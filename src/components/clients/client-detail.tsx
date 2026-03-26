@@ -97,7 +97,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
   return (
     <div className="max-w-3xl space-y-6">
       {/* Client info card */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
         {isEditing ? (
           <>
             <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-5">
@@ -167,7 +167,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       </div>
 
       {/* Active target profile */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
@@ -212,7 +212,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
 
       {/* Profile history */}
       {pastProfiles.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
             {t("Profile History", lang)}
           </h3>
@@ -252,7 +252,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       )}
 
       {/* Meal Plans */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
             {t("Meal Plans", lang)}
