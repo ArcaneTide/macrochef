@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { updateMealPlanStatus } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { t, type Lang } from "@/lib/translations";
 
 const STATUS_STYLES: Record<string, string> = {
   draft: "bg-slate-100 text-slate-600 border-slate-200",
@@ -18,9 +19,10 @@ type Props = {
   planId: string;
   clientId: string;
   currentStatus: "draft" | "active" | "archived";
+  lang: Lang;
 };
 
-export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
+export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [isPending, startTransition] = useTransition();
@@ -43,7 +45,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
         className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
       >
         <Download className="h-3.5 w-3.5" />
-        Download PDF
+        {t("Download PDF", lang)}
       </a>
 
       <Badge
@@ -61,7 +63,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
           disabled={isPending}
         >
           {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />}
-          Activate
+          {t("Activate", lang)}
         </Button>
       )}
 
@@ -74,7 +76,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
           className="text-slate-500"
         >
           {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />}
-          Archive
+          {t("Archive", lang)}
         </Button>
       )}
 
@@ -87,7 +89,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus }: Props) {
           className="text-slate-500"
         >
           {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />}
-          Restore
+          {t("Restore", lang)}
         </Button>
       )}
     </div>

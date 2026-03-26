@@ -11,16 +11,10 @@ import {
   type RecipeOption,
 } from "@/components/meal-plans/assign-recipe-modal";
 import type { AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { t, type Lang } from "@/lib/translations";
 
 const DAYS_COUNT = 7;
 const SLOTS = ["breakfast", "lunch", "dinner", "snack1", "snack2"] as const;
-const SLOT_LABELS: Record<string, string> = {
-  breakfast: "Breakfast",
-  lunch: "Lunch",
-  dinner: "Dinner",
-  snack1: "Snack 1",
-  snack2: "Snack 2",
-};
 
 type CellKey = `${number}:${string}`;
 
@@ -75,16 +69,16 @@ function MacroBar({
           { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-amber-500" },
           { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-orange-500" },
         ] as Array<{ label: string; actual: number; target: number; color: string }>
-      ).map(({ label, actual: a, target: t, color }) => (
+      ).map(({ label, actual: a, target: tgt, color }) => (
         <div key={label} className="flex items-center gap-1.5">
           <span className="text-xs text-slate-400 w-3">{label}</span>
           <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
             <div
-              className={cn("h-full rounded-full transition-all", over(a, t) ? "bg-red-400" : color)}
-              style={{ width: `${pct(a, t)}%` }}
+              className={cn("h-full rounded-full transition-all", over(a, tgt) ? "bg-red-400" : color)}
+              style={{ width: `${pct(a, tgt)}%` }}
             />
           </div>
-          <span className={cn("text-xs tabular-nums w-8 text-right", over(a, t) ? "text-red-500" : "text-slate-500")}>
+          <span className={cn("text-xs tabular-nums w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500")}>
             {Math.round(a)}g
           </span>
         </div>
@@ -112,6 +106,7 @@ type Props = {
     fatTarget: number;
   } | null;
   startDate: string;
+  lang: Lang;
 };
 
 export function WeeklyPlanEditor({
@@ -120,7 +115,16 @@ export function WeeklyPlanEditor({
   recipes,
   targetMacros,
   startDate,
+  lang,
 }: Props) {
+  const SLOT_LABELS: Record<string, string> = {
+    breakfast: t("Breakfast", lang),
+    lunch: t("Lunch", lang),
+    dinner: t("Dinner", lang),
+    snack1: t("Snack 1", lang),
+    snack2: t("Snack 2", lang),
+  };
+
   const [cells, setCells] = useState<Map<CellKey, AssignmentCell>>(() => {
     const map = new Map<CellKey, AssignmentCell>();
     for (const a of initialAssignments) {
@@ -281,7 +285,7 @@ export function WeeklyPlanEditor({
             {/* Daily totals row */}
             <tr className="border-t-2 border-slate-200">
               <td className="p-2 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                Daily Total
+                {t("Daily Total", lang)}
               </td>
               {dailyMacros.map((m, i) => (
                 <td key={i} className="p-2">
@@ -356,7 +360,7 @@ export function WeeklyPlanEditor({
                         className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-600 transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
-                        Add recipe
+                        {t("Add recipe", lang)}
                       </button>
                     )}
                   </div>
@@ -386,6 +390,7 @@ export function WeeklyPlanEditor({
               : null
           }
           onAssigned={handleAssigned}
+          lang={lang}
         />
       )}
     </>

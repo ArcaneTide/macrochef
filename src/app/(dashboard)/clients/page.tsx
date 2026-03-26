@@ -2,11 +2,13 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { db } from "@/lib/db";
 import { ClientListClient } from "@/components/clients/client-list-client";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Clients — MacroChef" };
 
 export default async function ClientsPage() {
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const clients = await db.client.findMany({
@@ -39,12 +41,12 @@ export default async function ClientsPage() {
   return (
     <div className="p-6 sm:p-8 max-w-7xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-semibold text-slate-900">Clients</h1>
+        <h1 className="text-2xl font-semibold text-slate-900">{t("Clients", lang)}</h1>
         <p className="text-slate-500 text-sm mt-1">
-          Manage your clients and their macro targets
+          {t("Clients page description", lang)}
         </p>
       </div>
-      <ClientListClient clients={clientItems} />
+      <ClientListClient clients={clientItems} lang={lang} />
     </div>
   );
 }

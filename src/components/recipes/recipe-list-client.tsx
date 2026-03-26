@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { fmtMacro } from "@/lib/macros";
+import { t, type Lang } from "@/lib/translations";
 
 export type RecipeListItem = {
   id: string;
@@ -39,13 +40,6 @@ const STATUS_STYLES: Record<string, string> = {
   archived: "bg-red-100 text-red-700 border-red-200",
 };
 
-const MEAL_TYPE_LABELS: Record<string, string> = {
-  breakfast: "Breakfast",
-  lunch: "Lunch",
-  dinner: "Dinner",
-  snack: "Snack",
-};
-
 function MacroCell({
   value,
   color,
@@ -64,10 +58,17 @@ function MacroCell({
   );
 }
 
-export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
+export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[]; lang: Lang }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
+
+  const MEAL_TYPE_LABELS: Record<string, string> = {
+    breakfast: t("Breakfast", lang),
+    lunch: t("Lunch", lang),
+    dinner: t("Dinner", lang),
+    snack: t("Snack", lang),
+  };
 
   const filtered = useMemo(() => {
     let list = recipes;
@@ -93,7 +94,7 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
           <Input
-            placeholder="Search recipes…"
+            placeholder={t("Search recipes…", lang)}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-9"
@@ -104,10 +105,10 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All statuses</SelectItem>
-            <SelectItem value="draft">Draft</SelectItem>
-            <SelectItem value="published">Published</SelectItem>
-            <SelectItem value="archived">Archived</SelectItem>
+            <SelectItem value="all">{t("All statuses", lang)}</SelectItem>
+            <SelectItem value="draft">{t("Draft", lang)}</SelectItem>
+            <SelectItem value="published">{t("Published", lang)}</SelectItem>
+            <SelectItem value="archived">{t("Archived", lang)}</SelectItem>
           </SelectContent>
         </Select>
         <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
@@ -116,7 +117,7 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
         <Link href="/recipes/new" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
             <Plus className="h-4 w-4" />
-            New Recipe
+            {t("New Recipe", lang)}
           </Button>
         </Link>
       </div>
@@ -126,16 +127,16 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
         <div className="text-center py-16 text-slate-400">
           {recipes.length === 0 ? (
             <div className="space-y-3">
-              <p>No recipes yet.</p>
+              <p>{t("No recipes yet", lang)}</p>
               <Link href="/recipes/new">
                 <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
                   <Plus className="h-4 w-4" />
-                  Create your first recipe
+                  {t("Create your first recipe", lang)}
                 </Button>
               </Link>
             </div>
           ) : (
-            <p>No recipes match your filters.</p>
+            <p>{t("No recipes match filters", lang)}</p>
           )}
         </div>
       ) : (
@@ -144,13 +145,13 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
           <table className="w-full hidden sm:table">
             <thead>
               <tr className="border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wide">
-                <th className="text-left px-4 py-3 w-[280px]">Title</th>
-                <th className="text-left px-4 py-3">Type / Cuisine</th>
-                <th className="text-left px-4 py-3">Status</th>
-                <th className="text-right px-4 py-3">Calories</th>
-                <th className="text-right px-4 py-3">Protein</th>
-                <th className="text-right px-4 py-3">Carbs</th>
-                <th className="text-right px-4 py-3">Fat</th>
+                <th className="text-left px-4 py-3 w-[280px]">{t("Title", lang)}</th>
+                <th className="text-left px-4 py-3">{t("Type / Cuisine", lang)}</th>
+                <th className="text-left px-4 py-3">{t("Status", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Calories", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Protein", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Carbs", lang)}</th>
+                <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100">
@@ -275,7 +276,7 @@ export function RecipeListClient({ recipes }: { recipes: RecipeListItem[] }) {
           </div>
 
           <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400 bg-slate-50">
-            All macros per serving
+            {t("All macros per serving", lang)}
           </div>
         </div>
       )}

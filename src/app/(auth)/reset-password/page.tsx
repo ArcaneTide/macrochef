@@ -1,3 +1,4 @@
+import { getLang } from "@/lib/language";
 import { ResetPasswordForm } from "./reset-password-form";
 
 export default async function ResetPasswordPage({
@@ -5,6 +6,6 @@ export default async function ResetPasswordPage({
 }: {
   searchParams: Promise<{ token?: string }>;
 }) {
-  const { token } = await searchParams;
-  return <ResetPasswordForm token={token ?? ""} />;
+  const [{ token }, lang] = await Promise.all([searchParams, getLang()]);
+  return <ResetPasswordForm token={token ?? ""} lang={lang} />;
 }

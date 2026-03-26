@@ -4,6 +4,8 @@ import { db } from "@/lib/db";
 import { calcRecipeMacrosPerServing } from "@/lib/macros";
 import { WeeklyPlanEditor } from "@/components/meal-plans/weekly-plan-editor";
 import { PlanStatusBar } from "@/components/meal-plans/plan-status-bar";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Meal Plan — MacroChef" };
 
@@ -14,7 +16,7 @@ export default async function PlanDetailPage({
 }) {
   const { id, planId } = await params;
 
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const plan = await db.mealPlan.findUnique({
@@ -92,18 +94,18 @@ export default async function PlanDetailPage({
     <div className="p-6 sm:p-8">
       <div className="mb-6">
         <p className="text-sm text-slate-400 mb-1">
-          <a href="/clients" className="hover:text-slate-600 transition-colors">Clients</a>
+          <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
           {" / "}
           <a href={`/clients/${id}`} className="hover:text-slate-600 transition-colors">
             {plan.client.name}
           </a>
           {" / "}
-          <span className="text-slate-600">{plan.title ?? "Meal Plan"}</span>
+          <span className="text-slate-600">{plan.title ?? t("Meal Plan", lang)}</span>
         </p>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900">
-              {plan.title ?? "Meal Plan"}
+              {plan.title ?? t("Meal Plan", lang)}
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
               {new Date(startDate + "T00:00:00").toLocaleDateString("en-US", {
@@ -118,7 +120,7 @@ export default async function PlanDetailPage({
               })}
               {activeProfile && (
                 <span className="ml-2 text-slate-400">
-                  · Target: {activeProfile.calorieTarget} kcal
+                  · {t("Target:", lang)} {activeProfile.calorieTarget} kcal
                 </span>
               )}
             </p>
@@ -127,6 +129,7 @@ export default async function PlanDetailPage({
             planId={planId}
             clientId={id}
             currentStatus={plan.status as "draft" | "active" | "archived"}
+            lang={lang}
           />
         </div>
       </div>
@@ -148,6 +151,7 @@ export default async function PlanDetailPage({
                 : null
             }
             startDate={startDate}
+            lang={lang}
           />
         </div>
       </div>

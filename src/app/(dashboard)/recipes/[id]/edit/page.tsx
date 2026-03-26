@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { RecipeForm } from "@/components/recipes/recipe-form";
 import { ArchiveRecipeButton } from "@/components/recipes/archive-recipe-button";
+import { getLang } from "@/lib/language";
+import { t } from "@/lib/translations";
 
 export const metadata = { title: "Edit Recipe — MacroChef" };
 
@@ -13,7 +15,7 @@ export default async function EditRecipePage({
 }) {
   const { id } = await params;
 
-  const session = await auth();
+  const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
 
   const [recipe, ingredients] = await Promise.all([
@@ -61,14 +63,14 @@ export default async function EditRecipePage({
     <div className="p-6 sm:p-8 max-w-5xl">
       <div className="mb-6 flex items-start justify-between gap-4">
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold text-slate-900">Edit Recipe</h1>
+          <h1 className="text-2xl font-semibold text-slate-900">{t("Edit Recipe", lang)}</h1>
           <p className="text-slate-500 text-sm mt-1 truncate">{recipe.title}</p>
         </div>
         <div className="shrink-0 pt-1">
-          <ArchiveRecipeButton id={recipe.id} title={recipe.title} />
+          <ArchiveRecipeButton id={recipe.id} title={recipe.title} lang={lang} />
         </div>
       </div>
-      <RecipeForm availableIngredients={ingredients} initialData={initialData} />
+      <RecipeForm availableIngredients={ingredients} initialData={initialData} lang={lang} />
     </div>
   );
 }
