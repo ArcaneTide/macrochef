@@ -162,7 +162,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+      <div className="hidden sm:block rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
         <Table>
           <TableHeader>
             <TableRow className="bg-slate-50 hover:bg-slate-50">
@@ -204,7 +204,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
               </TableRow>
             ) : (
               filtered.map((ing) => (
-                <TableRow key={ing.id} className="hover:bg-slate-50/50">
+                <TableRow key={ing.id} className="hover:bg-slate-50/50 even:bg-slate-50/30">
                   <TableCell className="font-medium text-slate-900">{ing.name}</TableCell>
                   <TableCell>
                     <Badge
@@ -249,7 +249,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
           filtered.map((ing) => (
             <div
               key={ing.id}
-              className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 flex-wrap">

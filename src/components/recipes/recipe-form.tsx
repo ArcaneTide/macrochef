@@ -204,7 +204,7 @@ function MacroSummary({
   const hasData = macros.calories > 0;
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow">
       <h3 className="text-sm font-semibold text-slate-900 mb-4">{t("Per Serving", lang)}</h3>
 
       <div className="space-y-3">
@@ -387,7 +387,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       {/* ── Left: form ── */}
       <div className="flex-1 min-w-0 space-y-6">
         {/* Basic info */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
             {t("Recipe Details", lang)}
           </h2>
@@ -458,7 +458,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
         </div>
 
         {/* Ingredients */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
@@ -542,7 +542,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           <MacroSummary rows={rows} ingredientMap={ingredientMap} servings={servings} lang={lang} />
 
           {isEditing && (
-            <div className="mt-3 rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
               <p className="text-xs text-slate-400 mb-2">{t("Status", lang)}</p>
               <Badge
                 className={cn(

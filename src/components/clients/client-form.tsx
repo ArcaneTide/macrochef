@@ -66,7 +66,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
   return (
     <div className="max-w-2xl space-y-6">
       {/* Client info */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
         <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
           {t("Client Info", lang)}
         </h2>
@@ -85,7 +85,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
       </div>
 
       {/* Initial target profile */}
-      <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm space-y-5">
+      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
         <div>
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
             {t("Initial Macro Targets", lang)}

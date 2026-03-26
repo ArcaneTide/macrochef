@@ -1,11 +1,12 @@
 import { notFound, redirect } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { ClientDetail } from "@/components/clients/client-detail";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Client — MacroChef" };
+export const metadata = { title: "Client — MacroLock" };
 
 export default async function ClientPage({
   params,
@@ -38,11 +39,11 @@ export default async function ClientPage({
   return (
     <div className="p-6 sm:p-8">
       <div className="mb-6">
-        <p className="text-sm text-slate-400 mb-1">
+        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
           <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
-          {" / "}
-          <span className="text-slate-600">{client.name}</span>
-        </p>
+          <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+          <span className="text-slate-600 font-medium">{client.name}</span>
+        </nav>
         <h1 className="text-2xl font-semibold text-slate-900">{client.name}</h1>
       </div>
       <ClientDetail

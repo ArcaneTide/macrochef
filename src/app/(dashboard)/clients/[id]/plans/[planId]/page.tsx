@@ -1,4 +1,5 @@
 import { notFound, redirect } from "next/navigation";
+import { ChevronRight } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { calcRecipeMacrosPerServing } from "@/lib/macros";
@@ -7,7 +8,7 @@ import { PlanStatusBar } from "@/components/meal-plans/plan-status-bar";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Meal Plan — MacroChef" };
+export const metadata = { title: "Meal Plan — MacroLock" };
 
 export default async function PlanDetailPage({
   params,
@@ -93,15 +94,13 @@ export default async function PlanDetailPage({
   return (
     <div className="p-6 sm:p-8">
       <div className="mb-6">
-        <p className="text-sm text-slate-400 mb-1">
+        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
           <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
-          {" / "}
-          <a href={`/clients/${id}`} className="hover:text-slate-600 transition-colors">
-            {plan.client.name}
-          </a>
-          {" / "}
-          <span className="text-slate-600">{plan.title ?? t("Meal Plan", lang)}</span>
-        </p>
+          <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+          <a href={`/clients/${id}`} className="hover:text-slate-600 transition-colors">{plan.client.name}</a>
+          <ChevronRight className="h-3.5 w-3.5 shrink-0" />
+          <span className="text-slate-600 font-medium">{plan.title ?? t("Meal Plan", lang)}</span>
+        </nav>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h1 className="text-2xl font-semibold text-slate-900">

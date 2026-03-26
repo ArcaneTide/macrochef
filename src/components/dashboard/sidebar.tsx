@@ -9,7 +9,7 @@ import {
   Users,
   Package,
   Settings,
-  ChefHat,
+  Lock,
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -42,13 +42,13 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
   }
 
   return (
-    <aside className="flex h-full w-60 flex-col bg-slate-900 text-slate-100">
+    <aside className="flex h-full w-60 flex-col bg-slate-950 text-slate-100">
       {/* Logo */}
-      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-slate-800">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500">
-          <ChefHat className="h-4 w-4 text-white" />
+      <div className="flex items-center gap-2.5 px-5 py-5 border-b border-slate-800 shadow-[0_1px_0_0_rgba(16,185,129,0.15)]">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-sm">
+          <Lock className="h-4 w-4 text-white" />
         </div>
-        <span className="text-base font-semibold tracking-tight text-white">MacroChef</span>
+        <span className="text-base font-semibold tracking-tight text-white">MacroLock</span>
       </div>
 
       {/* Coach info */}
@@ -73,9 +73,9 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
               href={href}
               onClick={onClose}
               className={cn(
-                "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-emerald-600 text-white"
+                  ? "bg-emerald-600 text-white shadow-sm"
                   : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
               )}
             >

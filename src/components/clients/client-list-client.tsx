@@ -80,7 +80,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
@@ -98,7 +98,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="hover:bg-slate-100 cursor-pointer transition-colors"
+                  className="hover:bg-slate-100 cursor-pointer transition-colors even:bg-slate-50/40"
                   onClick={() => router.push(`/clients/${client.id}`)}
                 >
                   <td className="px-4 py-3">

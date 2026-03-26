@@ -18,7 +18,7 @@ import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Dashboard — MacroChef" };
+export const metadata = { title: "Dashboard — MacroLock" };
 
 // ── helpers ──────────────────────────────────────────────
 
@@ -28,17 +28,22 @@ function StatCard({
   icon: Icon,
   href,
   color,
+  accent,
 }: {
   label: string;
   value: number;
   icon: React.ElementType;
   href: string;
   color: string;
+  accent: string;
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-300 hover:shadow-md transition-all"
+      className={cn(
+        "flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow hover:shadow-md transition-all border-l-4",
+        accent
+      )}
     >
       <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", color)}>
         <Icon className="h-5 w-5" />
@@ -190,13 +195,13 @@ export default async function DashboardPage() {
           ].filter((s) => !s.done);
           if (steps.length === 0) return null;
           return (
-            <div className="mb-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
+            <div className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
               <div className="flex items-center gap-3 mb-4">
                 <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
                   <Sparkles className="h-5 w-5 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroChef", lang)}</h2>
+                  <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroLock", lang)}</h2>
                   <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
                 </div>
               </div>
@@ -228,6 +233,7 @@ export default async function DashboardPage() {
             icon={Users}
             href="/clients"
             color="bg-blue-50 text-blue-600"
+            accent="border-l-blue-400"
           />
           <StatCard
             label={t("Published Recipes", lang)}
@@ -235,6 +241,7 @@ export default async function DashboardPage() {
             icon={BookOpen}
             href="/recipes"
             color="bg-emerald-50 text-emerald-600"
+            accent="border-l-emerald-400"
           />
           <StatCard
             label={t("Active Meal Plans", lang)}
@@ -242,13 +249,14 @@ export default async function DashboardPage() {
             icon={CalendarDays}
             href="/clients"
             color="bg-amber-50 text-amber-600"
+            accent="border-l-amber-400"
           />
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
           {/* Client overview (wider) */}
-          <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="lg:col-span-3 rounded-2xl border border-slate-200 bg-white shadow">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
                 {t("Active Clients", lang)}
@@ -310,7 +318,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Recent activity (narrower) */}
-          <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm">
+          <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white shadow">
             <div className="px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
                 {t("Recent Activity", lang)}

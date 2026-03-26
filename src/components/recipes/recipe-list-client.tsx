@@ -140,7 +140,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
+        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
@@ -158,7 +158,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
               {filtered.map((recipe) => (
                 <tr
                   key={recipe.id}
-                  className="hover:bg-slate-50/60 cursor-pointer transition-colors"
+                  className="hover:bg-slate-50/60 cursor-pointer transition-colors even:bg-slate-50/30"
                   onClick={() => router.push(`/recipes/${recipe.id}/edit`)}
                 >
                   <td className="px-4 py-3">
