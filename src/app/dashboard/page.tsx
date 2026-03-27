@@ -256,7 +256,7 @@ export default async function DashboardPage() {
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
           {/* Client overview (wider) */}
-          <div className="lg:col-span-3 rounded-2xl border border-slate-200 bg-white shadow">
+          <div className="lg:col-span-3 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
                 {t("Active Clients", lang)}
@@ -318,7 +318,7 @@ export default async function DashboardPage() {
           </div>
 
           {/* Recent activity (narrower) */}
-          <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white shadow">
+          <div className="lg:col-span-2 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="px-6 py-4 border-b border-slate-100">
               <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
                 {t("Recent Activity", lang)}
