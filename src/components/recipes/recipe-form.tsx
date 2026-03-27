@@ -347,6 +347,26 @@ interface RecipeFormProps {
   lang: Lang;
 }
 
+const DRAFT_KEY = "macrochef_new_recipe_draft";
+
+type DraftState = {
+  title: string;
+  servings: number;
+  instructions: string;
+  cuisine: string;
+  mealType: string;
+  rows: Array<{ ingredientId: string; quantity: number; unit: string }>;
+};
+
+function readDraft(): DraftState | null {
+  try {
+    const saved = localStorage.getItem(DRAFT_KEY);
+    return saved ? (JSON.parse(saved) as DraftState) : null;
+  } catch {
+    return null;
+  }
+}
+
 export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFormProps) {
   const router = useRouter();
   const [isDraftPending, startDraftTransition] = useTransition();
@@ -354,25 +374,34 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
   const isAnySavePending = isDraftPending || isPublishPending;
   const [error, setError] = useState<string | null>(null);
 
+  // For new recipes, restore from localStorage draft if present (survives language toggle reload)
+  const draft = !initialData ? readDraft() : null;
+
   // Form state
-  const [title, setTitle] = useState(initialData?.title ?? "");
-  const [servings, setServings] = useState(initialData?.servings ?? 1);
-  const [instructions, setInstructions] = useState(initialData?.instructions ?? "");
-  const [cuisine, setCuisine] = useState(initialData?.cuisine ?? "");
-  const [mealType, setMealType] = useState<string>(initialData?.mealType ?? "none");
+  const [title, setTitle] = useState(initialData?.title ?? draft?.title ?? "");
+  const [servings, setServings] = useState(initialData?.servings ?? draft?.servings ?? 1);
+  const [instructions, setInstructions] = useState(initialData?.instructions ?? draft?.instructions ?? "");
+  const [cuisine, setCuisine] = useState(initialData?.cuisine ?? draft?.cuisine ?? "");
+  const [mealType, setMealType] = useState<string>(initialData?.mealType ?? draft?.mealType ?? "none");
 
   // Ingredient rows — quantity is the display value in the chosen unit
-  const [rows, setRows] = useState<IngredientRow[]>(() =>
-    (initialData?.ingredients ?? []).map((ing) => {
-      const unit = ing.unit ?? "g";
-      return {
-        key: nextKey(),
-        ingredientId: ing.ingredientId,
-        quantity: fromGrams(ing.quantityGrams, unit),
-        unit,
-      };
-    })
-  );
+  const [rows, setRows] = useState<IngredientRow[]>(() => {
+    if (initialData) {
+      return initialData.ingredients.map((ing) => {
+        const unit = ing.unit ?? "g";
+        return {
+          key: nextKey(),
+          ingredientId: ing.ingredientId,
+          quantity: fromGrams(ing.quantityGrams, unit),
+          unit,
+        };
+      });
+    }
+    if (draft?.rows) {
+      return draft.rows.map((r) => ({ key: nextKey(), ingredientId: r.ingredientId, quantity: r.quantity, unit: r.unit }));
+    }
+    return [];
+  });
 
   const ingredientMap = useMemo(
     () => new Map(availableIngredients.map((i) => [i.id, i])),
@@ -383,6 +412,15 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     () => new Set(rows.map((r) => r.ingredientId)),
     [rows]
   );
+
+  // Auto-save draft to localStorage for new recipes (survives language toggle reloads)
+  useEffect(() => {
+    if (initialData) return;
+    const state: DraftState = { title, servings, instructions, cuisine, mealType, rows };
+    try {
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(state));
+    } catch {}
+  }, [title, servings, instructions, cuisine, mealType, rows, initialData]);
 
   // Quick-add: find salt and pepper by name in available ingredients
   const saltIngredient = useMemo(
@@ -469,6 +507,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           setError(result.error);
           return;
         }
+        try { localStorage.removeItem(DRAFT_KEY); } catch {}
         router.push("/recipes");
       } catch (err) {
         setError(err instanceof Error ? err.message : "Something went wrong. Please try again.");
@@ -709,35 +748,34 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     </div>
 
     {/* ── Sticky action bar ── */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6">
-      <div className="max-w-5xl px-6 sm:px-8 py-4 flex items-center gap-3">
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => router.push("/recipes")}
-          disabled={isAnySavePending}
-        >
-          {t("Cancel", lang)}
-        </Button>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => handleSubmit("draft")}
-          disabled={isAnySavePending}
-        >
-          {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          {t("Save Draft", lang)}
-        </Button>
-        <Button
-          type="button"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
-          onClick={() => handleSubmit("published")}
-          disabled={isAnySavePending}
-        >
-          {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-          {t("Publish", lang)}
-        </Button>
-      </div>
+    {/* Negative margins escape the page's p-6 sm:p-8 padding so bg-white fills edge-to-edge */}
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 flex items-center gap-3">
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => router.push("/recipes")}
+        disabled={isAnySavePending}
+      >
+        {t("Cancel", lang)}
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        onClick={() => handleSubmit("draft")}
+        disabled={isAnySavePending}
+      >
+        {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+        {t("Save Draft", lang)}
+      </Button>
+      <Button
+        type="button"
+        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        onClick={() => handleSubmit("published")}
+        disabled={isAnySavePending}
+      >
+        {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+        {t("Publish", lang)}
+      </Button>
     </div>
     </div>
   );
