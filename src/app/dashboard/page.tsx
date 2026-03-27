@@ -155,7 +155,7 @@ export default async function DashboardPage() {
       {/* Mobile top bar + slide-over */}
       <MobileNav userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
 
-      <main className="flex-1 overflow-y-auto pt-14 lg:pt-0 p-6 sm:p-8">
+      <main className="flex-1 overflow-y-auto pt-14 lg:pt-8 px-6 pb-8 sm:px-8 sm:pb-8">
 
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
