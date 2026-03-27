@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { t, type Lang } from "@/lib/translations";
+import { t, tStatus, type Lang } from "@/lib/translations";
 
 export type ClientListItem = {
   id: string;
@@ -53,7 +53,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           />
         </div>
         <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
-          {filtered.length} client{filtered.length !== 1 ? "s" : ""}
+          {filtered.length} {filtered.length !== 1 ? t("client plural", lang) : t("client singular", lang)}
         </p>
         <Link href="/clients/new" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
@@ -111,11 +111,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-xs font-medium border capitalize",
+                        "text-xs font-medium border",
                         STATUS_STYLES[client.status] ?? STATUS_STYLES.active
                       )}
                     >
-                      {client.status}
+                      {tStatus(client.status, lang)}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500">
@@ -158,11 +158,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium border capitalize shrink-0",
+                      "text-xs font-medium border shrink-0",
                       STATUS_STYLES[client.status] ?? STATUS_STYLES.active
                     )}
                   >
-                    {client.status}
+                    {tStatus(client.status, lang)}
                   </Badge>
                 </div>
                 {client.activeProfile && (

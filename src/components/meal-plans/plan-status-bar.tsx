@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { updateMealPlanStatus } from "@/app/(dashboard)/clients/[id]/plans/actions";
-import { t, type Lang } from "@/lib/translations";
+import { t, tStatus, type Lang } from "@/lib/translations";
 
 const STATUS_STYLES: Record<string, string> = {
   draft: "bg-slate-100 text-slate-600 border-slate-200",
@@ -50,9 +50,9 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
 
       <Badge
         variant="outline"
-        className={cn("text-xs font-medium border capitalize", STATUS_STYLES[status])}
+        className={cn("text-xs font-medium border", STATUS_STYLES[status])}
       >
-        {status}
+        {tStatus(status, lang)}
       </Badge>
 
       {status === "draft" && (

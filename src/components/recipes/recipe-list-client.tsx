@@ -16,7 +16,7 @@ import {
 } from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { fmtMacro } from "@/lib/macros";
-import { t, type Lang } from "@/lib/translations";
+import { t, tStatus, type Lang } from "@/lib/translations";
 
 export type RecipeListItem = {
   id: string;
@@ -112,7 +112,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
           </SelectContent>
         </Select>
         <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
-          {filtered.length} recipe{filtered.length !== 1 ? "s" : ""}
+          {filtered.length} {filtered.length !== 1 ? t("recipe plural", lang) : t("recipe singular", lang)}
         </p>
         <Link href="/recipes/new" className="w-full sm:w-auto">
           <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
@@ -164,8 +164,8 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                   <td className="px-4 py-3">
                     <p className="font-medium text-slate-900">{recipe.title}</p>
                     <p className="text-xs text-slate-400">
-                      {recipe.servings} serving{recipe.servings !== 1 ? "s" : ""} ·{" "}
-                      {recipe.ingredientCount} ingredient{recipe.ingredientCount !== 1 ? "s" : ""}
+                      {recipe.servings} {recipe.servings !== 1 ? t("serving plural", lang) : t("serving singular", lang)} ·{" "}
+                      {recipe.ingredientCount} {recipe.ingredientCount !== 1 ? t("ingredient plural", lang) : t("ingredient singular", lang)}
                     </p>
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500">
@@ -181,11 +181,11 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-xs font-medium border capitalize",
+                        "text-xs font-medium border",
                         STATUS_STYLES[recipe.status] ?? STATUS_STYLES.draft
                       )}
                     >
-                      {recipe.status}
+                      {tStatus(recipe.status, lang)}
                     </Badge>
                   </td>
                   <td className="px-4 py-3 text-right text-sm">
@@ -222,15 +222,15 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium border capitalize shrink-0",
+                      "text-xs font-medium border shrink-0",
                       STATUS_STYLES[recipe.status] ?? STATUS_STYLES.draft
                     )}
                   >
-                    {recipe.status}
+                    {tStatus(recipe.status, lang)}
                   </Badge>
                 </div>
                 <p className="text-xs text-slate-400 mb-3">
-                  {recipe.servings} serving{recipe.servings !== 1 ? "s" : ""}
+                  {recipe.servings} {recipe.servings !== 1 ? t("serving plural", lang) : t("serving singular", lang)}
                   {recipe.mealType
                     ? ` · ${MEAL_TYPE_LABELS[recipe.mealType] ?? recipe.mealType}`
                     : ""}

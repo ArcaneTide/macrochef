@@ -52,7 +52,7 @@ const dict = {
   "Confirm new password":    { en: "Confirm new password",    el: "Επιβεβαίωση κωδικού" },
 
   // ── Status labels ─────────────────────────────────────────
-  "Active":                  { en: "Active",                  el: "Ενεργός" },
+  "Active":                  { en: "Active",                  el: "Ενεργό" },
   "Archived":                { en: "Archived",                el: "Αρχειοθετημένο" },
   "Draft":                   { en: "Draft",                   el: "Πρόχειρο" },
   "Published":               { en: "Published",               el: "Δημοσιευμένο" },
@@ -192,10 +192,38 @@ const dict = {
   "Clients page description":{ en: "Manage your clients and their macro targets", el: "Διαχείριση πελατών και μακροστόχων" },
   "New client description":  { en: "Add a client and set their initial macro targets", el: "Προσθήκη πελάτη με αρχικούς μακροστόχους" },
   "/ serving":               { en: "/ serving",               el: "/ μερίδα" },
+
+  // ── Counts / plurals ──────────────────────────────────────
+  "View all":                { en: "View all",                el: "Προβολή όλων" },
+  "kcal target":             { en: "kcal target",             el: "kcal στόχος" },
+  "No target profile":       { en: "No profile",              el: "Χωρίς προφίλ" },
+  "recipe singular":         { en: "recipe",                  el: "συνταγή" },
+  "recipe plural":           { en: "recipes",                 el: "συνταγές" },
+  "client singular":         { en: "client",                  el: "πελάτης" },
+  "client plural":           { en: "clients",                 el: "πελάτες" },
+  "plan singular":           { en: "plan",                    el: "πλάνο" },
+  "plan plural":             { en: "plans",                   el: "πλάνα" },
+  "ingredient singular":     { en: "ingredient",              el: "υλικό" },
+  "ingredient plural":       { en: "ingredients",             el: "υλικά" },
+  "serving singular":        { en: "serving",                 el: "μερίδα" },
+  "serving plural":          { en: "servings",                el: "μερίδες" },
+  "Archive client confirm":  { en: "They will no longer appear in your active clients.", el: "Δεν θα εμφανίζεται στους ενεργούς πελάτες." },
 } as const;
 
 export type TranslationKey = keyof typeof dict;
 
 export function t(key: TranslationKey, lang: Lang): string {
   return dict[key][lang];
+}
+
+const STATUS_KEYS: Partial<Record<string, TranslationKey>> = {
+  draft: "Draft",
+  published: "Published",
+  active: "Active",
+  archived: "Archived",
+};
+
+export function tStatus(status: string, lang: Lang): string {
+  const key = STATUS_KEYS[status.toLowerCase()];
+  return key ? t(key, lang) : status;
 }

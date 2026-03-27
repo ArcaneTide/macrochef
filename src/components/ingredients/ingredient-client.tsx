@@ -157,7 +157,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
           </SelectContent>
         </Select>
         <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap">
-          {filtered.length} ingredient{filtered.length !== 1 ? "s" : ""}
+          {filtered.length} {filtered.length !== 1 ? t("ingredient plural", lang) : t("ingredient singular", lang)}
         </p>
       </div>
 
