@@ -40,7 +40,7 @@ import {
   updateRecipe,
   type RecipeFormInput,
 } from "@/app/(dashboard)/recipes/actions";
-import { t, type Lang } from "@/lib/translations";
+import { t, tStatus, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────
 
@@ -352,11 +352,11 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
 
   function handleSubmit(status: "draft" | "published") {
     if (!title.trim()) {
-      setError("Title is required.");
+      setError(t("Title is required", lang));
       return;
     }
     if (rows.length === 0) {
-      setError("Add at least one ingredient.");
+      setError(t("Add at least one ingredient", lang));
       return;
     }
     setError(null);
@@ -382,7 +382,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
   const isEditing = !!initialData;
 
   return (
-    <div className="pb-20">
+    <div className="pb-24">
     <div className="flex flex-col lg:flex-row gap-6">
       {/* ── Left: form ── */}
       <div className="flex-1 min-w-0 space-y-6">
@@ -398,7 +398,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
               id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              placeholder="e.g. Grilled Chicken & Rice"
+              placeholder={t("e.g. Grilled Chicken & Rice", lang)}
             />
           </div>
 
@@ -424,7 +424,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 id="cuisine"
                 value={cuisine}
                 onChange={(e) => setCuisine(e.target.value)}
-                placeholder="e.g. Mediterranean"
+                placeholder={t("e.g. Mediterranean", lang)}
               />
             </div>
           </div>
@@ -433,7 +433,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
             <Label>{t("Meal Type", lang)}</Label>
             <Select value={mealType} onValueChange={setMealType}>
               <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select meal type" />
+                <SelectValue placeholder={t("Select meal type", lang)} />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="none">—</SelectItem>
@@ -451,7 +451,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
               id="instructions"
               value={instructions}
               onChange={(e) => setInstructions(e.target.value)}
-              placeholder="Optional cooking instructions…"
+              placeholder={t("Optional cooking instructions…", lang)}
               rows={4}
             />
           </div>
@@ -465,7 +465,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 {t("Ingredients", lang)}
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Quantities are for all {servings} serving{servings !== 1 ? "s" : ""}
+                {t("Quantities are for all", lang)} {servings} {servings !== 1 ? t("serving plural", lang) : t("serving singular", lang)}
               </p>
             </div>
             <IngredientCombobox
@@ -555,7 +555,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 )}
                 variant="outline"
               >
-                {initialData.status.charAt(0).toUpperCase() + initialData.status.slice(1)}
+                {tStatus(initialData.status, lang)}
               </Badge>
             </div>
           )}

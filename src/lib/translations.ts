@@ -208,6 +208,15 @@ const dict = {
   "serving singular":        { en: "serving",                 el: "μερίδα" },
   "serving plural":          { en: "servings",                el: "μερίδες" },
   "Archive client confirm":  { en: "They will no longer appear in your active clients.", el: "Δεν θα εμφανίζεται στους ενεργούς πελάτες." },
+
+  // ── Recipe form placeholders ──────────────────────────────
+  "e.g. Grilled Chicken & Rice":    { en: "e.g. Grilled Chicken & Rice",       el: "π.χ. Κοτόπουλο & Ρύζι" },
+  "e.g. Mediterranean":             { en: "e.g. Mediterranean",                 el: "π.χ. Μεσογειακή" },
+  "Select meal type":               { en: "Select meal type",                   el: "Επιλογή τύπου γεύματος" },
+  "Optional cooking instructions…": { en: "Optional cooking instructions…",     el: "Προαιρετικές οδηγίες μαγειρικής…" },
+  "Quantities are for all":         { en: "Quantities are for all",             el: "Ποσότητες για όλες τις" },
+  "Title is required":              { en: "Title is required.",                 el: "Ο τίτλος είναι υποχρεωτικός." },
+  "Add at least one ingredient":    { en: "Add at least one ingredient.",       el: "Προσθέστε τουλάχιστον ένα υλικό." },
 } as const;
 
 export type TranslationKey = keyof typeof dict;
