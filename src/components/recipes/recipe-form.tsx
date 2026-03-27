@@ -709,33 +709,35 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     </div>
 
     {/* ── Sticky action bar ── */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center gap-3">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => router.push("/recipes")}
-        disabled={isAnySavePending}
-      >
-        {t("Cancel", lang)}
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        onClick={() => handleSubmit("draft")}
-        disabled={isAnySavePending}
-      >
-        {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-        {t("Save Draft", lang)}
-      </Button>
-      <Button
-        type="button"
-        className="bg-emerald-600 hover:bg-emerald-700 text-white"
-        onClick={() => handleSubmit("published")}
-        disabled={isAnySavePending}
-      >
-        {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
-        {t("Publish", lang)}
-      </Button>
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6">
+      <div className="max-w-5xl px-6 sm:px-8 py-4 flex items-center gap-3">
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => router.push("/recipes")}
+          disabled={isAnySavePending}
+        >
+          {t("Cancel", lang)}
+        </Button>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={() => handleSubmit("draft")}
+          disabled={isAnySavePending}
+        >
+          {isDraftPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+          {t("Save Draft", lang)}
+        </Button>
+        <Button
+          type="button"
+          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          onClick={() => handleSubmit("published")}
+          disabled={isAnySavePending}
+        >
+          {isPublishPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
+          {t("Publish", lang)}
+        </Button>
+      </div>
     </div>
     </div>
   );
