@@ -622,7 +622,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                   onClick={() => addPinch(saltIngredient)}
                   className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
                 >
-                  🧂 {lang === "el" ? (saltIngredient.nameEl ?? saltIngredient.name) : saltIngredient.name}
+                  🧂 {ingDisplayName(saltIngredient, lang)}
                 </button>
               )}
               {pepperIngredient && !selectedIds.has(pepperIngredient.id) && (
@@ -631,7 +631,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                   onClick={() => addPinch(pepperIngredient)}
                   className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
                 >
-                  🌶️ {lang === "el" ? (pepperIngredient.nameEl ?? pepperIngredient.name) : pepperIngredient.name}
+                  🌶️ {ingDisplayName(pepperIngredient, lang)}
                 </button>
               )}
             </div>
