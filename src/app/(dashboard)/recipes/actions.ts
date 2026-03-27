@@ -11,7 +11,8 @@ const STATUSES = ["draft", "published", "archived"] as const;
 
 const ingredientRowSchema = z.object({
   ingredientId: z.string().uuid(),
-  quantityGrams: z.number().positive(),
+  quantityGrams: z.number().min(0), // 0 is valid for "pinch" unit
+  unit: z.string().default("g"),
 });
 
 const recipeSchema = z.object({
@@ -59,6 +60,7 @@ export async function createRecipe(data: RecipeFormInput): Promise<ActionResult>
           create: parsed.ingredients.map((ing, idx) => ({
             ingredientId: ing.ingredientId,
             quantityGrams: ing.quantityGrams,
+            unit: ing.unit,
             sortOrder: idx,
           })),
         },
@@ -94,6 +96,7 @@ export async function updateRecipe(id: string, data: RecipeFormInput): Promise<A
             create: parsed.ingredients.map((ing, idx) => ({
               ingredientId: ing.ingredientId,
               quantityGrams: ing.quantityGrams,
+              unit: ing.unit,
               sortOrder: idx,
             })),
           },
