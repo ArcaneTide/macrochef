@@ -69,7 +69,7 @@ export default async function EditRecipePage({
           <span className="text-slate-600 font-medium truncate max-w-[200px]">{recipe.title}</span>
         </nav>
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-semibold text-slate-900">{t("Edit Recipe", lang)}</h1>
+          <h1 className="text-2xl font-sans font-bold text-slate-900">{t("Edit Recipe", lang)}</h1>
           <div className="shrink-0 pt-1">
             <ArchiveRecipeButton id={recipe.id} title={recipe.title} lang={lang} />
           </div>

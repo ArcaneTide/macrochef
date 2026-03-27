@@ -44,7 +44,7 @@ export default async function ClientPage({
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
           <span className="text-slate-600 font-medium">{client.name}</span>
         </nav>
-        <h1 className="text-2xl font-semibold text-slate-900">{client.name}</h1>
+        <h1 className="text-2xl font-sans font-bold text-slate-900">{client.name}</h1>
       </div>
       <ClientDetail
         client={{

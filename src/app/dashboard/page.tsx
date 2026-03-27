@@ -41,7 +41,7 @@ function StatCard({
     <Link
       href={href}
       className={cn(
-        "flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-5 shadow hover:shadow-md transition-all border-l-4",
+        "flex items-center gap-4 rounded-2xl border border-slate-200 bg-white p-4 shadow hover:shadow-md transition-all border-l-4",
         accent
       )}
     >
@@ -49,7 +49,7 @@ function StatCard({
         <Icon className="h-5 w-5" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-slate-900 tabular-nums">{value}</p>
+        <p className="text-3xl font-bold text-slate-900 tabular-nums">{value}</p>
         <p className="text-sm text-slate-500">{label}</p>
       </div>
     </Link>
@@ -160,7 +160,7 @@ export default async function DashboardPage() {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{t("Dashboard", lang)}</h1>
+            <h1 className="text-2xl font-sans font-bold text-slate-900">{t("Dashboard", lang)}</h1>
             <p className="text-slate-500 text-sm mt-0.5">
               {anyRecipes === 0 && anyClients === 0
                 ? t("Welcome", lang)

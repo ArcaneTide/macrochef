@@ -28,7 +28,7 @@ export default function Error({
   return (
     <div className="flex min-h-screen items-center justify-center">
       <div className="text-center">
-        <h1 className="text-2xl font-semibold text-slate-900 mb-2">{t("Something went wrong", lang)}</h1>
+        <h1 className="text-2xl font-sans font-bold text-slate-900 mb-2">{t("Something went wrong", lang)}</h1>
         <p className="text-slate-500 mb-6">{t("Error description", lang)}</p>
         <Button onClick={reset}>{t("Try again", lang)}</Button>
       </div>

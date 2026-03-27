@@ -103,7 +103,7 @@ export default async function PlanDetailPage({
         </nav>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold text-slate-900">
+            <h1 className="text-2xl font-sans font-bold text-slate-900">
               {plan.title ?? t("Meal Plan", lang)}
             </h1>
             <p className="text-sm text-slate-500 mt-0.5">
