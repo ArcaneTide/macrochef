@@ -35,7 +35,7 @@ export default async function NewPlanPage({
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
           <span className="text-slate-600 font-medium">{t("New Plan", lang)}</span>
         </nav>
-        <h1 className="text-2xl font-semibold text-slate-900">{t("New Meal Plan", lang)}</h1>
+        <h1 className="text-2xl font-sans font-bold text-slate-900">{t("New Meal Plan", lang)}</h1>
         <p className="text-slate-500 text-sm mt-1">
           Create a weekly plan for {client.name}
         </p>
