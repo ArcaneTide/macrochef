@@ -258,7 +258,7 @@ export default async function DashboardPage() {
           {/* Client overview (wider) */}
           <div className="lg:col-span-3 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-slate-900 uppercase">
                 {t("Active Clients", lang)}
               </h2>
               <Link
@@ -320,7 +320,7 @@ export default async function DashboardPage() {
           {/* Recent activity (narrower) */}
           <div className="lg:col-span-2 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-slate-900 uppercase">
                 {t("Recent Activity", lang)}
               </h2>
             </div>

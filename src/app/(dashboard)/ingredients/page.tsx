@@ -38,7 +38,7 @@ export default async function IngredientsPage() {
           </span>
         </div>
         <p className="text-slate-500 text-sm">
-          {ingredients.length} ingredients · {t("Read-only library", lang)}
+          {ingredients.length} {ingredients.length !== 1 ? t("ingredient plural", lang) : t("ingredient singular", lang)} · {t("Read-only library", lang)}
         </p>
       </div>
 
