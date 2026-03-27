@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { EditClientForm, type ClientInitialData } from "@/components/clients/client-form";
 import { NewProfileForm } from "@/components/clients/new-profile-form";
 import { archiveClient } from "@/app/(dashboard)/clients/actions";
-import { t, type Lang } from "@/lib/translations";
+import { t, tStatus, type Lang } from "@/lib/translations";
 
 export type TargetProfile = {
   id: string;
@@ -87,7 +87,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
   const pastProfiles = profiles.filter((p) => !p.isActive);
 
   function handleArchive() {
-    if (!confirm(`Archive ${client.name}? They will no longer appear in your active clients.`)) return;
+    if (!confirm(`${t("Archive", lang)} ${client.name}? ${t("Archive client confirm", lang)}`)) return;
     startArchiveTransition(async () => {
       await archiveClient(client.id);
       router.push("/clients");
@@ -118,11 +118,11 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium border capitalize",
+                      "text-xs font-medium border",
                       STATUS_STYLES[client.status] ?? STATUS_STYLES.active
                     )}
                   >
-                    {client.status}
+                    {tStatus(client.status, lang)}
                   </Badge>
                 </div>
                 {client.email && (
@@ -300,11 +300,11 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                   <Badge
                     variant="outline"
                     className={cn(
-                      "text-xs font-medium border capitalize",
+                      "text-xs font-medium border",
                       PLAN_STATUS_STYLES[plan.status] ?? PLAN_STATUS_STYLES.draft
                     )}
                   >
-                    {plan.status}
+                    {tStatus(plan.status, lang)}
                   </Badge>
                   <ChevronRight className="h-4 w-4 text-slate-400" />
                 </div>

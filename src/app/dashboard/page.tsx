@@ -16,7 +16,7 @@ import { MobileNav } from "@/components/dashboard/mobile-nav";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
-import { t } from "@/lib/translations";
+import { t, tStatus } from "@/lib/translations";
 
 export const metadata = { title: "Dashboard — MacroLock" };
 
@@ -265,19 +265,19 @@ export default async function DashboardPage() {
                 href="/clients"
                 className="text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
               >
-                View all
+                {t("View all", lang)}
               </Link>
             </div>
 
             {activeClients.length === 0 ? (
               <div className="px-6 py-10 text-center">
-                <p className="text-sm text-slate-400">No active clients yet.</p>
+                <p className="text-sm text-slate-400">{t("No active clients yet", lang)}</p>
                 <Link
                   href="/clients/new"
                   className="mt-3 inline-flex items-center gap-1 text-sm text-emerald-600 hover:underline"
                 >
                   <Plus className="h-3.5 w-3.5" />
-                  Add your first client
+                  {t("Add your first client", lang)}
                 </Link>
               </div>
             ) : (
@@ -296,15 +296,15 @@ export default async function DashboardPage() {
                         </p>
                         <p className="text-xs text-slate-400 mt-0.5">
                           {profile
-                            ? `${profile.calorieTarget} kcal target`
-                            : "No target profile"}
+                            ? `${profile.calorieTarget} ${t("kcal target", lang)}`
+                            : t("No target profile", lang)}
                           {client._count.mealPlans > 0 && (
                             <span className="ml-2 text-slate-300">·</span>
                           )}
                           {client._count.mealPlans > 0 && (
                             <span className="ml-2">
-                              {client._count.mealPlans} plan
-                              {client._count.mealPlans !== 1 ? "s" : ""}
+                              {client._count.mealPlans}{" "}
+                              {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
                             </span>
                           )}
                         </p>
@@ -327,7 +327,7 @@ export default async function DashboardPage() {
 
             {activity.length === 0 ? (
               <div className="px-6 py-10 text-center">
-                <p className="text-sm text-slate-400">Nothing yet. Start by adding a recipe or client.</p>
+                <p className="text-sm text-slate-400">{t("Nothing yet", lang)}</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
@@ -355,13 +355,13 @@ export default async function DashboardPage() {
                         <Badge
                           variant="outline"
                           className={cn(
-                            "text-xs font-medium border capitalize h-4 px-1.5",
+                            "text-xs font-medium border h-4 px-1.5",
                             item.kind === "recipe"
                               ? (RECIPE_STATUS_STYLES[item.status] ?? RECIPE_STATUS_STYLES.draft)
                               : (CLIENT_STATUS_STYLES[item.status] ?? CLIENT_STATUS_STYLES.active)
                           )}
                         >
-                          {item.status}
+                          {tStatus(item.status, lang)}
                         </Badge>
                         <span className="flex items-center gap-1 text-xs text-slate-400">
                           <Clock className="h-3 w-3" />
