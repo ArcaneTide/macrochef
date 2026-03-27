@@ -91,6 +91,7 @@ model User {
 model Ingredient {
   id              String             @id @default(uuid())
   name            String             @unique
+  nameEl          String?            @map("name_el")
   usdaFdcId       String?            @map("usda_fdc_id")
   category        IngredientCategory @default(other)
   caloriesPer100g Float              @map("calories_per_100g")
@@ -139,6 +140,7 @@ model RecipeIngredient {
   recipeId     String @map("recipe_id")
   ingredientId String @map("ingredient_id")
   quantityGrams Float @map("quantity_grams")
+  unit         String @default("g")
   sortOrder    Int    @default(0) @map("sort_order")
 
   // Relations

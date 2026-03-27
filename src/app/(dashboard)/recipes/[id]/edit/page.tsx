@@ -33,6 +33,7 @@ export default async function EditRecipePage({
       select: {
         id: true,
         name: true,
+        nameEl: true,
         category: true,
         caloriesPer100g: true,
         proteinPer100g: true,
@@ -57,6 +58,7 @@ export default async function EditRecipePage({
     ingredients: recipe.ingredients.map((ri) => ({
       ingredientId: ri.ingredientId,
       quantityGrams: ri.quantityGrams,
+      unit: ri.unit,
     })),
   };
 

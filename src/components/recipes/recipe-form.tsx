@@ -47,6 +47,7 @@ import { t, tStatus, type Lang } from "@/lib/translations";
 export type IngredientOption = {
   id: string;
   name: string;
+  nameEl?: string | null;
   category: string;
   caloriesPer100g: number;
   proteinPer100g: number;
@@ -62,19 +63,48 @@ export type RecipeInitialData = {
   cuisine: string | null;
   mealType: string | null;
   status: string;
-  ingredients: Array<{ ingredientId: string; quantityGrams: number }>;
+  ingredients: Array<{ ingredientId: string; quantityGrams: number; unit?: string }>;
 };
 
 type IngredientRow = {
   key: string;
   ingredientId: string;
-  quantityGrams: number;
+  quantity: number; // display quantity in the chosen unit
+  unit: string;     // "g" | "ml" | "tsp" | "tbsp" | "pinch"
 };
+
+// ─── Unit Helpers ─────────────────────────────────────────
+
+const UNITS = ["g", "ml", "tsp", "tbsp", "pinch"] as const;
+type Unit = (typeof UNITS)[number];
+
+const UNIT_TO_GRAMS: Record<string, number> = {
+  g: 1,
+  ml: 1,
+  tsp: 5,
+  tbsp: 15,
+  pinch: 0,
+};
+
+function toGrams(qty: number, unit: string): number {
+  if (unit === "pinch") return 0;
+  return (UNIT_TO_GRAMS[unit] ?? 1) * qty;
+}
+
+function fromGrams(grams: number, unit: string): number {
+  if (unit === "pinch") return 0;
+  const factor = UNIT_TO_GRAMS[unit] ?? 1;
+  return factor === 0 ? 0 : grams / factor;
+}
 
 // ─── Helpers ──────────────────────────────────────────────
 
 function nextKey() {
   return `${Date.now()}-${Math.random()}`;
+}
+
+function ingDisplayName(ing: IngredientOption, lang: Lang): string {
+  return lang === "el" ? (ing.nameEl ?? ing.name) : ing.name;
 }
 
 // ─── Quantity Input ───────────────────────────────────────
@@ -114,8 +144,40 @@ function QuantityInput({
       onKeyDown={(e) => {
         if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
       }}
-      className="h-7 text-right text-sm tabular-nums"
+      className="h-7 w-20 text-right text-sm tabular-nums"
     />
+  );
+}
+
+// ─── Unit Toggle ──────────────────────────────────────────
+
+function UnitToggle({
+  unit,
+  onChange,
+  lang,
+}: {
+  unit: string;
+  onChange: (u: string) => void;
+  lang: Lang;
+}) {
+  return (
+    <div className="flex gap-0.5 flex-wrap">
+      {UNITS.map((u) => (
+        <button
+          key={u}
+          type="button"
+          onClick={() => onChange(u)}
+          className={cn(
+            "h-5 px-1.5 rounded-full text-[10px] font-medium transition-colors",
+            unit === u
+              ? "bg-emerald-600 text-white"
+              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+          )}
+        >
+          {u === "pinch" ? t("pinch", lang) : u}
+        </button>
+      ))}
+    </div>
   );
 }
 
@@ -156,13 +218,13 @@ function IngredientCombobox({
               {unselected.map((ing) => (
                 <CommandItem
                   key={ing.id}
-                  value={ing.name}
+                  value={`${ing.name} ${ing.nameEl ?? ""}`}
                   onSelect={() => {
                     onSelect(ing);
                     setOpen(false);
                   }}
                 >
-                  <span className="flex-1">{ing.name}</span>
+                  <span className="flex-1">{ingDisplayName(ing, lang)}</span>
                   <span className="text-xs text-muted-foreground capitalize ml-2">
                     {ing.category}
                   </span>
@@ -194,7 +256,7 @@ function MacroSummary({
       .map((r) => {
         const ing = ingredientMap.get(r.ingredientId);
         if (!ing) return null;
-        return { ingredient: ing, quantityGrams: r.quantityGrams };
+        return { ingredient: ing, quantityGrams: toGrams(r.quantity, r.unit) };
       })
       .filter((x): x is NonNullable<typeof x> => x !== null);
     return calcRecipeMacrosPerServing(items, Math.max(servings, 1));
@@ -299,13 +361,17 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
   const [cuisine, setCuisine] = useState(initialData?.cuisine ?? "");
   const [mealType, setMealType] = useState<string>(initialData?.mealType ?? "none");
 
-  // Ingredient rows
+  // Ingredient rows — quantity is the display value in the chosen unit
   const [rows, setRows] = useState<IngredientRow[]>(() =>
-    (initialData?.ingredients ?? []).map((ing) => ({
-      key: nextKey(),
-      ingredientId: ing.ingredientId,
-      quantityGrams: ing.quantityGrams,
-    }))
+    (initialData?.ingredients ?? []).map((ing) => {
+      const unit = ing.unit ?? "g";
+      return {
+        key: nextKey(),
+        ingredientId: ing.ingredientId,
+        quantity: fromGrams(ing.quantityGrams, unit),
+        unit,
+      };
+    })
   );
 
   const ingredientMap = useMemo(
@@ -318,10 +384,28 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     [rows]
   );
 
-  function addIngredient(ing: IngredientOption) {
+  // Quick-add: find salt and pepper by name in available ingredients
+  const saltIngredient = useMemo(
+    () => availableIngredients.find((i) => i.name === "Salt"),
+    [availableIngredients]
+  );
+  const pepperIngredient = useMemo(
+    () => availableIngredients.find((i) => i.name === "Black pepper, ground"),
+    [availableIngredients]
+  );
+
+  function addIngredient(ing: IngredientOption, unit: string = "g", qty: number = 100) {
     setRows((prev) => [
       ...prev,
-      { key: nextKey(), ingredientId: ing.id, quantityGrams: 100 },
+      { key: nextKey(), ingredientId: ing.id, quantity: qty, unit },
+    ]);
+  }
+
+  function addPinch(ing: IngredientOption) {
+    if (selectedIds.has(ing.id)) return; // already added
+    setRows((prev) => [
+      ...prev,
+      { key: nextKey(), ingredientId: ing.id, quantity: 0, unit: "pinch" },
     ]);
   }
 
@@ -331,7 +415,19 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
 
   function updateQuantity(key: string, qty: number) {
     setRows((prev) =>
-      prev.map((r) => (r.key === key ? { ...r, quantityGrams: qty } : r))
+      prev.map((r) => (r.key === key ? { ...r, quantity: qty } : r))
+    );
+  }
+
+  function updateUnit(key: string, unit: string) {
+    setRows((prev) =>
+      prev.map((r) => {
+        if (r.key !== key) return r;
+        // When switching to pinch: reset quantity to 0
+        // When switching from pinch: restore a sensible default
+        const quantity = unit === "pinch" ? 0 : r.unit === "pinch" ? 1 : r.quantity;
+        return { ...r, unit, quantity };
+      })
     );
   }
 
@@ -345,7 +441,8 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       status,
       ingredients: rows.map((r) => ({
         ingredientId: r.ingredientId,
-        quantityGrams: r.quantityGrams,
+        quantityGrams: toGrams(r.quantity, r.unit), // always store actual grams
+        unit: r.unit,
       })),
     };
   }
@@ -388,7 +485,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       <div className="flex-1 min-w-0 space-y-6">
         {/* Basic info */}
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
-          <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-slate-900 uppercase">
             {t("Recipe Details", lang)}
           </h2>
 
@@ -461,7 +558,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
         <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+              <h2 className="text-sm font-semibold text-slate-900 uppercase">
                 {t("Ingredients", lang)}
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
@@ -471,10 +568,35 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
             <IngredientCombobox
               availableIngredients={availableIngredients}
               selectedIds={selectedIds}
-              onSelect={addIngredient}
+              onSelect={(ing) => addIngredient(ing)}
               lang={lang}
             />
           </div>
+
+          {/* Quick-add chips */}
+          {(saltIngredient || pepperIngredient) && (
+            <div className="flex items-center gap-2 mb-4">
+              <span className="text-xs text-slate-400">{t("Quick add", lang)}:</span>
+              {saltIngredient && !selectedIds.has(saltIngredient.id) && (
+                <button
+                  type="button"
+                  onClick={() => addPinch(saltIngredient)}
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  🧂 {lang === "el" ? (saltIngredient.nameEl ?? saltIngredient.name) : saltIngredient.name}
+                </button>
+              )}
+              {pepperIngredient && !selectedIds.has(pepperIngredient.id) && (
+                <button
+                  type="button"
+                  onClick={() => addPinch(pepperIngredient)}
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                >
+                  🌶️ {lang === "el" ? (pepperIngredient.nameEl ?? pepperIngredient.name) : pepperIngredient.name}
+                </button>
+              )}
+            </div>
+          )}
 
           {rows.length === 0 ? (
             <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
@@ -483,43 +605,66 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           ) : (
             <div className="space-y-1">
               {/* Table header */}
-              <div className="grid grid-cols-[1fr_100px_auto] gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase tracking-wide">
-                <span>{t("Ingredients", lang)}</span>
-                <span className="text-right">{t("Grams", lang)}</span>
+              <div className="flex items-center gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase">
+                <span className="flex-1">{t("Ingredients", lang)}</span>
+                <span className="w-20 text-right">{t("Amount", lang)}</span>
                 <span className="w-7" />
               </div>
 
               {rows.map((row) => {
                 const ing = ingredientMap.get(row.ingredientId);
                 if (!ing) return null;
-                const macros = calcIngredientMacros(ing, row.quantityGrams);
+                const macros = calcIngredientMacros(ing, toGrams(row.quantity, row.unit));
 
                 return (
                   <div
                     key={row.key}
-                    className="grid grid-cols-[1fr_100px_auto] gap-3 items-center px-2 py-1.5 rounded-lg hover:bg-slate-50 group"
+                    className="px-2 py-2 rounded-lg hover:bg-slate-50 group"
                   >
-                    <div>
-                      <p className="text-sm font-medium text-slate-800">{ing.name}</p>
-                      <p className="text-xs text-slate-400 tabular-nums">
-                        {fmtMacro(macros.calories)} kcal ·{" "}
-                        <span className="text-blue-500">{fmtMacro(macros.protein)}g P</span> ·{" "}
-                        <span className="text-amber-500">{fmtMacro(macros.carbs)}g C</span> ·{" "}
-                        <span className="text-orange-500">{fmtMacro(macros.fat)}g F</span>
-                      </p>
+                    <div className="flex items-center gap-3">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-slate-800">
+                          {ingDisplayName(ing, lang)}
+                        </p>
+                        <p className="text-xs text-slate-400 tabular-nums">
+                          {row.unit === "pinch" ? (
+                            <span className="text-slate-400">{t("pinch", lang)} · {t("Calories", lang)}: 0</span>
+                          ) : (
+                            <>
+                              {fmtMacro(macros.calories)} kcal ·{" "}
+                              <span className="text-blue-500">{fmtMacro(macros.protein)}g P</span> ·{" "}
+                              <span className="text-amber-500">{fmtMacro(macros.carbs)}g C</span> ·{" "}
+                              <span className="text-orange-500">{fmtMacro(macros.fat)}g F</span>
+                            </>
+                          )}
+                        </p>
+                        <div className="mt-1.5">
+                          <UnitToggle
+                            unit={row.unit}
+                            onChange={(u) => updateUnit(row.key, u)}
+                            lang={lang}
+                          />
+                        </div>
+                      </div>
+                      <div className="shrink-0">
+                        {row.unit !== "pinch" ? (
+                          <QuantityInput
+                            value={row.quantity}
+                            onChange={(v) => updateQuantity(row.key, v)}
+                          />
+                        ) : (
+                          <span className="inline-block w-20 text-right text-sm text-slate-400">—</span>
+                        )}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => removeRow(row.key)}
+                        className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all w-7 h-7 flex items-center justify-center rounded cursor-pointer shrink-0"
+                        aria-label="Remove ingredient"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
                     </div>
-                    <QuantityInput
-                      value={row.quantityGrams}
-                      onChange={(v) => updateQuantity(row.key, v)}
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removeRow(row.key)}
-                      className="opacity-100 sm:opacity-0 sm:group-hover:opacity-100 text-slate-400 hover:text-red-500 transition-all w-7 h-7 flex items-center justify-center rounded cursor-pointer"
-                      aria-label="Remove ingredient"
-                    >
-                      <Trash2 className="h-3.5 w-3.5" />
-                    </button>
                   </div>
                 );
               })}
@@ -564,7 +709,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     </div>
 
     {/* ── Sticky action bar ── */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 px-4 sm:px-0 flex items-center gap-3">
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 py-4 mt-6 flex items-center gap-3">
       <Button
         type="button"
         variant="outline"

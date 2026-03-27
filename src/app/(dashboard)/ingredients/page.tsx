@@ -13,6 +13,7 @@ export default async function IngredientsPage() {
       select: {
         id: true,
         name: true,
+        nameEl: true,
         category: true,
         caloriesPer100g: true,
         proteinPer100g: true,

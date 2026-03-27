@@ -12,6 +12,7 @@ export default async function NewRecipePage() {
       select: {
         id: true,
         name: true,
+        nameEl: true,
         category: true,
         caloriesPer100g: true,
         proteinPer100g: true,

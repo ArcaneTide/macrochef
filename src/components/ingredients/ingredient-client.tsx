@@ -35,6 +35,7 @@ type IngredientCategory =
 interface Ingredient {
   id: string;
   name: string;
+  nameEl: string | null;
   category: IngredientCategory;
   caloriesPer100g: number;
   proteinPer100g: number;
@@ -84,11 +85,18 @@ export function IngredientClient({ ingredients, lang }: Props) {
     other: t("cat:other", lang),
   };
 
+  function ingName(i: Ingredient) {
+    return lang === "el" ? (i.nameEl ?? i.name) : i.name;
+  }
+
   const filtered = useMemo(() => {
     let list = ingredients;
     if (search.trim()) {
       const q = search.trim().toLowerCase();
-      list = list.filter((i) => i.name.toLowerCase().includes(q));
+      list = list.filter((i) =>
+        i.name.toLowerCase().includes(q) ||
+        (i.nameEl ?? "").toLowerCase().includes(q)
+      );
     }
     if (category !== "all") {
       list = list.filter((i) => i.category === category);
@@ -205,7 +213,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
             ) : (
               filtered.map((ing) => (
                 <TableRow key={ing.id} className="hover:bg-slate-50/50 even:bg-slate-50/30">
-                  <TableCell className="font-medium text-slate-900">{ing.name}</TableCell>
+                  <TableCell className="font-medium text-slate-900">{ingName(ing)}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
@@ -253,7 +261,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-slate-900">{ing.name}</span>
+                  <span className="font-medium text-slate-900">{ingName(ing)}</span>
                   {ing.isVerified && (
                     <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" aria-label="USDA verified" />
                   )}
