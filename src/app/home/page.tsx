@@ -160,12 +160,14 @@ export default async function HomePage() {
         {/* Header */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
           <div>
-            <h1 className="text-2xl font-sans font-bold text-slate-900">{t("Home", lang)}</h1>
+            <h1 className="text-2xl font-sans font-bold text-slate-900">
+              {(() => {
+                const hour = new Date().getHours();
+                return hour < 5 ? t("Good night", lang) : hour < 12 ? t("Good morning", lang) : hour < 18 ? t("Good afternoon", lang) : hour < 22 ? t("Good evening", lang) : t("Good night", lang);
+              })()}, {session.user.name?.split(" ")[0] ?? "Coach"}
+            </h1>
             <p className="text-slate-500 text-sm mt-0.5">
-              {anyRecipes === 0 && anyClients === 0
-                ? t("Welcome", lang)
-                : t("Welcome back", lang)
-              }, {session.user.name?.split(" ")[0] ?? "Coach"}
+              {new Date().toLocaleDateString(lang === "el" ? "el-GR" : "en-US", { weekday: "long", month: "long", day: "numeric" })}
             </p>
           </div>
           <div className="flex w-full sm:w-auto gap-2">

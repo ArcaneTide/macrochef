@@ -89,6 +89,10 @@ const dict = {
   // ── Greetings ─────────────────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },
   "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες ξανά" },
+  "Good morning":            { en: "Good morning",            el: "Καλημέρα" },
+  "Good afternoon":          { en: "Good afternoon",          el: "Καλό απόγευμα" },
+  "Good evening":            { en: "Good evening",            el: "Καλησπέρα" },
+  "Good night":              { en: "Good night",              el: "Καληνύχτα" },
 
   // ── Welcome / onboarding ──────────────────────────────────
   "Welcome to MacroLock":        { en: "Welcome to MacroLock!",              el: "Καλώς ήρθες στο MacroLock!" },
