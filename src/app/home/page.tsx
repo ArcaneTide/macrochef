@@ -263,9 +263,10 @@ export default async function HomePage() {
           {/* Client overview (wider) */}
           <div className="lg:col-span-3 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase">
-                {t("Active Clients", lang)}
-              </h2>
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-semibold text-slate-900">{t("Active Clients", lang)}</h2>
+                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">{activeClients.length}</span>
+              </div>
               <Link
                 href="/clients"
                 className="text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
@@ -334,9 +335,7 @@ export default async function HomePage() {
           {/* Recent activity (narrower) */}
           <div className="lg:col-span-2 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
             <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase">
-                {t("Recent Activity", lang)}
-              </h2>
+              <h2 className="text-base font-semibold text-slate-900">{t("Recent Activity", lang)}</h2>
             </div>
 
             {activity.length === 0 ? (
