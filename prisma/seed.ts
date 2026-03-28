@@ -10,9 +10,10 @@ async function main() {
   for (const ing of ingredients) {
     await prisma.ingredient.upsert({
       where: { name: ing.name },
-      update: {},
+      update: { nameEl: ing.name_el ?? null },
       create: {
         name: ing.name,
+        nameEl: ing.name_el ?? null,
         usdaFdcId: ing.usda_fdc_id,
         category: ing.category as any,
         caloriesPer100g: ing.calories_per_100g,
