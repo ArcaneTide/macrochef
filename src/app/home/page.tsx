@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { Sidebar } from "@/components/dashboard/sidebar";
+import { TopNav } from "@/components/dashboard/topnav";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
@@ -37,14 +37,14 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm hover:border-emerald-300 hover:shadow-md transition-all"
+      className={cn("flex items-center gap-5 rounded-xl border bg-white p-6 shadow-sm hover:shadow-md transition-all", value === 0 ? "border-slate-100 opacity-60" : "border-slate-200")}
     >
-      <div className={cn("flex h-11 w-11 shrink-0 items-center justify-center rounded-xl", color)}>
-        <Icon className="h-5 w-5" />
+      <div className={cn("flex h-12 w-12 shrink-0 items-center justify-center rounded-xl", color)}>
+        <Icon className="h-6 w-6" />
       </div>
       <div>
-        <p className="text-2xl font-bold text-slate-900 tabular-nums">{value}</p>
-        <p className="text-sm text-slate-500">{label}</p>
+        <p className="text-3xl font-bold text-slate-900 tabular-nums">{value}</p>
+        <p className="text-sm text-slate-500 mt-0.5">{label}</p>
       </div>
     </Link>
   );
@@ -140,38 +140,42 @@ export default async function DashboardPage() {
   };
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      <Sidebar userName={session.user.name ?? "Coach"} userEmail={session.user.email ?? undefined} lang={lang} />
-      <main className="flex-1 overflow-y-auto p-6 sm:p-8">
+    <div className="flex flex-col h-screen bg-slate-100">
+      <TopNav userName={session.user.name ?? "Coach"} lang={lang} />
+      <main className="flex-1 overflow-y-auto">
 
-        {/* Header */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div>
-            <h1 className="text-2xl font-semibold text-slate-900">{t("Dashboard", lang)}</h1>
-            <p className="text-slate-500 text-sm mt-0.5">
-              {anyRecipes === 0 && anyClients === 0
-                ? t("Welcome", lang)
-                : t("Welcome back", lang)
-              }, {session.user.name?.split(" ")[0] ?? "Coach"}
-            </p>
+        <div className="px-6 sm:px-8 pt-8 pb-8">
+
+          {/* Header */}
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+            <div>
+              <h1 className="text-xl font-semibold text-slate-900">
+                {(() => {
+                  const hour = parseInt(new Date().toLocaleString("en-US", { hour: "numeric", hour12: false, timeZone: "Europe/Athens" }));
+                  return hour < 5 ? "Good night" : hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : hour < 22 ? "Good evening" : "Good night";
+                })()}, {session.user.name?.split(" ")[0] ?? "Coach"}
+              </h1>
+              <p className="text-slate-400 text-sm mt-0.5">
+                {new Date().toLocaleDateString(lang === "el" ? "el-GR" : "en-US", { weekday: "long", month: "long", day: "numeric" })}
+              </p>
+            </div>
+            <div className="flex gap-2">
+              <Link
+                href="/recipes/new"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                {t("New Recipe", lang)}
+              </Link>
+              <Link
+                href="/clients/new"
+                className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-500 transition-colors"
+              >
+                <Plus className="h-4 w-4" />
+                {t("New Client", lang)}
+              </Link>
+            </div>
           </div>
-          <div className="flex gap-2">
-            <Link
-              href="/recipes/new"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-medium text-slate-700 shadow-sm hover:bg-slate-50 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              {t("New Recipe", lang)}
-            </Link>
-            <Link
-              href="/clients/new"
-              className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-sm font-medium text-white shadow-sm hover:bg-emerald-700 transition-colors"
-            >
-              <Plus className="h-4 w-4" />
-              {t("New Client", lang)}
-            </Link>
-          </div>
-        </div>
 
         {/* Onboarding card — hides each step as it's completed, hides entirely when all done */}
         {(anyRecipes === 0 || anyClients === 0 || anyPlans === 0) && (() => {
@@ -182,28 +186,29 @@ export default async function DashboardPage() {
           ].filter((s) => !s.done);
           if (steps.length === 0) return null;
           return (
-            <div className="mb-8 rounded-xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
-                  <Sparkles className="h-5 w-5 text-white" />
+            <div className="mb-8 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="flex items-center gap-3 px-6 py-3.5 border-b border-slate-100 bg-slate-50">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
+                  <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroChef", lang)}</h2>
-                  <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
+                  <h2 className="text-sm font-semibold text-slate-900">{t("Welcome to MacroChef", lang)}</h2>
+                  <p className="text-xs text-slate-400">{t("Get started in three steps", lang)}</p>
                 </div>
               </div>
-              <ol className="space-y-3">
+              <ol className="divide-y divide-slate-100">
                 {steps.map(({ key, label, href, icon: Icon }) => (
                   <li key={key}>
                     <Link
                       href={href}
-                      className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all"
+                      className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group"
                     >
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
                         {key}
                       </span>
                       <Icon className="h-4 w-4 text-slate-400 shrink-0" />
-                      {label}
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">{label}</span>
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400 ml-auto" />
                     </Link>
                   </li>
                 ))}
@@ -213,6 +218,7 @@ export default async function DashboardPage() {
         })()}
 
         {/* Stat cards */}
+        <p className="text-sm font-semibold text-slate-500 mb-3">Overview</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <StatCard
             label={t("Active Clients", lang)}
@@ -237,29 +243,25 @@ export default async function DashboardPage() {
           />
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <p className="text-sm font-semibold text-slate-500 mb-3">Workspace</p>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
-          {/* Client overview (wider) */}
-          <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
-                {t("Active Clients", lang)}
-              </h2>
-              <Link
-                href="/clients"
-                className="text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
-              >
-                View all
+          {/* Active clients */}
+          <div className="lg:col-span-3 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-6 py-3.5 border-b border-slate-100 bg-slate-50">
+              <div className="flex items-center gap-2">
+                <h2 className="text-base font-semibold text-slate-900">{t("Active Clients", lang)}</h2>
+                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">{activeClients.length}</span>
+              </div>
+              <Link href="/clients" className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors">
+                View all →
               </Link>
             </div>
 
             {activeClients.length === 0 ? (
               <div className="px-6 py-10 text-center">
                 <p className="text-sm text-slate-400">No active clients yet.</p>
-                <Link
-                  href="/clients/new"
-                  className="mt-3 inline-flex items-center gap-1 text-sm text-emerald-600 hover:underline"
-                >
+                <Link href="/clients/new" className="mt-3 inline-flex items-center gap-1 text-sm text-emerald-600 hover:underline">
                   <Plus className="h-3.5 w-3.5" />
                   Add your first client
                 </Link>
@@ -268,32 +270,41 @@ export default async function DashboardPage() {
               <div className="divide-y divide-slate-100">
                 {activeClients.map((client) => {
                   const profile = client.targetProfiles[0] ?? null;
+                  const hasNoPlan = client._count.mealPlans === 0;
+                  const initials = client.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase();
                   return (
                     <Link
                       key={client.id}
                       href={`/clients/${client.id}`}
-                      className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50 transition-colors group"
+                      className={cn(
+                        "flex items-center justify-between px-6 py-3.5 hover:bg-slate-50 transition-colors group border-l-2",
+                        hasNoPlan ? "border-l-amber-400" : "border-l-transparent"
+                      )}
                     >
-                      <div>
-                        <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">
-                          {client.name}
-                        </p>
-                        <p className="text-xs text-slate-400 mt-0.5">
-                          {profile
-                            ? `${profile.calorieTarget} kcal target`
-                            : "No target profile"}
-                          {client._count.mealPlans > 0 && (
-                            <span className="ml-2 text-slate-300">·</span>
-                          )}
-                          {client._count.mealPlans > 0 && (
-                            <span className="ml-2">
-                              {client._count.mealPlans} plan
-                              {client._count.mealPlans !== 1 ? "s" : ""}
-                            </span>
-                          )}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
+                          {initials}
+                        </div>
+                        <div>
+                          <p className="text-base font-medium text-slate-800 group-hover:text-slate-900">{client.name}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {profile ? (
+                              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">{profile.calorieTarget} kcal</span>
+                            ) : (
+                              <span className="text-xs text-slate-400">No target profile</span>
+                            )}
+                            {!hasNoPlan && (
+                              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-600">{client._count.mealPlans} plan{client._count.mealPlans !== 1 ? "s" : ""}</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400" />
+                      <div className="flex items-center gap-2">
+                        {hasNoPlan && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">No plan</span>
+                        )}
+                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400" />
+                      </div>
                     </Link>
                   );
                 })}
@@ -301,40 +312,34 @@ export default async function DashboardPage() {
             )}
           </div>
 
-          {/* Recent activity (narrower) */}
-          <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm">
-            <div className="px-6 py-4 border-b border-slate-100">
-              <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+          {/* Recent activity */}
+          <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div className="px-6 py-3.5 border-b border-slate-100 bg-slate-50">
+              <h2 className="text-base font-semibold text-slate-900">
                 {t("Recent Activity", lang)}
               </h2>
             </div>
 
             {activity.length === 0 ? (
               <div className="px-6 py-10 text-center">
-                <p className="text-sm text-slate-400">Nothing yet. Start by adding a recipe or client.</p>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 mx-auto mb-3">
+                  <Clock className="h-5 w-5 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-slate-600">No activity yet</p>
+                <p className="text-xs text-slate-400 mt-1">Your recent recipes and clients will appear here.</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
                 {activity.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
-                    className="flex items-start gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group"
-                  >
+                  <div key={idx} className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group">
                     <div className={cn(
-                      "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
                       item.kind === "recipe" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"
                     )}>
-                      {item.kind === "recipe" ? (
-                        <BookOpen className="h-3.5 w-3.5" />
-                      ) : (
-                        <Users className="h-3.5 w-3.5" />
-                      )}
+                      {item.kind === "recipe" ? <BookOpen className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-slate-800 truncate group-hover:text-slate-900">
-                        {item.kind === "recipe" ? item.title : item.name}
-                      </p>
+                      <p className="text-base font-medium text-slate-800 truncate">{item.kind === "recipe" ? item.title : item.name}</p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <Badge
                           variant="outline"
@@ -349,19 +354,23 @@ export default async function DashboardPage() {
                         </Badge>
                         <span className="flex items-center gap-1 text-xs text-slate-400">
                           <Clock className="h-3 w-3" />
-                          {item.date.toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {item.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                         </span>
                       </div>
                     </div>
-                  </Link>
+                    <Link
+                      href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
+                      className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-500 hover:border-emerald-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      {item.kind === "recipe" ? "Edit" : "View"}
+                    </Link>
+                  </div>
                 ))}
               </div>
             )}
           </div>
 
+        </div>
         </div>
       </main>
     </div>

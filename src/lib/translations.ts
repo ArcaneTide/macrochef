@@ -2,7 +2,7 @@ export type Lang = "en" | "el";
 
 const dict = {
   // ── Nav ──────────────────────────────────────────────────
-  "Dashboard":               { en: "Dashboard",               el: "Πίνακας Ελέγχου" },
+  "Dashboard":               { en: "Home",                    el: "Αρχική" },
   "Recipes":                 { en: "Recipes",                 el: "Συνταγές" },
   "Clients":                 { en: "Clients",                 el: "Πελάτες" },
   "Ingredients":             { en: "Ingredients",             el: "Υλικά" },

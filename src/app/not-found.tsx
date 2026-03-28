@@ -9,7 +9,7 @@ export default function NotFound() {
         <p className="text-xl font-semibold text-slate-800 mb-2">Page not found</p>
         <p className="text-slate-500 mb-8">The page you&apos;re looking for doesn&apos;t exist.</p>
         <Button asChild>
-          <Link href="/dashboard">Go to Dashboard</Link>
+          <Link href="/home">Go to Home</Link>
         </Button>
       </div>
     </div>
