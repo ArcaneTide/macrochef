@@ -228,6 +228,7 @@ export default async function HomePage() {
         })()}
 
         {/* Stat cards */}
+        <p className="text-sm font-semibold text-slate-500 mb-3">Overview</p>
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           <StatCard
             label={t("Active Clients", lang)}
@@ -255,6 +256,7 @@ export default async function HomePage() {
           />
         </div>
 
+        <p className="text-sm font-semibold text-slate-500 mb-3">Workspace</p>
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
           {/* Client overview (wider) */}
