@@ -153,9 +153,9 @@ export function AssignRecipeModal({
           </div>
 
           {/* Recipe list */}
-          <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-100">
+          <div className="max-h-52 overflow-y-auto rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
             {filtered.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">{t("No recipes found", lang)}</p>
+              <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">{t("No recipes found", lang)}</p>
             ) : (
               filtered.map((recipe) => (
                 <button
@@ -165,22 +165,22 @@ export function AssignRecipeModal({
                   className={cn(
                     "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
                     selectedId === recipe.id
-                      ? "bg-emerald-50"
-                      : "hover:bg-slate-50"
+                      ? "bg-[#F5EDE8] dark:bg-[#2D2420]"
+                      : "hover:bg-slate-50 dark:hover:bg-[#2A2A2A]"
                   )}
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-800">{recipe.title}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{recipe.title}</p>
+                    <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
                       {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
-                      <span className="text-blue-500">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
-                      <span className="text-amber-500">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
-                      <span className="text-orange-500">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
-                      {" "}<span className="text-slate-300">{t("/ serving", lang)}</span>
+                      <span className="text-[#5A6B4F]">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
+                      <span className="text-[#B8907A]">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
+                      <span className="text-[#C4724E]">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
+                      {" "}<span className="text-slate-300 dark:text-[#4A4A4A]">{t("/ serving", lang)}</span>
                     </p>
                   </div>
                   {selectedId === recipe.id && (
-                    <Check className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <Check className="h-4 w-4 text-[#7A8B6F] shrink-0" />
                   )}
                 </button>
               ))
@@ -189,7 +189,7 @@ export function AssignRecipeModal({
 
           {/* Servings + preview */}
           {selected && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <div className="rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] p-4 space-y-3">
               <div className="flex items-center gap-4">
                 <div className="flex-1 space-y-1">
                   <Label htmlFor="servings">{t("Servings", lang)}</Label>
@@ -203,14 +203,14 @@ export function AssignRecipeModal({
                     onKeyDown={(e) => {
                       if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
                     }}
-                    className="w-28 bg-white"
+                    className="w-28 bg-white dark:bg-[#242424]"
                   />
                 </div>
                 {fitScore !== null && targetMacros && (
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 mb-1">{t("Fit score", lang)}</p>
+                    <p className="text-xs text-slate-500 dark:text-[#A0998E] mb-1">{t("Fit score", lang)}</p>
                     <FitBadge score={fitScore} />
-                    <p className="text-xs text-slate-400 mt-1 max-w-[120px]">
+                    <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-1 max-w-[120px]">
                       {t("Fit score help", lang)}
                     </p>
                   </div>
@@ -220,28 +220,28 @@ export function AssignRecipeModal({
               {previewMacros && (
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
                   <div>
-                    <p className="font-semibold text-slate-800 tabular-nums">
+                    <p className="font-semibold text-slate-800 dark:text-[#E8E2DA] tabular-nums">
                       {previewMacros.calories}
                     </p>
-                    <p className="text-slate-400">kcal</p>
+                    <p className="text-slate-400 dark:text-[#6A6460]">kcal</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-blue-600 tabular-nums">
+                    <p className="font-semibold text-[#5A6B4F] tabular-nums">
                       {previewMacros.protein}g
                     </p>
-                    <p className="text-slate-400">{t("Protein", lang)}</p>
+                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Protein", lang)}</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-amber-600 tabular-nums">
+                    <p className="font-semibold text-[#B8907A] tabular-nums">
                       {previewMacros.carbs}g
                     </p>
-                    <p className="text-slate-400">{t("Carbs", lang)}</p>
+                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Carbs", lang)}</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-orange-600 tabular-nums">
+                    <p className="font-semibold text-[#C4724E] tabular-nums">
                       {previewMacros.fat}g
                     </p>
-                    <p className="text-slate-400">{t("Fat", lang)}</p>
+                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Fat", lang)}</p>
                   </div>
                 </div>
               )}
@@ -260,7 +260,7 @@ export function AssignRecipeModal({
               {t("Cancel", lang)}
             </Button>
             <Button
-              className="bg-emerald-600 hover:bg-emerald-700 text-white"
+              className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
               onClick={handleAssign}
               disabled={isPending || !selectedId}
             >

@@ -15,6 +15,7 @@ import {
   Menu,
   X,
   Moon,
+  Sun,
   ChevronDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -39,11 +40,13 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
   const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [langMenuOpen, setLangMenuOpen] = useState(false);
 
-  // Close mobile menu on route change
+  // Close mobile menu and dropdowns on route change
   useEffect(() => {
     setMobileOpen(false);
     setUserMenuOpen(false);
+    setLangMenuOpen(false);
   }, [pathname]);
 
   // Close user menu on outside click
@@ -57,11 +60,16 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [userMenuOpen]);
 
-  function toggleLang() {
-    const next: Lang = lang === "en" ? "el" : "en";
-    document.cookie = `${LANG_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
-    window.location.reload();
-  }
+  // Close lang menu on outside click
+  useEffect(() => {
+    if (!langMenuOpen) return;
+    function handleClick(e: MouseEvent) {
+      const target = e.target as Element;
+      if (!target.closest("[data-lang-menu]")) setLangMenuOpen(false);
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, [langMenuOpen]);
 
   function isActive(href: string) {
     if (href === "/home") return pathname === "/home";
@@ -79,7 +87,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
     <>
       {/* Top bar */}
       <header
-        className="fixed top-0 inset-x-0 z-40 flex h-14 items-center bg-white border-b px-4 md:px-6"
+        className="fixed top-0 inset-x-0 z-40 flex h-14 items-center bg-white dark:bg-[#1A1A1A] border-b dark:border-[#3A3A3A] px-4 md:px-6"
         style={{ borderColor: "var(--color-sand)" }}
       >
         {/* Logo */}
@@ -104,8 +112,8 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
               className={cn(
                 "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
                 isActive(href)
-                  ? "text-[#B8907A] bg-[#F5EDE8]"
-                  : "text-[#4A4A4A] hover:bg-[#F5EDE8] hover:text-[#B8907A]"
+                  ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                  : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -116,32 +124,77 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
 
         {/* Right actions */}
         <div className="flex items-center gap-2 ml-auto">
-          {/* Language toggle */}
-          <button
-            onClick={toggleLang}
-            className="hidden md:flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-[#F5EDE8]"
-            style={{ color: "var(--color-charcoal-soft)" }}
-            title={lang === "en" ? "Ελληνικά" : "English"}
-          >
-            <span className="text-base leading-none">{lang === "en" ? "🇬🇷" : "🇬🇧"}</span>
-            <span className="text-xs">{lang === "en" ? "EL" : "EN"}</span>
-          </button>
+          {/* Language dropdown */}
+          <div className="relative hidden md:block" data-lang-menu>
+            <button
+              onClick={() => setLangMenuOpen((v) => !v)}
+              className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-sm font-medium transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
+              style={{ color: "var(--color-charcoal-soft)" }}
+              data-lang-menu
+            >
+              <span className="text-base leading-none">{lang === "en" ? "🇬🇧" : "🇬🇷"}</span>
+              <span className="text-xs">{lang === "en" ? "EN" : "EL"}</span>
+              <ChevronDown className="h-3 w-3 opacity-60" />
+            </button>
 
-          {/* Dark mode toggle (non-functional) */}
+            {langMenuOpen && (
+              <div
+                className="absolute right-0 top-full mt-1 w-44 rounded-xl border bg-white dark:bg-[#242424] shadow-lg z-50 overflow-hidden py-1"
+                style={{ borderColor: "var(--color-sand)" }}
+                data-lang-menu
+              >
+                {(
+                  [
+                    { code: "en" as const, label: "English", flag: "🇬🇧" },
+                    { code: "el" as const, label: "Ελληνικά", flag: "🇬🇷" },
+                  ] as Array<{ code: import("@/lib/language-client").Lang; label: string; flag: string }>
+                ).map(({ code, label, flag }) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      if (code !== lang) {
+                        document.cookie = `mc_lang=${code}; path=/; max-age=31536000; SameSite=Lax`;
+                        window.location.reload();
+                      }
+                      setLangMenuOpen(false);
+                    }}
+                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
+                    style={{ color: "var(--color-charcoal-soft)" }}
+                    data-lang-menu
+                  >
+                    <span className="text-base leading-none">{flag}</span>
+                    <span className="flex-1 text-left">{label}</span>
+                    {code === lang && (
+                      <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Dark mode toggle */}
           <button
-            className="hidden md:flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8]"
+            onClick={() => {
+              const isDark = document.documentElement.classList.toggle("dark");
+              document.cookie = `mc_theme=${isDark ? "dark" : "light"}; path=/; max-age=31536000; SameSite=Lax`;
+            }}
+            className="hidden md:flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
             style={{ color: "var(--color-charcoal-soft)" }}
-            title="Dark mode (coming soon)"
+            title="Toggle dark mode"
             aria-label="Toggle dark mode"
           >
-            <Moon className="h-4 w-4" />
+            <Moon className="h-4 w-4 dark:hidden" />
+            <Sun className="h-4 w-4 hidden dark:block" />
           </button>
 
           {/* User menu */}
           <div className="relative hidden md:block" data-user-menu>
             <button
               onClick={() => setUserMenuOpen((v) => !v)}
-              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F5EDE8]"
+              className="flex items-center gap-2 rounded-lg px-2 py-1.5 transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
               data-user-menu
             >
               <div
@@ -158,12 +211,12 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
 
             {userMenuOpen && (
               <div
-                className="absolute right-0 top-full mt-1 w-56 rounded-xl border bg-white shadow-lg z-50 overflow-hidden"
+                className="absolute right-0 top-full mt-1 w-56 rounded-xl border bg-white dark:bg-[#242424] shadow-lg z-50 overflow-hidden"
                 style={{ borderColor: "var(--color-sand)" }}
                 data-user-menu
               >
                 {/* User info */}
-                <div className="px-4 py-3 border-b" style={{ borderColor: "var(--color-sand)" }}>
+                <div className="px-4 py-3 border-b dark:border-[#3A3A3A]" style={{ borderColor: "var(--color-sand)" }}>
                   <div className="flex items-center gap-3">
                     <div
                       className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-white text-sm font-semibold"
@@ -194,7 +247,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                 <div className="py-1">
                   <Link
                     href="/settings"
-                    className="flex items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-[#F5EDE8]"
+                    className="flex items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
                     style={{ color: "var(--color-charcoal-soft)" }}
                   >
                     <Settings className="h-4 w-4" />
@@ -202,7 +255,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                   </Link>
                   <button
                     onClick={() => signOut({ callbackUrl: "/login" })}
-                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-[#F5EDE8]"
+                    className="flex w-full items-center gap-2.5 px-4 py-2 text-sm transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
                     style={{ color: "var(--color-charcoal-soft)" }}
                   >
                     <LogOut className="h-4 w-4" />
@@ -216,7 +269,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
           {/* Mobile hamburger */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8]"
+            className="md:hidden flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
             style={{ color: "var(--color-charcoal-soft)" }}
             aria-label="Toggle navigation menu"
           >
@@ -234,7 +287,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
             aria-hidden="true"
           />
           <div
-            className="md:hidden fixed top-14 inset-x-0 z-40 border-b bg-white shadow-lg"
+            className="md:hidden fixed top-14 inset-x-0 z-40 border-b bg-white dark:bg-[#1A1A1A] dark:border-[#3A3A3A] shadow-lg"
             style={{ borderColor: "var(--color-sand)" }}
           >
             <nav className="p-3 space-y-1">
@@ -245,8 +298,8 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive(href)
-                      ? "text-[#B8907A] bg-[#F5EDE8]"
-                      : "text-[#4A4A4A] hover:bg-[#F5EDE8] hover:text-[#B8907A]"
+                      ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                      : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -257,7 +310,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
 
             {/* Mobile bottom actions */}
             <div
-              className="border-t px-3 py-3 flex items-center justify-between"
+              className="border-t dark:border-[#3A3A3A] px-3 py-3 flex items-center justify-between"
               style={{ borderColor: "var(--color-sand)" }}
             >
               <div className="flex items-center gap-2">
@@ -281,15 +334,20 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
               </div>
               <div className="flex items-center gap-1">
                 <button
-                  onClick={toggleLang}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-base transition-colors hover:bg-[#F5EDE8]"
-                  title={lang === "en" ? "Ελληνικά" : "English"}
+                  onClick={() => {
+                    const next = lang === "en" ? "el" : "en";
+                    document.cookie = `${LANG_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
+                    window.location.reload();
+                  }}
+                  className="flex items-center gap-1.5 h-8 rounded-lg px-2 text-sm font-medium transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
+                  style={{ color: "var(--color-charcoal-soft)" }}
                 >
-                  {lang === "en" ? "🇬🇷" : "🇬🇧"}
+                  <span className="text-base leading-none">{lang === "en" ? "🇬🇷" : "🇬🇧"}</span>
+                  <span className="text-xs">{lang === "en" ? "EL" : "EN"}</span>
                 </button>
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
                   style={{ color: "var(--color-charcoal-soft)" }}
                   aria-label="Sign out"
                 >

@@ -46,7 +46,7 @@ export type ClientDetailProps = {
 
 const STATUS_STYLES: Record<string, string> = {
   active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-500 border-slate-200",
+  archived: "bg-slate-100 text-slate-500 border-[#E8E0D4]",
 };
 
 function MacroRow({
@@ -72,9 +72,9 @@ function MacroRow({
 }
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-600 border-slate-200",
+  draft: "bg-slate-100 text-slate-600 border-[#E8E0D4]",
   active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-400 border-slate-200",
+  archived: "bg-slate-100 text-slate-400 border-[#E8E0D4]",
 };
 
 export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProps) {
@@ -97,7 +97,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
   return (
     <div className="max-w-3xl space-y-6">
       {/* Client info card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow">
         {isEditing ? (
           <>
             <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-5">
@@ -167,7 +167,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       </div>
 
       {/* Active target profile */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
@@ -197,11 +197,11 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             lang={lang}
           />
         ) : activeProfile ? (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-[#E8E0D4]">
             <MacroRow label={t("Calories", lang)} value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900" />
-            <MacroRow label={t("Protein", lang)} value={activeProfile.proteinTarget} unit="g" color="text-blue-600" />
-            <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-amber-600" />
-            <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-orange-600" />
+            <MacroRow label={t("Protein", lang)} value={activeProfile.proteinTarget} unit="g" color="text-[#5A6B4F]" />
+            <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-[#B8907A]" />
+            <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-[#C4724E]" />
           </div>
         ) : (
           <p className="text-sm text-slate-400 text-center py-4">
@@ -212,7 +212,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
 
       {/* Profile history */}
       {pastProfiles.length > 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+        <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
             {t("Profile History", lang)}
           </h3>
@@ -220,7 +220,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             {pastProfiles.map((profile) => (
               <div
                 key={profile.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100"
+                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-[#E8E0D4]"
               >
                 <div>
                   <p className="text-sm font-medium text-slate-700">
@@ -252,7 +252,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       )}
 
       {/* Meal Plans */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
             {t("Meal Plans", lang)}
@@ -276,7 +276,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               <a
                 key={plan.id}
                 href={`/clients/${client.id}/plans/${plan.id}`}
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors group"
+                className="flex items-center justify-between p-3 rounded-lg border border-[#E8E0D4] bg-slate-50 hover:bg-slate-100 transition-colors group"
               >
                 <div>
                   <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">

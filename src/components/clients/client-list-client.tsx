@@ -52,11 +52,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
             className="pl-9"
           />
         </div>
-        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
+        <p className="text-sm text-slate-500 dark:text-[#A0998E] sm:ml-auto whitespace-nowrap hidden sm:block">
           {filtered.length} {filtered.length !== 1 ? t("client plural", lang) : t("client singular", lang)}
         </p>
         <Link href="/clients/new" className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
+          <Button className="w-full sm:w-auto bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
             <Plus className="h-4 w-4" />
             {t("New Client", lang)}
           </Button>
@@ -64,12 +64,12 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
+        <div className="text-center py-16 text-slate-400 dark:text-[#6A6460]">
           {clients.length === 0 ? (
             <div className="space-y-3">
               <p>{t("No clients yet", lang)}</p>
               <Link href="/clients/new">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white gap-1.5">
+                <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
                   <Plus className="h-4 w-4" />
                   {t("Add your first client", lang)}
                 </Button>
@@ -80,11 +80,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
+        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wide">
+              <tr className="border-b border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 <th className="text-left px-4 py-3">{t("Name", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Status", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Active Macro Targets", lang)}</th>
@@ -94,17 +94,17 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                 <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="hover:bg-slate-100 cursor-pointer transition-colors even:bg-slate-50/40"
+                  className="hover:bg-slate-100 dark:hover:bg-[#2A2A2A] cursor-pointer transition-colors even:bg-slate-50/40 dark:even:bg-[#1E1E1E]/30"
                   onClick={() => router.push(`/clients/${client.id}`)}
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium text-slate-900">{client.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-[#F5F1EB]">{client.name}</p>
                     {client.email && (
-                      <p className="text-xs text-slate-400">{client.email}</p>
+                      <p className="text-xs text-slate-400 dark:text-[#6A6460]">{client.email}</p>
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -118,22 +118,22 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                       {tStatus(client.status, lang)}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-sm text-slate-500">
+                  <td className="px-4 py-3 text-sm text-slate-500 dark:text-[#A0998E]">
                     {client.activeProfile?.label ?? (
-                      <span className="text-slate-300">—</span>
+                      <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-slate-600 tabular-nums">
-                    {client.activeProfile ? `${client.activeProfile.calorieTarget} kcal` : <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-right text-sm text-slate-600 dark:text-[#A0998E] tabular-nums">
+                    {client.activeProfile ? `${client.activeProfile.calorieTarget} kcal` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-blue-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.proteinTarget}g` : <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-right text-sm text-[#5A6B4F] tabular-nums font-medium">
+                    {client.activeProfile ? `${client.activeProfile.proteinTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-amber-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.carbsTarget}g` : <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-right text-sm text-[#B8907A] tabular-nums font-medium">
+                    {client.activeProfile ? `${client.activeProfile.carbsTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-orange-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.fatTarget}g` : <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-right text-sm text-[#C4724E] tabular-nums font-medium">
+                    {client.activeProfile ? `${client.activeProfile.fatTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
                 </tr>
               ))}
@@ -141,18 +141,18 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           </table>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-slate-100">
+          <div className="sm:hidden divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
             {filtered.map((client) => (
               <div
                 key={client.id}
-                className="p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                className="p-4 hover:bg-slate-50 dark:hover:bg-[#2A2A2A] cursor-pointer transition-colors"
                 onClick={() => router.push(`/clients/${client.id}`)}
               >
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <div>
-                    <p className="font-medium text-slate-900">{client.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-[#F5F1EB]">{client.name}</p>
                     {client.email && (
-                      <p className="text-xs text-slate-400">{client.email}</p>
+                      <p className="text-xs text-slate-400 dark:text-[#6A6460]">{client.email}</p>
                     )}
                   </div>
                   <Badge
@@ -168,14 +168,14 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                 {client.activeProfile && (
                   <div className="mt-2 grid grid-cols-4 gap-2 text-center text-xs">
                     {[
-                      { label: "Kcal", value: `${client.activeProfile.calorieTarget}`, color: "text-slate-700" },
-                      { label: "P", value: `${client.activeProfile.proteinTarget}g`, color: "text-blue-600" },
-                      { label: "C", value: `${client.activeProfile.carbsTarget}g`, color: "text-amber-600" },
-                      { label: "F", value: `${client.activeProfile.fatTarget}g`, color: "text-orange-600" },
+                      { label: "Kcal", value: `${client.activeProfile.calorieTarget}`, color: "text-slate-700 dark:text-[#A0998E]" },
+                      { label: "P", value: `${client.activeProfile.proteinTarget}g`, color: "text-[#5A6B4F]" },
+                      { label: "C", value: `${client.activeProfile.carbsTarget}g`, color: "text-[#B8907A]" },
+                      { label: "F", value: `${client.activeProfile.fatTarget}g`, color: "text-[#C4724E]" },
                     ].map(({ label, value, color }) => (
                       <div key={label}>
                         <p className={cn("font-medium tabular-nums", color)}>{value}</p>
-                        <p className="text-slate-400">{label}</p>
+                        <p className="text-slate-400 dark:text-[#6A6460]">{label}</p>
                       </div>
                     ))}
                   </div>

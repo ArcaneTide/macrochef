@@ -66,7 +66,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
   return (
     <div className="max-w-2xl space-y-6">
       {/* Client info */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
+      <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow space-y-5">
         <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
           {t("Client Info", lang)}
         </h2>
@@ -85,7 +85,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
       </div>
 
       {/* Initial target profile */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
+      <div className="rounded-2xl border border-[#E8E0D4] bg-white p-6 shadow space-y-5">
         <div>
           <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
             {t("Initial Macro Targets", lang)}
@@ -133,7 +133,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         <Button variant="outline" onClick={() => router.push("/clients")} disabled={isPending}>
           {t("Cancel", lang)}
         </Button>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Create Client", lang)}
         </Button>
@@ -193,7 +193,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
       )}
       <div className="flex gap-3">
         <Button variant="outline" onClick={onCancel} disabled={isPending}>{t("Cancel", lang)}</Button>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Save", lang)}
         </Button>

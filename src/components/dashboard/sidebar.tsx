@@ -45,7 +45,7 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
     <aside className="flex h-full w-60 flex-col bg-slate-950 text-slate-100">
       {/* Logo */}
       <div className="flex items-center gap-2.5 px-5 py-5 border-b border-slate-800 shadow-[0_1px_0_0_rgba(16,185,129,0.15)]">
-        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-500 shadow-sm">
+        <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#7A8B6F] shadow-sm">
           <Lock className="h-4 w-4 text-white" />
         </div>
         <span className="text-base font-semibold tracking-tight text-white">MacroLock</span>
@@ -75,7 +75,7 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
               className={cn(
                 "flex items-center gap-3 rounded-xl px-3 py-2 text-sm font-medium transition-colors",
                 isActive
-                  ? "bg-emerald-600 text-white shadow-sm"
+                  ? "bg-[#7A8B6F] text-white shadow-sm"
                   : "text-slate-400 hover:bg-slate-800 hover:text-slate-100"
               )}
             >

@@ -45,7 +45,7 @@ function StatCard({
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-2xl border bg-white p-5 shadow-sm hover:shadow-md transition-all border-l-4 group"
+      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-[#242424] p-5 shadow-sm hover:shadow-md transition-all border-l-4 group"
       style={{ borderColor: "var(--color-sand)", borderLeftColor: accentColor }}
     >
       <div
@@ -215,7 +215,7 @@ export default async function HomePage() {
                 <li key={key}>
                   <Link
                     href={href}
-                    className="flex items-center gap-3 rounded-xl border bg-white px-4 py-3 text-sm font-medium shadow-sm transition-all hover:shadow-md"
+                    className="flex items-center gap-3 rounded-xl border bg-white dark:bg-[#2A2A2A] px-4 py-3 text-sm font-medium shadow-sm transition-all hover:shadow-md"
                     style={{ borderColor: "var(--color-sand)", color: "var(--color-charcoal)" }}
                   >
                     <span
@@ -275,7 +275,7 @@ export default async function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
         {/* Active Clients panel */}
-        <div className="lg:col-span-3 rounded-2xl border bg-white shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
+        <div className="lg:col-span-3 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
           <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
             <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--color-charcoal)" }}>
               {t("Active Clients", lang)}
@@ -317,7 +317,7 @@ export default async function HomePage() {
                   <Link
                     key={client.id}
                     href={`/clients/${client.id}`}
-                    className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[#FDFBF8] group"
+                    className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
                     style={{ borderColor: "var(--color-sand)" }}
                   >
                     <div className="flex items-center gap-3">
@@ -354,7 +354,7 @@ export default async function HomePage() {
         </div>
 
         {/* Recent Activity panel */}
-        <div className="lg:col-span-2 rounded-2xl border bg-white shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
+        <div className="lg:col-span-2 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
           <div className="px-6 py-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
             <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--color-charcoal)" }}>
               {t("Recent Activity", lang)}
@@ -377,7 +377,7 @@ export default async function HomePage() {
                   <Link
                     key={idx}
                     href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
-                    className="flex items-start gap-3 px-6 py-3 transition-colors hover:bg-[#FDFBF8] group"
+                    className="flex items-start gap-3 px-6 py-3 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
                   >
                     <div
                       className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
