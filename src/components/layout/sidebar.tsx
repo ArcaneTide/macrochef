@@ -13,7 +13,6 @@ import {
   LogOut,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 import { LANG_COOKIE, type Lang } from "@/lib/language-client";
 import { t, type TranslationKey } from "@/lib/translations";
 
@@ -53,11 +52,8 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
 
       {/* Coach info */}
       <div className="px-5 py-4 border-b border-slate-800">
-        <p className="text-xs text-slate-400 uppercase tracking-wider mb-0.5">Coach</p>
-        <p className="text-sm font-medium text-slate-100 truncate">{userName}</p>
-        {userEmail && (
-          <p className="text-xs text-slate-500 truncate mt-0.5">{userEmail}</p>
-        )}
+        <p className="text-base font-semibold text-white truncate">{userName}</p>
+        <span className="rounded-full bg-emerald-600/30 px-2 py-0.5 text-xs font-medium text-emerald-400">Coach</span>
       </div>
 
       {/* Nav */}
@@ -86,8 +82,8 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
         })}
       </nav>
 
-      {/* Language toggle */}
-      <div className="px-3 pb-1 border-t border-slate-800 pt-3">
+      {/* Bottom actions */}
+      <div className="px-3 py-4 border-t border-slate-800 space-y-0.5">
         <button
           onClick={toggleLang}
           className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
@@ -95,18 +91,13 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
           <span className="text-base leading-none">{lang === "en" ? "🇬🇷" : "🇬🇧"}</span>
           <span>{lang === "en" ? "Ελληνικά" : "English"}</span>
         </button>
-      </div>
-
-      {/* Sign out */}
-      <div className="px-3 py-4">
-        <Button
-          variant="ghost"
-          className="w-full justify-start gap-3 px-3 text-slate-400 hover:bg-slate-800 hover:text-slate-100"
+        <button
           onClick={() => signOut({ callbackUrl: "/login" })}
+          className="w-full flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-slate-400 hover:bg-slate-800 hover:text-slate-100 transition-colors"
         >
           <LogOut className="h-4 w-4 shrink-0" />
           {t("Sign out", lang)}
-        </Button>
+        </button>
       </div>
     </aside>
   );
