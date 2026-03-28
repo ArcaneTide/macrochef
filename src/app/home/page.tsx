@@ -340,30 +340,27 @@ export default async function HomePage() {
 
             {activity.length === 0 ? (
               <div className="px-6 py-10 text-center">
-                <p className="text-sm text-slate-400">{t("Nothing yet", lang)}</p>
+                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 mx-auto mb-3">
+                  <Clock className="h-5 w-5 text-slate-400" />
+                </div>
+                <p className="text-sm font-medium text-slate-600">{t("Nothing yet", lang)}</p>
+                <p className="text-xs text-slate-400 mt-1">{t("Recent activity empty hint", lang)}</p>
               </div>
             ) : (
               <div className="divide-y divide-slate-100">
                 {activity.map((item, idx) => (
-                  <Link
+                  <div
                     key={idx}
-                    href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
-                    className="flex items-start gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group"
+                    className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group"
                   >
                     <div className={cn(
-                      "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg",
+                      "flex h-8 w-8 shrink-0 items-center justify-center rounded-lg",
                       item.kind === "recipe" ? "bg-emerald-50 text-emerald-600" : "bg-blue-50 text-blue-600"
                     )}>
-                      {item.kind === "recipe" ? (
-                        <BookOpen className="h-3.5 w-3.5" />
-                      ) : (
-                        <Users className="h-3.5 w-3.5" />
-                      )}
+                      {item.kind === "recipe" ? <BookOpen className="h-3.5 w-3.5" /> : <Users className="h-3.5 w-3.5" />}
                     </div>
                     <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium text-slate-800 truncate group-hover:text-slate-900">
-                        {item.kind === "recipe" ? item.title : item.name}
-                      </p>
+                      <p className="text-sm font-medium text-slate-800 truncate">{item.kind === "recipe" ? item.title : item.name}</p>
                       <div className="flex items-center gap-2 mt-0.5">
                         <Badge
                           variant="outline"
@@ -378,14 +375,17 @@ export default async function HomePage() {
                         </Badge>
                         <span className="flex items-center gap-1 text-xs text-slate-400">
                           <Clock className="h-3 w-3" />
-                          {item.date.toLocaleDateString("en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
+                          {item.date.toLocaleDateString("en-US", { month: "short", day: "numeric" })}
                         </span>
                       </div>
                     </div>
-                  </Link>
+                    <Link
+                      href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
+                      className="shrink-0 rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-medium text-slate-500 hover:border-emerald-300 hover:text-emerald-600 transition-colors opacity-0 group-hover:opacity-100"
+                    >
+                      {item.kind === "recipe" ? t("Edit", lang) : t("View", lang)}
+                    </Link>
+                  </div>
                 ))}
               </div>
             )}
