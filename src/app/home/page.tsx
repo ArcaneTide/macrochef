@@ -288,32 +288,41 @@ export default async function HomePage() {
               <div className="divide-y divide-slate-100">
                 {activeClients.map((client) => {
                   const profile = client.targetProfiles[0] ?? null;
+                  const hasNoPlan = client._count.mealPlans === 0;
+                  const initials = client.name.split(" ").map((n: string) => n[0]).slice(0, 2).join("").toUpperCase();
                   return (
                     <Link
                       key={client.id}
                       href={`/clients/${client.id}`}
-                      className="flex items-center justify-between px-6 py-3.5 hover:bg-slate-50 transition-colors group"
+                      className={cn(
+                        "flex items-center justify-between px-6 py-3.5 hover:bg-slate-50 transition-colors group border-l-2",
+                        hasNoPlan ? "border-l-amber-400" : "border-l-transparent"
+                      )}
                     >
-                      <div>
-                        <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">
-                          {client.name}
-                        </p>
-                        <p className="text-xs text-slate-400 mt-0.5">
-                          {profile
-                            ? `${profile.calorieTarget} ${t("kcal target", lang)}`
-                            : t("No target profile", lang)}
-                          {client._count.mealPlans > 0 && (
-                            <span className="ml-2 text-slate-300">·</span>
-                          )}
-                          {client._count.mealPlans > 0 && (
-                            <span className="ml-2">
-                              {client._count.mealPlans}{" "}
-                              {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
-                            </span>
-                          )}
-                        </p>
+                      <div className="flex items-center gap-3">
+                        <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blue-100 text-blue-700 text-xs font-bold">
+                          {initials}
+                        </div>
+                        <div>
+                          <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">{client.name}</p>
+                          <div className="flex items-center gap-1.5 mt-0.5">
+                            {profile ? (
+                              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">{profile.calorieTarget} kcal</span>
+                            ) : (
+                              <span className="text-xs text-slate-400">{t("No target profile", lang)}</span>
+                            )}
+                            {!hasNoPlan && (
+                              <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-xs text-emerald-600">{client._count.mealPlans} {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}</span>
+                            )}
+                          </div>
+                        </div>
                       </div>
-                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400" />
+                      <div className="flex items-center gap-2">
+                        {hasNoPlan && (
+                          <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-700">{t("No plan", lang)}</span>
+                        )}
+                        <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400" />
+                      </div>
                     </Link>
                   );
                 })}

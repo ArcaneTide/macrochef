@@ -204,6 +204,7 @@ const dict = {
   "View all":                { en: "View all",                el: "Προβολή όλων" },
   "kcal target":             { en: "kcal target",             el: "kcal στόχος" },
   "No target profile":       { en: "No profile",              el: "Χωρίς προφίλ" },
+  "No plan":                 { en: "No plan",                 el: "Χωρίς πλάνο" },
   "recipe singular":         { en: "recipe",                  el: "συνταγή" },
   "recipe plural":           { en: "recipes",                 el: "συνταγές" },
   "client singular":         { en: "client",                  el: "πελάτης" },
