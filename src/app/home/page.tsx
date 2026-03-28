@@ -197,28 +197,29 @@ export default async function HomePage() {
           ].filter((s) => !s.done);
           if (steps.length === 0) return null;
           return (
-            <div className="mb-8 rounded-2xl border border-emerald-200 bg-emerald-50 p-6 sm:p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600">
-                  <Sparkles className="h-5 w-5 text-white" />
+            <div className="mb-8 rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+              <div className="flex items-center gap-3 px-6 py-3.5 border-b border-slate-100 bg-slate-50">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600">
+                  <Sparkles className="h-4 w-4 text-white" />
                 </div>
                 <div>
-                  <h2 className="text-base font-semibold text-emerald-900">{t("Welcome to MacroLock", lang)}</h2>
-                  <p className="text-sm text-emerald-700">{t("Get started in three steps", lang)}</p>
+                  <h2 className="text-sm font-semibold text-slate-900">{t("Welcome to MacroLock", lang)}</h2>
+                  <p className="text-xs text-slate-400">{t("Get started in three steps", lang)}</p>
                 </div>
               </div>
-              <ol className="space-y-3">
+              <ol className="divide-y divide-slate-100">
                 {steps.map(({ key, label, href, icon: Icon }) => (
                   <li key={key}>
                     <Link
                       href={href}
-                      className="flex items-center gap-3 rounded-lg border border-emerald-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 shadow-sm hover:border-emerald-400 hover:shadow-md transition-all"
+                      className="flex items-center gap-3 px-6 py-3.5 hover:bg-slate-50 transition-colors group"
                     >
                       <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-bold text-white">
                         {key}
                       </span>
                       <Icon className="h-4 w-4 text-slate-400 shrink-0" />
-                      {label}
+                      <span className="text-sm font-medium text-slate-700 group-hover:text-slate-900">{label}</span>
+                      <ChevronRight className="h-4 w-4 text-slate-300 group-hover:text-slate-400 ml-auto" />
                     </Link>
                   </li>
                 ))}
