@@ -171,6 +171,7 @@ const dict = {
   "Set as Active Profile":   { en: "Set as Active Profile",   el: "Ορισμός ως Ενεργό Προφίλ" },
   "Plan runs 7 days":        { en: "Plan runs 7 days · ends", el: "Το πλάνο διαρκεί 7 ημέρες · λήγει" },
   "Create Plan":             { en: "Create Plan",             el: "Δημιουργία Πλάνου" },
+  "Add plan":                { en: "Add plan",                el: "Προσθήκη πλάνου" },
   "Target:":                 { en: "Target:",                 el: "Στόχος:" },
 
   // ── Ingredient categories ─────────────────────────────────
