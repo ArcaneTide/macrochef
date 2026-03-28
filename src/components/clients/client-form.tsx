@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createClient, updateClient } from "@/app/(dashboard)/clients/actions";
+import { createClient, updateClient } from "@/app/(main)/clients/actions";
 import { t, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────

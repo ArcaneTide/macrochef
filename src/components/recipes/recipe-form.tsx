@@ -39,7 +39,7 @@ import {
   createRecipe,
   updateRecipe,
   type RecipeFormInput,
-} from "@/app/(dashboard)/recipes/actions";
+} from "@/app/(main)/recipes/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────

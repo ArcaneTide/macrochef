@@ -13,7 +13,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { archiveRecipe } from "@/app/(dashboard)/recipes/actions";
+import { archiveRecipe } from "@/app/(main)/recipes/actions";
 import { t, type Lang } from "@/lib/translations";
 
 export function ArchiveRecipeButton({ id, title, lang }: { id: string; title: string; lang: Lang }) {

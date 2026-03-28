@@ -12,7 +12,7 @@ export default async function NotFound() {
         <p className="text-xl font-semibold text-slate-800 mb-2">{t("Page not found", lang)}</p>
         <p className="text-slate-500 mb-8">{t("Page not found description", lang)}</p>
         <Button asChild>
-          <Link href="/dashboard">{t("Go to Dashboard", lang)}</Link>
+          <Link href="/home">{t("Go to Home", lang)}</Link>
         </Button>
       </div>
     </div>

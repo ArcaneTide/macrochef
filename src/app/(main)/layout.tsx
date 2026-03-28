@@ -1,10 +1,10 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Sidebar } from "@/components/dashboard/sidebar";
-import { MobileNav } from "@/components/dashboard/mobile-nav";
+import { Sidebar } from "@/components/layout/sidebar";
+import { MobileNav } from "@/components/layout/mobile-nav";
 import { getLang } from "@/lib/language";
 
-export default async function DashboardLayout({
+export default async function MainLayout({
   children,
 }: {
   children: React.ReactNode;

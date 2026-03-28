@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import { EditClientForm, type ClientInitialData } from "@/components/clients/client-form";
 import { NewProfileForm } from "@/components/clients/new-profile-form";
-import { archiveClient } from "@/app/(dashboard)/clients/actions";
+import { archiveClient } from "@/app/(main)/clients/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 export type TargetProfile = {

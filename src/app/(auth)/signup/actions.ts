@@ -47,7 +47,7 @@ export async function signupAction(
   await signIn("credentials", {
     email,
     password,
-    redirectTo: "/dashboard",
+    redirectTo: "/home",
   });
 
   return null;

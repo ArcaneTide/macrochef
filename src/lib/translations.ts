@@ -2,7 +2,7 @@ export type Lang = "en" | "el";
 
 const dict = {
   // ── Nav ──────────────────────────────────────────────────
-  "Dashboard":               { en: "Dashboard",               el: "Πίνακας Ελέγχου" },
+  "Home":                    { en: "Home",                    el: "Αρχική" },
   "Recipes":                 { en: "Recipes",                 el: "Συνταγές" },
   "Clients":                 { en: "Clients",                 el: "Πελάτες" },
   "Ingredients":             { en: "Ingredients",             el: "Υλικά" },
@@ -24,7 +24,7 @@ const dict = {
   "Restore":                 { en: "Restore",                 el: "Επαναφορά" },
   "Assign":                  { en: "Assign",                  el: "Ανάθεση" },
   "Try again":               { en: "Try again",               el: "Δοκίμασε ξανά" },
-  "Go to Dashboard":         { en: "Go to Dashboard",         el: "Μετάβαση στον Πίνακα" },
+  "Go to Home":              { en: "Go to Home",              el: "Μετάβαση στην Αρχική" },
 
   // ── Form labels ───────────────────────────────────────────
   "Search":                  { en: "Search...",               el: "Αναζήτηση..." },
@@ -86,7 +86,7 @@ const dict = {
   "Fit score help":          { en: "How closely this matches the daily macro target", el: "Πόσο ταιριάζει με τον ημερήσιο στόχο" },
   "Assign Recipe":           { en: "Assign Recipe",           el: "Ανάθεση Συνταγής" },
 
-  // ── Dashboard greetings ───────────────────────────────────
+  // ── Greetings ─────────────────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },
   "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες ξανά" },
 

@@ -6,7 +6,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createMealPlan } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { createMealPlan } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
 
 export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lang }) {

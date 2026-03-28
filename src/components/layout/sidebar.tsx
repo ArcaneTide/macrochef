@@ -18,7 +18,7 @@ import { LANG_COOKIE, type Lang } from "@/lib/language-client";
 import { t, type TranslationKey } from "@/lib/translations";
 
 const navItems: { href: string; key: TranslationKey; icon: React.ElementType }[] = [
-  { href: "/dashboard",   key: "Dashboard",   icon: LayoutDashboard },
+  { href: "/home",        key: "Home",        icon: LayoutDashboard },
   { href: "/recipes",     key: "Recipes",     icon: BookOpen },
   { href: "/clients",     key: "Clients",     icon: Users },
   { href: "/ingredients", key: "Ingredients", icon: Package },
@@ -64,8 +64,8 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
       <nav className="flex-1 px-3 py-4 space-y-0.5">
         {navItems.map(({ href, key, icon: Icon }) => {
           const isActive =
-            href === "/dashboard"
-              ? pathname === "/dashboard"
+            href === "/home"
+              ? pathname === "/home"
               : pathname.startsWith(href);
           return (
             <Link

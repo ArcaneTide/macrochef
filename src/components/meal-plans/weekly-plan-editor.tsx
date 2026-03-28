@@ -5,12 +5,12 @@ import { Plus, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type MacroTotals } from "@/lib/macros";
-import { removeMeal } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { removeMeal } from "@/app/(main)/clients/[id]/plans/actions";
 import {
   AssignRecipeModal,
   type RecipeOption,
 } from "@/components/meal-plans/assign-recipe-modal";
-import type { AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import type { AssignmentResult } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
 
 const DAYS_COUNT = 7;
