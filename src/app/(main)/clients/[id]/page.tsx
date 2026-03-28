@@ -39,12 +39,12 @@ export default async function ClientPage({
   return (
     <div className="p-6 sm:p-8">
       <div className="mb-6">
-        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
-          <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
+        <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-slate-500 mb-1.5">
+          <a href="/clients" className="hover:text-slate-600 dark:hover:text-slate-300 transition-colors">{t("Clients", lang)}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-slate-600 font-medium">{client.name}</span>
+          <span className="text-slate-600 dark:text-slate-300 font-medium">{client.name}</span>
         </nav>
-        <h1 className="text-2xl font-sans font-bold text-slate-900">{client.name}</h1>
+        <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-slate-100">{client.name}</h1>
       </div>
       <ClientDetail
         client={{

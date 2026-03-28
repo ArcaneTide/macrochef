@@ -32,13 +32,13 @@ export default async function IngredientsPage() {
       {/* Header */}
       <div className="flex flex-col gap-1 mb-6">
         <div className="flex items-center gap-3">
-          <h1 className="text-2xl font-sans font-bold text-slate-900 whitespace-nowrap">{t("Ingredient Library", lang)}</h1>
-          <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">
+          <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-slate-100 whitespace-nowrap">{t("Ingredient Library", lang)}</h1>
+          <span className="flex items-center gap-1 rounded-full bg-emerald-50 dark:bg-emerald-900/30 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800">
             <ShieldCheck className="h-3 w-3" />
             {verifiedCount} {t("USDA verified", lang)}
           </span>
         </div>
-        <p className="text-slate-500 text-sm">
+        <p className="text-slate-500 dark:text-slate-400 text-sm">
           {ingredients.length} {ingredients.length !== 1 ? t("ingredient plural", lang) : t("ingredient singular", lang)} · {t("Read-only library", lang)}
         </p>
       </div>

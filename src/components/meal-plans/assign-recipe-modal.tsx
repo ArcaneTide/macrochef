@@ -39,10 +39,10 @@ type Props = {
 function FitBadge({ score }: { score: number }) {
   const color =
     score >= FIT_SCORE_GREEN
-      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+      ? "text-emerald-700 bg-emerald-50 border-emerald-200 dark:text-emerald-400 dark:bg-emerald-900/30 dark:border-emerald-800"
       : score >= FIT_SCORE_AMBER
-      ? "text-amber-700 bg-amber-50 border-amber-200"
-      : "text-red-700 bg-red-50 border-red-200";
+      ? "text-amber-700 bg-amber-50 border-amber-200 dark:text-amber-400 dark:bg-amber-900/30 dark:border-amber-800"
+      : "text-red-700 bg-red-50 border-red-200 dark:text-red-400 dark:bg-red-900/30 dark:border-red-800";
   return (
     <span className={cn("text-xs font-semibold border rounded px-1.5 py-0.5 tabular-nums", color)}>
       {score}%
@@ -153,9 +153,9 @@ export function AssignRecipeModal({
           </div>
 
           {/* Recipe list */}
-          <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-100">
+          <div className="max-h-52 overflow-y-auto rounded-lg border border-slate-200 divide-y divide-slate-100 dark:border-slate-700 dark:divide-slate-700">
             {filtered.length === 0 ? (
-              <p className="text-sm text-slate-400 text-center py-6">{t("No recipes found", lang)}</p>
+              <p className="text-sm text-slate-400 text-center py-6 dark:text-slate-500">{t("No recipes found", lang)}</p>
             ) : (
               filtered.map((recipe) => (
                 <button
@@ -165,13 +165,13 @@ export function AssignRecipeModal({
                   className={cn(
                     "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
                     selectedId === recipe.id
-                      ? "bg-emerald-50"
-                      : "hover:bg-slate-50"
+                      ? "bg-emerald-50 dark:bg-emerald-900/20"
+                      : "hover:bg-slate-50 dark:hover:bg-slate-700/50"
                   )}
                 >
                   <div>
-                    <p className="text-sm font-medium text-slate-800">{recipe.title}</p>
-                    <p className="text-xs text-slate-400 mt-0.5">
+                    <p className="text-sm font-medium text-slate-800 dark:text-slate-200">{recipe.title}</p>
+                    <p className="text-xs text-slate-400 mt-0.5 dark:text-slate-500">
                       {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
                       <span className="text-blue-500">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
                       <span className="text-amber-500">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
@@ -189,7 +189,7 @@ export function AssignRecipeModal({
 
           {/* Servings + preview */}
           {selected && (
-            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3">
+            <div className="rounded-lg border border-slate-200 bg-slate-50 p-4 space-y-3 dark:border-slate-700 dark:bg-slate-800">
               <div className="flex items-center gap-4">
                 <div className="flex-1 space-y-1">
                   <Label htmlFor="servings">{t("Servings", lang)}</Label>
@@ -203,14 +203,14 @@ export function AssignRecipeModal({
                     onKeyDown={(e) => {
                       if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
                     }}
-                    className="w-28 bg-white"
+                    className="w-28 bg-white dark:bg-slate-900"
                   />
                 </div>
                 {fitScore !== null && targetMacros && (
                   <div className="text-right">
-                    <p className="text-xs text-slate-500 mb-1">{t("Fit score", lang)}</p>
+                    <p className="text-xs text-slate-500 mb-1 dark:text-slate-400">{t("Fit score", lang)}</p>
                     <FitBadge score={fitScore} />
-                    <p className="text-xs text-slate-400 mt-1 max-w-[120px]">
+                    <p className="text-xs text-slate-400 mt-1 max-w-[120px] dark:text-slate-500">
                       {t("Fit score help", lang)}
                     </p>
                   </div>
@@ -220,28 +220,28 @@ export function AssignRecipeModal({
               {previewMacros && (
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
                   <div>
-                    <p className="font-semibold text-slate-800 tabular-nums">
+                    <p className="font-semibold text-slate-800 tabular-nums dark:text-slate-200">
                       {previewMacros.calories}
                     </p>
-                    <p className="text-slate-400">kcal</p>
+                    <p className="text-slate-400 dark:text-slate-500">kcal</p>
                   </div>
                   <div>
                     <p className="font-semibold text-blue-600 tabular-nums">
                       {previewMacros.protein}g
                     </p>
-                    <p className="text-slate-400">{t("Protein", lang)}</p>
+                    <p className="text-slate-400 dark:text-slate-500">{t("Protein", lang)}</p>
                   </div>
                   <div>
                     <p className="font-semibold text-amber-600 tabular-nums">
                       {previewMacros.carbs}g
                     </p>
-                    <p className="text-slate-400">{t("Carbs", lang)}</p>
+                    <p className="text-slate-400 dark:text-slate-500">{t("Carbs", lang)}</p>
                   </div>
                   <div>
                     <p className="font-semibold text-orange-600 tabular-nums">
                       {previewMacros.fat}g
                     </p>
-                    <p className="text-slate-400">{t("Fat", lang)}</p>
+                    <p className="text-slate-400 dark:text-slate-500">{t("Fat", lang)}</p>
                   </div>
                 </div>
               )}
@@ -249,7 +249,7 @@ export function AssignRecipeModal({
           )}
 
           {error && (
-            <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700">
+            <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-3 py-2.5 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0" />
               {error}
             </div>

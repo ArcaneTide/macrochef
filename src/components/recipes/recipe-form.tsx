@@ -171,7 +171,7 @@ function UnitToggle({
             "h-5 px-1.5 rounded-full text-[10px] font-medium transition-colors",
             unit === u
               ? "bg-emerald-600 text-white"
-              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+              : "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:hover:bg-slate-600"
           )}
         >
           {u === "pinch" ? t("pinch", lang) : u}
@@ -266,20 +266,20 @@ function MacroSummary({
   const hasData = macros.calories > 0;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">{t("Per Serving", lang)}</h3>
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow dark:border-slate-700 dark:bg-slate-800">
+      <h3 className="text-sm font-semibold text-slate-900 mb-4 dark:text-slate-100">{t("Per Serving", lang)}</h3>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">{t("Calories", lang)}</span>
-          <span className="text-lg font-semibold text-slate-900 tabular-nums">
+          <span className="text-sm text-slate-500 dark:text-slate-400">{t("Calories", lang)}</span>
+          <span className="text-lg font-semibold text-slate-900 tabular-nums dark:text-slate-100">
             {hasData ? fmtMacro(macros.calories) : "—"}
-            {hasData && <span className="text-xs font-normal text-slate-400 ml-1">kcal</span>}
+            {hasData && <span className="text-xs font-normal text-slate-400 ml-1 dark:text-slate-500">kcal</span>}
           </span>
         </div>
 
         {/* Macro bar */}
-        <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
+        <div className="flex h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-700">
           <div
             className="bg-blue-500 transition-all duration-300"
             style={{ width: `${proteinPct}%` }}
@@ -298,9 +298,9 @@ function MacroSummary({
         <div className="grid grid-cols-3 gap-2 text-center">
           {(
             [
-              { labelKey: "Protein" as const, value: macros.protein, color: "text-blue-600", bg: "bg-blue-50" },
-              { labelKey: "Carbs" as const, value: macros.carbs, color: "text-amber-600", bg: "bg-amber-50" },
-              { labelKey: "Fat" as const, value: macros.fat, color: "text-orange-600", bg: "bg-orange-50" },
+              { labelKey: "Protein" as const, value: macros.protein, color: "text-blue-600", bg: "bg-blue-50 dark:bg-blue-900/30" },
+              { labelKey: "Carbs" as const, value: macros.carbs, color: "text-amber-600", bg: "bg-amber-50 dark:bg-amber-900/30" },
+              { labelKey: "Fat" as const, value: macros.fat, color: "text-orange-600", bg: "bg-orange-50 dark:bg-orange-900/30" },
             ]
           ).map(({ labelKey, value, color, bg }) => (
             <div key={labelKey} className={cn("rounded-lg p-2", bg)}>
@@ -308,7 +308,7 @@ function MacroSummary({
                 {hasData ? fmtMacro(value) : "—"}
                 {hasData && <span className="text-xs font-normal ml-0.5">g</span>}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">{t(labelKey, lang)}</p>
+              <p className="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{t(labelKey, lang)}</p>
             </div>
           ))}
         </div>
@@ -321,7 +321,7 @@ function MacroSummary({
               { label: "C", color: "bg-amber-400", pct: carbsPct },
               { label: "F", color: "bg-orange-400", pct: fatPct },
             ].map(({ label, color, pct }) => (
-              <span key={label} className="flex items-center gap-1 text-xs text-slate-400">
+              <span key={label} className="flex items-center gap-1 text-xs text-slate-400 dark:text-slate-500">
                 <span className={cn("inline-block h-2 w-2 rounded-full", color)} />
                 {label} {pct.toFixed(0)}%
               </span>
@@ -331,7 +331,7 @@ function MacroSummary({
       </div>
 
       {!hasData && (
-        <p className="text-xs text-slate-400 text-center mt-3">
+        <p className="text-xs text-slate-400 text-center mt-3 dark:text-slate-500">
           {t("No ingredients yet", lang)}
         </p>
       )}
@@ -523,8 +523,8 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       {/* ── Left: form ── */}
       <div className="flex-1 min-w-0 space-y-6">
         {/* Basic info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
-          <h2 className="text-sm font-semibold text-slate-900 uppercase">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5 dark:border-slate-700 dark:bg-slate-800">
+          <h2 className="text-sm font-semibold text-slate-900 uppercase dark:text-slate-100">
             {t("Recipe Details", lang)}
           </h2>
 
@@ -594,13 +594,13 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
         </div>
 
         {/* Ingredients */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow dark:border-slate-700 dark:bg-slate-800">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 uppercase">
+              <h2 className="text-sm font-semibold text-slate-900 uppercase dark:text-slate-100">
                 {t("Ingredients", lang)}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 mt-0.5 dark:text-slate-500">
                 {t("Quantities are for all", lang)} {servings} {servings !== 1 ? t("serving plural", lang) : t("serving singular", lang)}
               </p>
             </div>
@@ -615,12 +615,12 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           {/* Quick-add chips */}
           {(saltIngredient || pepperIngredient) && (
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs text-slate-400">{t("Quick add", lang)}:</span>
+              <span className="text-xs text-slate-400 dark:text-slate-500">{t("Quick add", lang)}:</span>
               {saltIngredient && !selectedIds.has(saltIngredient.id) && (
                 <button
                   type="button"
                   onClick={() => addPinch(saltIngredient)}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors dark:border-slate-700 dark:bg-slate-700/50 dark:text-slate-300 dark:hover:bg-slate-700"
                 >
                   🧂 {ingDisplayName(saltIngredient, lang)}
                 </button>
@@ -629,7 +629,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 <button
                   type="button"
                   onClick={() => addPinch(pepperIngredient)}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors dark:border-slate-700 dark:bg-slate-700/50 dark:text-slate-300 dark:hover:bg-slate-700"
                 >
                   🌶️ {ingDisplayName(pepperIngredient, lang)}
                 </button>
@@ -638,13 +638,13 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           )}
 
           {rows.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+            <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg dark:border-slate-700 dark:text-slate-500">
               {t("No ingredients yet", lang)}
             </div>
           ) : (
             <div className="space-y-1">
               {/* Table header */}
-              <div className="flex items-center gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase">
+              <div className="flex items-center gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase dark:text-slate-500">
                 <span className="flex-1">{t("Ingredients", lang)}</span>
                 <span className="w-20 text-right">{t("Amount", lang)}</span>
                 <span className="w-7" />
@@ -658,16 +658,16 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 return (
                   <div
                     key={row.key}
-                    className="px-2 py-2 rounded-lg hover:bg-slate-50 group"
+                    className="px-2 py-2 rounded-lg hover:bg-slate-50 group dark:hover:bg-slate-700/50"
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-800">
+                        <p className="text-sm font-medium text-slate-800 dark:text-slate-200">
                           {ingDisplayName(ing, lang)}
                         </p>
-                        <p className="text-xs text-slate-400 tabular-nums">
+                        <p className="text-xs text-slate-400 tabular-nums dark:text-slate-500">
                           {row.unit === "pinch" ? (
-                            <span className="text-slate-400">{t("pinch", lang)} · {t("Calories", lang)}: 0</span>
+                            <span className="text-slate-400 dark:text-slate-500">{t("pinch", lang)} · {t("Calories", lang)}: 0</span>
                           ) : (
                             <>
                               {fmtMacro(macros.calories)} kcal ·{" "}
@@ -692,7 +692,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                             onChange={(v) => updateQuantity(row.key, v)}
                           />
                         ) : (
-                          <span className="inline-block w-20 text-right text-sm text-slate-400">—</span>
+                          <span className="inline-block w-20 text-right text-sm text-slate-400 dark:text-slate-500">—</span>
                         )}
                       </div>
                       <button
@@ -713,7 +713,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
 
         {/* Error */}
         {error && (
-          <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+          <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
             <AlertCircle className="h-4 w-4 shrink-0" />
             {error}
           </div>
@@ -726,16 +726,16 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           <MacroSummary rows={rows} ingredientMap={ingredientMap} servings={servings} lang={lang} />
 
           {isEditing && (
-            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-400 mb-2">{t("Status", lang)}</p>
+            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700 dark:bg-slate-800">
+              <p className="text-xs text-slate-400 mb-2 dark:text-slate-500">{t("Status", lang)}</p>
               <Badge
                 className={cn(
                   "text-xs font-medium",
                   initialData.status === "published"
-                    ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                    ? "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800"
                     : initialData.status === "archived"
-                    ? "bg-red-100 text-red-700 border-red-200"
-                    : "bg-slate-100 text-slate-600 border-slate-200"
+                    ? "bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-800"
+                    : "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600"
                 )}
                 variant="outline"
               >
@@ -749,7 +749,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
 
     {/* ── Sticky action bar ── */}
     {/* Negative margins escape the page's p-6 sm:p-8 padding so bg-white fills edge-to-edge */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 flex items-center gap-3">
+    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 flex items-center gap-3 dark:bg-slate-900 dark:border-slate-700">
       <Button
         type="button"
         variant="outline"

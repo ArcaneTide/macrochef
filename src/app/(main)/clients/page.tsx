@@ -41,8 +41,8 @@ export default async function ClientsPage() {
   return (
     <div className="p-6 sm:p-8 max-w-7xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-sans font-bold text-slate-900">{t("Clients", lang)}</h1>
-        <p className="text-slate-500 text-sm mt-1">
+        <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-slate-100">{t("Clients", lang)}</h1>
+        <p className="text-slate-500 dark:text-slate-400 text-sm mt-1">
           {t("Clients page description", lang)}
         </p>
       </div>

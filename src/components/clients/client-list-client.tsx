@@ -25,8 +25,8 @@ export type ClientListItem = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-500 border-slate-200",
+  active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
+  archived: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600",
 };
 
 export function ClientListClient({ clients, lang }: { clients: ClientListItem[]; lang: Lang }) {
@@ -44,7 +44,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
       {/* Toolbar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-6">
         <div className="relative flex-1 max-w-sm">
-          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+          <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500 pointer-events-none" />
           <Input
             placeholder={t("Search clients…", lang)}
             value={search}
@@ -52,7 +52,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
             className="pl-9"
           />
         </div>
-        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap hidden sm:block">
+        <p className="text-sm text-slate-500 dark:text-slate-400 sm:ml-auto whitespace-nowrap hidden sm:block">
           {filtered.length} {filtered.length !== 1 ? t("client plural", lang) : t("client singular", lang)}
         </p>
         <Link href="/clients/new" className="w-full sm:w-auto">
@@ -64,7 +64,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
       </div>
 
       {filtered.length === 0 ? (
-        <div className="text-center py-16 text-slate-400">
+        <div className="text-center py-16 text-slate-400 dark:text-slate-500">
           {clients.length === 0 ? (
             <div className="space-y-3">
               <p>{t("No clients yet", lang)}</p>
@@ -80,11 +80,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
-              <tr className="border-b border-slate-100 bg-slate-50 text-xs font-medium text-slate-500 uppercase tracking-wide">
+              <tr className="border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wide">
                 <th className="text-left px-4 py-3">{t("Name", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Status", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Active Macro Targets", lang)}</th>
@@ -94,17 +94,17 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                 <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100">
+            <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
               {filtered.map((client) => (
                 <tr
                   key={client.id}
-                  className="hover:bg-slate-100 cursor-pointer transition-colors even:bg-slate-50/40"
+                  className="hover:bg-slate-100 dark:hover:bg-slate-700 cursor-pointer transition-colors even:bg-slate-50/40 dark:even:bg-slate-700/20"
                   onClick={() => router.push(`/clients/${client.id}`)}
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium text-slate-900">{client.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">{client.name}</p>
                     {client.email && (
-                      <p className="text-xs text-slate-400">{client.email}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">{client.email}</p>
                     )}
                   </td>
                   <td className="px-4 py-3">
@@ -118,22 +118,22 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                       {tStatus(client.status, lang)}
                     </Badge>
                   </td>
-                  <td className="px-4 py-3 text-sm text-slate-500">
+                  <td className="px-4 py-3 text-sm text-slate-500 dark:text-slate-400">
                     {client.activeProfile?.label ?? (
-                      <span className="text-slate-300">—</span>
+                      <span className="text-slate-300 dark:text-slate-600">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-slate-600 tabular-nums">
-                    {client.activeProfile ? `${client.activeProfile.calorieTarget} kcal` : <span className="text-slate-300">—</span>}
+                  <td className="px-4 py-3 text-right text-sm text-slate-600 dark:text-slate-400 tabular-nums">
+                    {client.activeProfile ? `${client.activeProfile.calorieTarget} kcal` : <span className="text-slate-300 dark:text-slate-600">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right text-sm text-blue-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.proteinTarget}g` : <span className="text-slate-300">—</span>}
+                    {client.activeProfile ? `${client.activeProfile.proteinTarget}g` : <span className="text-slate-300 dark:text-slate-600">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right text-sm text-amber-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.carbsTarget}g` : <span className="text-slate-300">—</span>}
+                    {client.activeProfile ? `${client.activeProfile.carbsTarget}g` : <span className="text-slate-300 dark:text-slate-600">—</span>}
                   </td>
                   <td className="px-4 py-3 text-right text-sm text-orange-600 tabular-nums font-medium">
-                    {client.activeProfile ? `${client.activeProfile.fatTarget}g` : <span className="text-slate-300">—</span>}
+                    {client.activeProfile ? `${client.activeProfile.fatTarget}g` : <span className="text-slate-300 dark:text-slate-600">—</span>}
                   </td>
                 </tr>
               ))}
@@ -141,18 +141,18 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           </table>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-slate-100">
+          <div className="sm:hidden divide-y divide-slate-100 dark:divide-slate-700">
             {filtered.map((client) => (
               <div
                 key={client.id}
-                className="p-4 hover:bg-slate-50 cursor-pointer transition-colors"
+                className="p-4 hover:bg-slate-50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors"
                 onClick={() => router.push(`/clients/${client.id}`)}
               >
                 <div className="flex items-start justify-between gap-2 mb-1">
                   <div>
-                    <p className="font-medium text-slate-900">{client.name}</p>
+                    <p className="font-medium text-slate-900 dark:text-slate-100">{client.name}</p>
                     {client.email && (
-                      <p className="text-xs text-slate-400">{client.email}</p>
+                      <p className="text-xs text-slate-400 dark:text-slate-500">{client.email}</p>
                     )}
                   </div>
                   <Badge
@@ -168,14 +168,14 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                 {client.activeProfile && (
                   <div className="mt-2 grid grid-cols-4 gap-2 text-center text-xs">
                     {[
-                      { label: "Kcal", value: `${client.activeProfile.calorieTarget}`, color: "text-slate-700" },
+                      { label: "Kcal", value: `${client.activeProfile.calorieTarget}`, color: "text-slate-700 dark:text-slate-300" },
                       { label: "P", value: `${client.activeProfile.proteinTarget}g`, color: "text-blue-600" },
                       { label: "C", value: `${client.activeProfile.carbsTarget}g`, color: "text-amber-600" },
                       { label: "F", value: `${client.activeProfile.fatTarget}g`, color: "text-orange-600" },
                     ].map(({ label, value, color }) => (
                       <div key={label}>
                         <p className={cn("font-medium tabular-nums", color)}>{value}</p>
-                        <p className="text-slate-400">{label}</p>
+                        <p className="text-slate-400 dark:text-slate-500">{label}</p>
                       </div>
                     ))}
                   </div>

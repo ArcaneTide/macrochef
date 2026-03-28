@@ -66,8 +66,8 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
   return (
     <div className="max-w-2xl space-y-6">
       {/* Client info */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
-        <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow space-y-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
           {t("Client Info", lang)}
         </h2>
         <div className="space-y-1.5">
@@ -75,25 +75,25 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
           <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="email">{t("Email", lang)} <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="notes">{t("Notes", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="notes">{t("Notes", lang)} <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></Label>
           <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any relevant notes about this client…" rows={3} />
         </div>
       </div>
 
       {/* Initial target profile */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow space-y-5">
         <div>
-          <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
             {t("Initial Macro Targets", lang)}
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">{t("Daily targets", lang)}</p>
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5">{t("Daily targets", lang)}</p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="label">{t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="label">{t("Profile Label", lang)} <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></Label>
           <Input id="label" value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Cut phase, Maintenance" />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -123,7 +123,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-center gap-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-sm text-red-700 dark:text-red-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>
@@ -178,7 +178,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
         <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="edit-email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+        <Label htmlFor="edit-email">{t("Email", lang)} <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></Label>
         <Input id="edit-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div className="space-y-1.5">
@@ -186,7 +186,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
         <Textarea id="edit-notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
       </div>
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-center gap-2 rounded-lg border border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 px-4 py-3 text-sm text-red-700 dark:text-red-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>

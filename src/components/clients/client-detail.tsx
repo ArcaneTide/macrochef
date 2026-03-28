@@ -45,8 +45,8 @@ export type ClientDetailProps = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-500 border-slate-200",
+  active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
+  archived: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600",
 };
 
 function MacroRow({
@@ -62,19 +62,19 @@ function MacroRow({
 }) {
   return (
     <div className="flex items-center justify-between py-1.5">
-      <span className="text-sm text-slate-500">{label}</span>
+      <span className="text-sm text-slate-500 dark:text-slate-400">{label}</span>
       <span className={cn("text-sm font-semibold tabular-nums", color)}>
         {value}
-        <span className="text-xs font-normal ml-0.5 text-slate-400">{unit}</span>
+        <span className="text-xs font-normal ml-0.5 text-slate-400 dark:text-slate-500">{unit}</span>
       </span>
     </div>
   );
 }
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-600 border-slate-200",
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-400 border-slate-200",
+  draft: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600",
+  active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
+  archived: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-700 dark:text-slate-500 dark:border-slate-600",
 };
 
 export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProps) {
@@ -97,10 +97,10 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
   return (
     <div className="max-w-3xl space-y-6">
       {/* Client info card */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow">
         {isEditing ? (
           <>
-            <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-5">
+            <h2 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-5">
               {t("Edit Client", lang)}
             </h2>
             <EditClientForm
@@ -114,7 +114,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             <div className="flex items-start justify-between gap-4 mb-4">
               <div>
                 <div className="flex items-center gap-2.5">
-                  <h2 className="text-xl font-semibold text-slate-900">{client.name}</h2>
+                  <h2 className="text-xl font-semibold text-slate-900 dark:text-slate-100">{client.name}</h2>
                   <Badge
                     variant="outline"
                     className={cn(
@@ -126,7 +126,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                   </Badge>
                 </div>
                 {client.email && (
-                  <p className="text-sm text-slate-500 mt-0.5">{client.email}</p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400 mt-0.5">{client.email}</p>
                 )}
               </div>
               <div className="flex items-center gap-2">
@@ -158,7 +158,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               </div>
             </div>
             {client.notes && (
-              <p className="text-sm text-slate-600 bg-slate-50 rounded-lg p-3 whitespace-pre-wrap">
+              <p className="text-sm text-slate-600 dark:text-slate-400 bg-slate-50 dark:bg-slate-700/50 rounded-lg p-3 whitespace-pre-wrap">
                 {client.notes}
               </p>
             )}
@@ -167,14 +167,14 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       </div>
 
       {/* Active target profile */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <div>
-            <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
               {t("Active Macro Targets", lang)}
             </h3>
             {activeProfile?.label && (
-              <p className="text-xs text-emerald-600 font-medium mt-0.5">{activeProfile.label}</p>
+              <p className="text-xs text-emerald-600 dark:text-emerald-400 font-medium mt-0.5">{activeProfile.label}</p>
             )}
           </div>
           {!isAddingProfile && (
@@ -197,14 +197,14 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             lang={lang}
           />
         ) : activeProfile ? (
-          <div className="divide-y divide-slate-100">
-            <MacroRow label={t("Calories", lang)} value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900" />
+          <div className="divide-y divide-slate-100 dark:divide-slate-700">
+            <MacroRow label={t("Calories", lang)} value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900 dark:text-slate-100" />
             <MacroRow label={t("Protein", lang)} value={activeProfile.proteinTarget} unit="g" color="text-blue-600" />
             <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-amber-600" />
             <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-orange-600" />
           </div>
         ) : (
-          <p className="text-sm text-slate-400 text-center py-4">
+          <p className="text-sm text-slate-400 dark:text-slate-500 text-center py-4">
             {t("No active profile", lang)}
           </p>
         )}
@@ -212,21 +212,21 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
 
       {/* Profile history */}
       {pastProfiles.length > 0 && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide mb-4">
+        <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide mb-4">
             {t("Profile History", lang)}
           </h3>
           <div className="space-y-3">
             {pastProfiles.map((profile) => (
               <div
                 key={profile.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100"
+                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-slate-700/50 border border-slate-100 dark:border-slate-700"
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-700">
+                  <p className="text-sm font-medium text-slate-700 dark:text-slate-300">
                     {profile.label ?? t("Untitled profile", lang)}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
                     {new Date(profile.createdAt).toLocaleDateString("en-US", {
                       month: "short",
@@ -235,7 +235,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                     })}
                   </p>
                 </div>
-                <div className="text-right text-xs text-slate-500 tabular-nums space-y-0.5">
+                <div className="text-right text-xs text-slate-500 dark:text-slate-400 tabular-nums space-y-0.5">
                   <p>{profile.calorieTarget} kcal</p>
                   <p>
                     <span className="text-blue-500">{profile.proteinTarget}g P</span>
@@ -252,9 +252,9 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       )}
 
       {/* Meal Plans */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+      <div className="rounded-2xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 p-6 shadow">
         <div className="flex items-center justify-between mb-4">
-          <h3 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+          <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 uppercase tracking-wide">
             {t("Meal Plans", lang)}
           </h3>
           <Button
@@ -269,20 +269,20 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
         </div>
 
         {plans.length === 0 ? (
-          <p className="text-sm text-slate-400">{t("No meal plans yet", lang)}</p>
+          <p className="text-sm text-slate-400 dark:text-slate-500">{t("No meal plans yet", lang)}</p>
         ) : (
           <div className="space-y-2">
             {plans.map((plan) => (
               <a
                 key={plan.id}
                 href={`/clients/${client.id}/plans/${plan.id}`}
-                className="flex items-center justify-between p-3 rounded-lg border border-slate-100 bg-slate-50 hover:bg-slate-100 transition-colors group"
+                className="flex items-center justify-between p-3 rounded-lg border border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group"
               >
                 <div>
-                  <p className="text-sm font-medium text-slate-800 group-hover:text-slate-900">
+                  <p className="text-sm font-medium text-slate-800 dark:text-slate-200 group-hover:text-slate-900 dark:group-hover:text-slate-100">
                     {plan.title ?? t("Untitled Plan", lang)}
                   </p>
-                  <p className="text-xs text-slate-400 mt-0.5 flex items-center gap-1">
+                  <p className="text-xs text-slate-400 dark:text-slate-500 mt-0.5 flex items-center gap-1">
                     <CalendarDays className="h-3 w-3" />
                     {new Date(plan.startDate).toLocaleDateString("en-US", {
                       month: "short",
@@ -306,7 +306,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                   >
                     {tStatus(plan.status, lang)}
                   </Badge>
-                  <ChevronRight className="h-4 w-4 text-slate-400" />
+                  <ChevronRight className="h-4 w-4 text-slate-400 dark:text-slate-500" />
                 </div>
               </a>
             ))}

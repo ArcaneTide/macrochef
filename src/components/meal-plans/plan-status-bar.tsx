@@ -10,9 +10,9 @@ import { updateMealPlanStatus } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-600 border-slate-200",
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-400 border-slate-200",
+  draft: "bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700 dark:text-slate-400 dark:border-slate-600",
+  active: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-400 dark:border-emerald-800",
+  archived: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-slate-700 dark:text-slate-500 dark:border-slate-600",
 };
 
 type Props = {
@@ -42,7 +42,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
       <a
         href={`/api/plans/${planId}/pdf`}
         download
-        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700"
       >
         <Download className="h-3.5 w-3.5" />
         {t("Download PDF", lang)}

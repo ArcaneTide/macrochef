@@ -73,15 +73,15 @@ export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lan
           onChange={(e) => setStartDate(e.target.value)}
         />
         {endDate && (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-slate-400">
             {t("Plan runs 7 days", lang)}{" "}
-            <span className="font-medium text-slate-700">{endDate}</span>
+            <span className="font-medium text-slate-700 dark:text-slate-300">{endDate}</span>
           </p>
         )}
       </div>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+        <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-800 dark:bg-red-900/30 dark:text-red-400">
           <AlertCircle className="h-4 w-4 shrink-0" />
           {error}
         </div>

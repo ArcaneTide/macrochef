@@ -1,7 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Sidebar } from "@/components/layout/sidebar";
-import { MobileNav } from "@/components/layout/mobile-nav";
+import { TopNav } from "@/components/layout/topnav";
 import { getLang } from "@/lib/language";
 
 export default async function MainLayout({
@@ -13,25 +12,11 @@ export default async function MainLayout({
   if (!session?.user) redirect("/login");
 
   return (
-    <div className="flex h-screen bg-slate-50">
-      {/* Desktop sidebar — hidden on mobile */}
-      <div className="hidden lg:flex">
-        <Sidebar
-          userName={session.user.name ?? "Coach"}
-          userEmail={session.user.email ?? undefined}
-          lang={lang}
-        />
+    <div className="flex flex-col h-screen bg-slate-100 dark:bg-slate-950">
+      <div className="shrink-0 px-4 pt-3">
+        <TopNav userName={session.user.name ?? "Coach"} lang={lang} />
       </div>
-
-      {/* Mobile top bar + slide-over */}
-      <MobileNav
-        userName={session.user.name ?? "Coach"}
-        userEmail={session.user.email ?? undefined}
-        lang={lang}
-      />
-
-      {/* Main — top padding on mobile to clear the fixed header */}
-      <main className="flex-1 overflow-y-auto pt-14 lg:pt-8">{children}</main>
+      <main className="flex-1 overflow-y-auto">{children}</main>
     </div>
   );
 }
