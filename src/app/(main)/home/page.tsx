@@ -6,7 +6,6 @@ import {
   CalendarDays,
   Plus,
   ChevronRight,
-  Clock,
   Sparkles,
 } from "lucide-react";
 import { auth } from "@/lib/auth";
@@ -80,6 +79,62 @@ const CLIENT_STATUS_STYLES: Record<string, string> = {
   archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 
+type ActivityItem =
+  | { kind: "recipe"; id: string; title: string; status: string; date: Date }
+  | { kind: "client"; id: string; name: string; status: string; date: Date };
+
+function ActivityGroup({ items, lang }: { items: ActivityItem[]; lang: import("@/lib/translations").Lang }) {
+  return (
+    <div className="divide-y" style={{ "--tw-divide-opacity": "1" } as React.CSSProperties}>
+      {items.map((item, idx) => (
+        <Link
+          key={idx}
+          href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
+          className="flex items-start gap-3 px-6 py-3 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
+        >
+          <div
+            className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+            style={{
+              background: item.kind === "recipe" ? "var(--color-olive-light)" : "var(--color-clay-light)",
+              color: item.kind === "recipe" ? "var(--color-olive)" : "var(--color-clay)",
+            }}
+          >
+            {item.kind === "recipe" ? (
+              <BookOpen className="h-3.5 w-3.5" />
+            ) : (
+              <Users className="h-3.5 w-3.5" />
+            )}
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium truncate" style={{ color: "var(--color-charcoal)" }}>
+              {item.kind === "recipe" ? item.title : item.name}
+            </p>
+            <div className="flex items-center gap-2 mt-0.5">
+              <Badge
+                variant="outline"
+                className={cn(
+                  "text-xs font-medium border h-4 px-1.5",
+                  item.kind === "recipe"
+                    ? (RECIPE_STATUS_STYLES[item.status] ?? RECIPE_STATUS_STYLES.draft)
+                    : (CLIENT_STATUS_STYLES[item.status] ?? CLIENT_STATUS_STYLES.active)
+                )}
+              >
+                {tStatus(item.status, lang)}
+              </Badge>
+              <span className="text-xs" style={{ color: "var(--color-charcoal-soft)" }}>
+                {item.date.toLocaleDateString(lang === "el" ? "el-GR" : "en-US", {
+                  month: "short",
+                  day: "numeric",
+                })}
+              </span>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+}
+
 export default async function HomePage() {
   const [session, lang] = await Promise.all([auth(), getLang()]);
   if (!session?.user?.id) redirect("/login");
@@ -134,10 +189,6 @@ export default async function HomePage() {
     }),
   ]);
 
-  type ActivityItem =
-    | { kind: "recipe"; id: string; title: string; status: string; date: Date }
-    | { kind: "client"; id: string; name: string; status: string; date: Date };
-
   const activity: ActivityItem[] = [
     ...recentRecipes.map((r) => ({
       kind: "recipe" as const,
@@ -159,6 +210,11 @@ export default async function HomePage() {
 
   const firstName = session.user.name?.split(" ")[0] ?? "Coach";
 
+  // Split activity into today vs earlier
+  const todayStr = now.toDateString();
+  const todayItems = activity.filter((a) => a.date.toDateString() === todayStr);
+  const earlierItems = activity.filter((a) => a.date.toDateString() !== todayStr);
+
   return (
     <div className="py-8">
       {/* Header */}
@@ -171,14 +227,24 @@ export default async function HomePage() {
             {dateLabel}
           </p>
         </div>
-        <Link
-          href="/recipes/new"
-          className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:opacity-90"
-          style={{ background: "var(--color-olive)" }}
-        >
-          <Plus className="h-4 w-4" />
-          {t("New Recipe", lang)}
-        </Link>
+        <div className="flex gap-2">
+          <Link
+            href="/recipes/new"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:opacity-90"
+            style={{ background: "var(--color-olive)" }}
+          >
+            <Plus className="h-4 w-4" />
+            {t("New Recipe", lang)}
+          </Link>
+          <Link
+            href="/clients/new"
+            className="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-medium text-white shadow-sm transition-colors hover:opacity-90"
+            style={{ background: "var(--color-clay)" }}
+          >
+            <Plus className="h-4 w-4" />
+            {t("New Client", lang)}
+          </Link>
+        </div>
       </div>
 
       {/* Onboarding card */}
@@ -244,9 +310,9 @@ export default async function HomePage() {
           value={totalClients}
           icon={Users}
           href="/clients"
-          accentColor="#60a5fa"
-          iconBg="#eff6ff"
-          iconColor="#3b82f6"
+          accentColor="var(--color-clay)"
+          iconBg="var(--color-clay-light)"
+          iconColor="var(--color-clay)"
         />
         <StatCard
           label={t("Published Recipes", lang)}
@@ -332,14 +398,20 @@ export default async function HomePage() {
                           {client.name}
                         </p>
                         <p className="text-xs mt-0.5" style={{ color: "var(--color-charcoal-soft)" }}>
-                          {profile
-                            ? `${profile.calorieTarget} ${t("kcal target", lang)}`
-                            : t("No target profile", lang)}
+                          {profile ? (
+                            <span className="font-semibold" style={{ color: "var(--color-charcoal)" }}>
+                              {profile.calorieTarget} kcal
+                            </span>
+                          ) : (
+                            t("No target profile", lang)
+                          )}
                           {client._count.mealPlans > 0 && (
                             <>
                               <span className="mx-1.5" style={{ color: "var(--color-sand)" }}>·</span>
-                              {client._count.mealPlans}{" "}
-                              {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
+                              <span className="font-semibold" style={{ color: "var(--color-charcoal)" }}>
+                                {client._count.mealPlans}{" "}
+                                {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
+                              </span>
                             </>
                           )}
                         </p>
@@ -369,57 +441,22 @@ export default async function HomePage() {
             </div>
           ) : (
             <>
-              <p className="px-6 pt-3 pb-1 text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-charcoal-soft)" }}>
-                Earlier
-              </p>
-              <div className="divide-y" style={{ "--tw-divide-opacity": "1" } as React.CSSProperties}>
-                {activity.map((item, idx) => (
-                  <Link
-                    key={idx}
-                    href={item.kind === "recipe" ? `/recipes/${item.id}/edit` : `/clients/${item.id}`}
-                    className="flex items-start gap-3 px-6 py-3 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
-                  >
-                    <div
-                      className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
-                      style={{
-                        background: item.kind === "recipe" ? "var(--color-olive-light)" : "#eff6ff",
-                        color: item.kind === "recipe" ? "var(--color-olive)" : "#3b82f6",
-                      }}
-                    >
-                      {item.kind === "recipe" ? (
-                        <BookOpen className="h-3.5 w-3.5" />
-                      ) : (
-                        <Users className="h-3.5 w-3.5" />
-                      )}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-sm font-medium truncate" style={{ color: "var(--color-charcoal)" }}>
-                        {item.kind === "recipe" ? item.title : item.name}
-                      </p>
-                      <div className="flex items-center gap-2 mt-0.5">
-                        <Badge
-                          variant="outline"
-                          className={cn(
-                            "text-xs font-medium border h-4 px-1.5",
-                            item.kind === "recipe"
-                              ? (RECIPE_STATUS_STYLES[item.status] ?? RECIPE_STATUS_STYLES.draft)
-                              : (CLIENT_STATUS_STYLES[item.status] ?? CLIENT_STATUS_STYLES.active)
-                          )}
-                        >
-                          {tStatus(item.status, lang)}
-                        </Badge>
-                        <span className="flex items-center gap-1 text-xs" style={{ color: "var(--color-charcoal-soft)" }}>
-                          <Clock className="h-3 w-3" />
-                          {item.date.toLocaleDateString(lang === "el" ? "el-GR" : "en-US", {
-                            month: "short",
-                            day: "numeric",
-                          })}
-                        </span>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
+              {todayItems.length > 0 && (
+                <>
+                  <p className="px-6 pt-3 pb-1 text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-charcoal-soft)" }}>
+                    {t("Today", lang)}
+                  </p>
+                  <ActivityGroup items={todayItems} lang={lang} />
+                </>
+              )}
+              {earlierItems.length > 0 && (
+                <>
+                  <p className="px-6 pt-3 pb-1 text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-charcoal-soft)" }}>
+                    {t("Earlier", lang)}
+                  </p>
+                  <ActivityGroup items={earlierItems} lang={lang} />
+                </>
+              )}
             </>
           )}
         </div>

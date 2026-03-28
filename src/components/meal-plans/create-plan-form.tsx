@@ -53,7 +53,7 @@ export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lan
     <div className="max-w-md space-y-5">
       <div className="space-y-1.5">
         <Label htmlFor="plan-title">
-          {t("Plan Title", lang)} <span className="text-slate-400 font-normal">(optional)</span>
+          {t("Plan Title", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span>
         </Label>
         <Input
           id="plan-title"
@@ -73,9 +73,9 @@ export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lan
           onChange={(e) => setStartDate(e.target.value)}
         />
         {endDate && (
-          <p className="text-xs text-slate-500">
+          <p className="text-xs text-slate-500 dark:text-[#A0998E]">
             {t("Plan runs 7 days", lang)}{" "}
-            <span className="font-medium text-slate-700">{endDate}</span>
+            <span className="font-medium text-slate-700 dark:text-[#D4CEC7]">{endDate}</span>
           </p>
         )}
       </div>

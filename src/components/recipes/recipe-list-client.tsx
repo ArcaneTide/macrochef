@@ -35,9 +35,9 @@ export type RecipeListItem = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-600 border-slate-200",
-  published: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-red-100 text-red-700 border-red-200",
+  draft: "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
+  published: "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 
 function MacroCell({

@@ -42,7 +42,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
       <a
         href={`/api/plans/${planId}/pdf`}
         download
-        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 dark:border-[#3A3A3A] bg-white dark:bg-[#242424] px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-[#C0B8B0] shadow-sm hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
       >
         <Download className="h-3.5 w-3.5" />
         {t("Download PDF", lang)}

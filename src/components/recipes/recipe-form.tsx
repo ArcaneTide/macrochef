@@ -171,7 +171,7 @@ function UnitToggle({
             "h-5 px-1.5 rounded-full text-[10px] font-medium transition-colors",
             unit === u
               ? "bg-[#7A8B6F] text-white"
-              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+              : "bg-slate-100 dark:bg-[#3A3A3A] text-slate-500 dark:text-[#A0998E] hover:bg-slate-200 dark:hover:bg-[#4A4A4A]"
           )}
         >
           {u === "pinch" ? t("pinch", lang) : u}

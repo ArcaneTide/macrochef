@@ -219,6 +219,8 @@ const dict = {
   "Overview":                { en: "Overview",                el: "Επισκόπηση" },
   "Workspace":               { en: "Workspace",               el: "Χώρος Εργασίας" },
   "View":                    { en: "View",                    el: "Προβολή" },
+  "Today":                   { en: "Today",                   el: "Σήμερα" },
+  "Earlier":                 { en: "Earlier",                 el: "Παλαιότερα" },
   "Archive client confirm":  { en: "They will no longer appear in your active clients.", el: "Δεν θα εμφανίζεται στους ενεργούς πελάτες." },
 
   // ── Recipe form placeholders ──────────────────────────────

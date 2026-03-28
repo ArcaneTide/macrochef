@@ -55,7 +55,7 @@ export function NewProfileForm({
     <div className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="p-label">
-          {t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span>
+          {t("Profile Label", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span>
         </Label>
         <Input
           id="p-label"
