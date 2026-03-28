@@ -258,10 +258,10 @@ export default async function HomePage() {
         </div>
 
         <p className="text-sm font-semibold text-slate-500 mb-3">Workspace</p>
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 items-start">
 
           {/* Client overview (wider) */}
-          <div className="lg:col-span-3 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
+          <div className="lg:col-span-3 rounded-2xl border border-slate-200 bg-white shadow">
             <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <div className="flex items-center gap-2">
                 <h2 className="text-base font-semibold text-slate-900">{t("Active Clients", lang)}</h2>
@@ -269,7 +269,7 @@ export default async function HomePage() {
               </div>
               <Link
                 href="/clients"
-                className="text-xs text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
+                className="text-sm text-emerald-600 hover:text-emerald-700 font-medium transition-colors"
               >
                 {t("View all", lang)}
               </Link>
@@ -333,8 +333,8 @@ export default async function HomePage() {
           </div>
 
           {/* Recent activity (narrower) */}
-          <div className="lg:col-span-2 min-h-[320px] rounded-2xl border border-slate-200 bg-white shadow">
-            <div className="px-6 py-4 border-b border-slate-100">
+          <div className="lg:col-span-2 rounded-2xl border border-slate-200 bg-white shadow">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-slate-100">
               <h2 className="text-base font-semibold text-slate-900">{t("Recent Activity", lang)}</h2>
             </div>
 
