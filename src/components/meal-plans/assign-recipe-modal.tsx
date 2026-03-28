@@ -13,7 +13,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { calcFitScore, FIT_SCORE_GREEN, FIT_SCORE_AMBER, type MacroTotals } from "@/lib/macros";
-import { assignMeal, type AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { assignMeal, type AssignmentResult } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
 
 

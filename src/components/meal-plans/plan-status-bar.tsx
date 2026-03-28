@@ -6,7 +6,7 @@ import { Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { updateMealPlanStatus } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { updateMealPlanStatus } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 const STATUS_STYLES: Record<string, string> = {
