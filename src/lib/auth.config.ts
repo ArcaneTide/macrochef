@@ -9,9 +9,10 @@ export const authConfig: NextAuthConfig = {
   },
   providers: [],
   callbacks: {
-    authorized({ auth }) {
-      // Return true if the user is authenticated, false to redirect to signIn page
-      return !!auth?.user;
+    authorized({ auth, request }) {
+      if (auth?.user) return true;
+      // Redirect to /login without appending callbackUrl
+      return Response.redirect(new URL("/login", request.url));
     },
     jwt({ token, user }) {
       if (user) {
