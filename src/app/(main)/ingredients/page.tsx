@@ -33,7 +33,7 @@ export default async function IngredientsPage() {
       <div className="flex flex-col gap-1 mb-6">
         <div className="flex items-center gap-3">
           <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB] whitespace-nowrap">{t("Ingredient Library", lang)}</h1>
-          <span className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 border border-emerald-200">
+          <span className="flex items-center gap-1 rounded-full bg-[#EDF1EB] px-2.5 py-0.5 text-xs font-medium text-[#5A6B4F] border border-[#c5d0bf]">
             <ShieldCheck className="h-3 w-3" />
             {verifiedCount} {t("USDA verified", lang)}
           </span>

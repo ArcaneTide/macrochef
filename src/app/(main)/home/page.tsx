@@ -324,8 +324,8 @@ export default async function HomePage() {
           value={totalActivePlans}
           icon={CalendarDays}
           href="/clients"
-          iconBg="#fffbeb"
-          iconColor="#d97706"
+          iconBg="#FBF0EB"
+          iconColor="#C4724E"
         />
       </div>
 

@@ -39,9 +39,9 @@ type Props = {
 function FitBadge({ score }: { score: number }) {
   const color =
     score >= FIT_SCORE_GREEN
-      ? "text-emerald-700 bg-emerald-50 border-emerald-200"
+      ? "text-[#5A6B4F] bg-[#EDF1EB] border-[#c5d0bf]"
       : score >= FIT_SCORE_AMBER
-      ? "text-amber-700 bg-amber-50 border-amber-200"
+      ? "text-[#B8907A] bg-[#F5EDE8] border-[#dfc5b3]"
       : "text-red-700 bg-red-50 border-red-200";
   return (
     <span className={cn("text-xs font-semibold border rounded px-1.5 py-0.5 tabular-nums", color)}>

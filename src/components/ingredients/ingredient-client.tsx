@@ -50,7 +50,7 @@ const CATEGORY_STYLES: Record<IngredientCategory, string> = {
   protein: "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]",
   carb: "bg-[#F5EDE8] text-[#B8907A] border-[#dfc5b3]",
   fat: "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
-  vegetable: "bg-green-100 text-green-700 border-green-200",
+  vegetable: "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]",
   fruit: "bg-pink-100 text-pink-700 border-pink-200",
   dairy: "bg-purple-100 text-purple-700 border-purple-200",
   seasoning: "bg-slate-100 text-slate-600 border-slate-200",

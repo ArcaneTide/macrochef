@@ -103,19 +103,19 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="protein">
-              {t("Protein", lang)} <span className="text-blue-500">(g)</span>
+              {t("Protein", lang)} <span className="text-[#5A6B4F]">(g)</span>
             </Label>
             <Input id="protein" type="number" min={0} value={proteinTarget} onChange={(e) => setProteinTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="150" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="carbs">
-              {t("Carbs", lang)} <span className="text-amber-500">(g)</span>
+              {t("Carbs", lang)} <span className="text-[#B8907A]">(g)</span>
             </Label>
             <Input id="carbs" type="number" min={0} value={carbsTarget} onChange={(e) => setCarbsTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="200" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="fat">
-              {t("Fat", lang)} <span className="text-orange-500">(g)</span>
+              {t("Fat", lang)} <span className="text-[#C4724E]">(g)</span>
             </Label>
             <Input id="fat" type="number" min={0} value={fatTarget} onChange={(e) => setFatTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="70" />
           </div>

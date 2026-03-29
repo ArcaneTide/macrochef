@@ -78,7 +78,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-protein">
-            {t("Protein", lang)} <span className="text-blue-500">(g)</span>
+            {t("Protein", lang)} <span className="text-[#5A6B4F]">(g)</span>
           </Label>
           <Input
             id="p-protein"
@@ -91,7 +91,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-carbs">
-            {t("Carbs", lang)} <span className="text-amber-500">(g)</span>
+            {t("Carbs", lang)} <span className="text-[#B8907A]">(g)</span>
           </Label>
           <Input
             id="p-carbs"
@@ -104,7 +104,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-fat">
-            {t("Fat", lang)} <span className="text-orange-500">(g)</span>
+            {t("Fat", lang)} <span className="text-[#C4724E]">(g)</span>
           </Label>
           <Input
             id="p-fat"

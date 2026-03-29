@@ -33,8 +33,8 @@ export type ClientListItem = {
 };
 
 const CLIENT_STATUS_STYLES: Record<string, string> = {
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-500 border-slate-200",
+  active: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  archived: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
 const PLAN_STATUS_STYLES: Record<string, string> = {

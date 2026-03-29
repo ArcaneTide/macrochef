@@ -50,16 +50,16 @@ export type MealPlanPdfProps = {
 // ─── Styles ───────────────────────────────────────────────
 
 const c = {
-  emerald: "#059669",
+  olive: "#7A8B6F",
   slate900: "#0f172a",
   slate700: "#334155",
   slate500: "#64748b",
   slate400: "#94a3b8",
   slate200: "#e2e8f0",
   slate100: "#f1f5f9",
-  blue: "#5A6B4F",
-  amber: "#B8907A",
-  orange: "#C4724E",
+  protein: "#5A6B4F",
+  carbs: "#B8907A",
+  fat: "#C4724E",
   white: "#ffffff",
 };
 
@@ -78,7 +78,7 @@ const s = StyleSheet.create({
     marginBottom: 20,
     paddingBottom: 12,
     borderBottomWidth: 1.5,
-    borderBottomColor: c.emerald,
+    borderBottomColor: c.olive,
   },
   headerTop: {
     flexDirection: "row",
@@ -92,12 +92,12 @@ const s = StyleSheet.create({
     color: c.slate900,
   },
   clientBadge: {
-    backgroundColor: "#d1fae5",
+    backgroundColor: "#EDF1EB",
     borderRadius: 4,
     paddingHorizontal: 8,
     paddingVertical: 3,
     fontSize: 8,
-    color: c.emerald,
+    color: c.olive,
     fontFamily: "Helvetica-Bold",
   },
   headerSub: {
@@ -291,15 +291,15 @@ function MacroChips({ macros }: { macros: MacroTotals }) {
         <Text style={s.macroLbl}>kcal</Text>
       </View>
       <View style={s.macroChip}>
-        <Text style={[s.macroNum, { color: c.blue }]}>{fmt(macros.protein, 1)}g</Text>
+        <Text style={[s.macroNum, { color: c.protein }]}>{fmt(macros.protein, 1)}g</Text>
         <Text style={s.macroLbl}>P</Text>
       </View>
       <View style={s.macroChip}>
-        <Text style={[s.macroNum, { color: c.amber }]}>{fmt(macros.carbs, 1)}g</Text>
+        <Text style={[s.macroNum, { color: c.carbs }]}>{fmt(macros.carbs, 1)}g</Text>
         <Text style={s.macroLbl}>C</Text>
       </View>
       <View style={s.macroChip}>
-        <Text style={[s.macroNum, { color: c.orange }]}>{fmt(macros.fat, 1)}g</Text>
+        <Text style={[s.macroNum, { color: c.fat }]}>{fmt(macros.fat, 1)}g</Text>
         <Text style={s.macroLbl}>F</Text>
       </View>
     </View>
@@ -424,21 +424,21 @@ export function MealPlanPdfDocument({
             value={weeklyAvg.protein}
             unit="g"
             target={target?.proteinTarget}
-            color={c.blue}
+            color={c.protein}
           />
           <SummaryCard
             label="Avg Daily Carbs"
             value={weeklyAvg.carbs}
             unit="g"
             target={target?.carbsTarget}
-            color={c.amber}
+            color={c.carbs}
           />
           <SummaryCard
             label="Avg Daily Fat"
             value={weeklyAvg.fat}
             unit="g"
             target={target?.fatTarget}
-            color={c.orange}
+            color={c.fat}
           />
         </View>
 
