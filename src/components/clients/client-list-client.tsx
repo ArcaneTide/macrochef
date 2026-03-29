@@ -7,6 +7,13 @@ import { Plus, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
@@ -15,6 +22,7 @@ export type ClientListItem = {
   name: string;
   email: string | null;
   status: string;
+  latestPlanStatus: string;
   activeProfile: {
     label: string | null;
     calorieTarget: number;
@@ -24,25 +32,53 @@ export type ClientListItem = {
   } | null;
 };
 
-const STATUS_STYLES: Record<string, string> = {
+const CLIENT_STATUS_STYLES: Record<string, string> = {
   active: "bg-emerald-100 text-emerald-700 border-emerald-200",
   archived: "bg-slate-100 text-slate-500 border-slate-200",
 };
 
+const PLAN_STATUS_STYLES: Record<string, string> = {
+  active: "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  draft: "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
+  none: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
+};
+
+function PlanStatusBadge({ status, lang }: { status: string; lang: Lang }) {
+  const label =
+    status === "none"
+      ? t("No plan", lang)
+      : tStatus(status, lang);
+  return (
+    <Badge
+      variant="outline"
+      className={cn("text-xs font-medium border", PLAN_STATUS_STYLES[status] ?? PLAN_STATUS_STYLES.none)}
+    >
+      {label}
+    </Badge>
+  );
+}
+
 export function ClientListClient({ clients, lang }: { clients: ClientListItem[]; lang: Lang }) {
   const router = useRouter();
   const [search, setSearch] = useState("");
+  const [planFilter, setPlanFilter] = useState("all");
 
   const filtered = useMemo(() => {
-    if (!search.trim()) return clients;
-    const q = search.trim().toLowerCase();
-    return clients.filter((c) => c.name.toLowerCase().includes(q));
-  }, [clients, search]);
+    let list = clients;
+    if (search.trim()) {
+      const q = search.trim().toLowerCase();
+      list = list.filter((c) => c.name.toLowerCase().includes(q));
+    }
+    if (planFilter !== "all") {
+      list = list.filter((c) => c.latestPlanStatus === planFilter);
+    }
+    return list;
+  }, [clients, search, planFilter]);
 
   return (
     <div>
       {/* Toolbar */}
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-6">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-4">
         <div className="relative flex-1 max-w-sm">
           <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
           <Input
@@ -52,6 +88,17 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
             className="pl-9"
           />
         </div>
+        <Select value={planFilter} onValueChange={setPlanFilter}>
+          <SelectTrigger className="w-full sm:w-52">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t("All clients", lang)}</SelectItem>
+            <SelectItem value="none">{t("No plan", lang)}</SelectItem>
+            <SelectItem value="draft">{t("Draft", lang)}</SelectItem>
+            <SelectItem value="active">{t("Active", lang)}</SelectItem>
+          </SelectContent>
+        </Select>
         <p className="text-sm text-slate-500 dark:text-[#A0998E] sm:ml-auto whitespace-nowrap hidden sm:block">
           {filtered.length} {filtered.length !== 1 ? t("client plural", lang) : t("client singular", lang)}
         </p>
@@ -87,6 +134,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
               <tr className="border-b border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 <th className="text-left px-4 py-3">{t("Name", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Status", lang)}</th>
+                <th className="text-left px-4 py-3">{t("Plan Status", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Active Macro Targets", lang)}</th>
                 <th className="text-right px-4 py-3">{t("Calories", lang)}</th>
                 <th className="text-right px-4 py-3">{t("Protein", lang)}</th>
@@ -112,11 +160,14 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                       variant="outline"
                       className={cn(
                         "text-xs font-medium border",
-                        STATUS_STYLES[client.status] ?? STATUS_STYLES.active
+                        CLIENT_STATUS_STYLES[client.status] ?? CLIENT_STATUS_STYLES.active
                       )}
                     >
                       {tStatus(client.status, lang)}
                     </Badge>
+                  </td>
+                  <td className="px-4 py-3">
+                    <PlanStatusBadge status={client.latestPlanStatus} lang={lang} />
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500 dark:text-[#A0998E]">
                     {client.activeProfile?.label ?? (
@@ -155,15 +206,18 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                       <p className="text-xs text-slate-400 dark:text-[#6A6460]">{client.email}</p>
                     )}
                   </div>
-                  <Badge
-                    variant="outline"
-                    className={cn(
-                      "text-xs font-medium border shrink-0",
-                      STATUS_STYLES[client.status] ?? STATUS_STYLES.active
-                    )}
-                  >
-                    {tStatus(client.status, lang)}
-                  </Badge>
+                  <div className="flex flex-col items-end gap-1 shrink-0">
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "text-xs font-medium border",
+                        CLIENT_STATUS_STYLES[client.status] ?? CLIENT_STATUS_STYLES.active
+                      )}
+                    >
+                      {tStatus(client.status, lang)}
+                    </Badge>
+                    <PlanStatusBadge status={client.latestPlanStatus} lang={lang} />
+                  </div>
                 </div>
                 {client.activeProfile && (
                   <div className="mt-2 grid grid-cols-4 gap-2 text-center text-xs">

@@ -214,9 +214,9 @@ export default async function HomePage() {
   const earlierItems = activity.filter((a) => a.date.toDateString() !== todayStr);
 
   return (
-    <div className="py-8">
+    <div className="py-5">
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--color-charcoal)" }}>
             {t(greetingKey, lang)}, {firstName}
@@ -255,7 +255,7 @@ export default async function HomePage() {
         if (steps.length === 0) return null;
         return (
           <div
-            className="mb-8 rounded-2xl border p-6 sm:p-8"
+            className="mb-5 rounded-2xl border p-5"
             style={{ borderColor: "var(--color-clay)", background: "var(--color-clay-light)" }}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -299,10 +299,10 @@ export default async function HomePage() {
       })()}
 
       {/* Overview section */}
-      <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-charcoal-soft)" }}>
+      <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--color-charcoal-soft)" }}>
         {t("Overview", lang)}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <StatCard
           label={t("Active Clients", lang)}
           value={totalClients}
@@ -330,10 +330,10 @@ export default async function HomePage() {
       </div>
 
       {/* Workspace section */}
-      <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-charcoal-soft)" }}>
+      <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--color-charcoal-soft)" }}>
         {t("Workspace", lang)}
       </p>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
         {/* Active Clients panel */}
         <div className="lg:col-span-3 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>

@@ -26,7 +26,7 @@ export default async function NewPlanPage({
   if (!client || client.coachId !== session.user.id) notFound();
 
   return (
-    <div className="p-6 sm:p-8">
+    <div className="py-5 sm:py-6">
       <div className="mb-6">
         <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-[#6A6460] mb-1.5">
           <a href="/clients" className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{t("Clients", lang)}</a>

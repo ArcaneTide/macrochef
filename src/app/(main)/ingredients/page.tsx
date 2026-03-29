@@ -28,7 +28,7 @@ export default async function IngredientsPage() {
   const verifiedCount = ingredients.filter((i) => i.isVerified).length;
 
   return (
-    <div className="p-6 sm:p-8 max-w-7xl">
+    <div className="py-5 sm:py-6 max-w-7xl">
       {/* Header */}
       <div className="flex flex-col gap-1 mb-6">
         <div className="flex items-center gap-3">
