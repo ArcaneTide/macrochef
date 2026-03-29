@@ -155,7 +155,7 @@ const dict = {
   "Amount":                  { en: "Amount",                  el: "Ποσότητα" },
   "pinch":                   { en: "pinch",                   el: "πρέζα" },
   "Quick add":               { en: "Quick add",               el: "Γρήγορη προσθήκη" },
-  "All statuses":            { en: "All statuses",            el: "Όλες οι καταστάσεις" },
+  "All statuses":            { en: "All statuses",            el: "Όλες οι συνταγές" },
   "Search recipes…":         { en: "Search recipes…",         el: "Αναζήτηση συνταγών…" },
   "Search clients…":         { en: "Search clients…",         el: "Αναζήτηση πελατών…" },
   "Search ingredients…":     { en: "Search ingredients…",     el: "Αναζήτηση υλικών…" },

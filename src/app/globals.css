@@ -48,7 +48,7 @@
 }
 
 :root {
-  --background: #FDFBF8;
+  --background: #f5f3ee;
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
@@ -86,7 +86,7 @@
   --color-clay-light: #F5EDE8;
   --color-olive: #7A8B6F;
   --color-olive-light: #EDF1EB;
-  --color-warm-white: #FDFBF8;
+  --color-warm-white: #f5f3ee;
   --color-sand: #E8E0D4;
   --color-charcoal: #2C2C2C;
   --color-charcoal-soft: #4A4A4A;

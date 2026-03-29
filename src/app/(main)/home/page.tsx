@@ -29,7 +29,6 @@ function StatCard({
   value,
   icon: Icon,
   href,
-  accentColor,
   iconBg,
   iconColor,
 }: {
@@ -37,21 +36,20 @@ function StatCard({
   value: number;
   icon: React.ElementType;
   href: string;
-  accentColor: string;
   iconBg: string;
   iconColor: string;
 }) {
   return (
     <Link
       href={href}
-      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-[#242424] p-5 shadow-sm hover:shadow-md transition-all border-l-4 group"
-      style={{ borderColor: "var(--color-sand)", borderLeftColor: accentColor }}
+      className="flex items-center gap-4 rounded-2xl border bg-white dark:bg-[#242424] p-5 shadow-sm hover:shadow-md transition-all group"
+      style={{ borderColor: "var(--color-sand)" }}
     >
       <div
-        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+        className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl"
         style={{ background: iconBg }}
       >
-        <Icon className="h-5 w-5" style={{ color: iconColor }} />
+        <Icon className="h-6 w-6" style={{ color: iconColor }} />
       </div>
       <div className="flex-1 min-w-0">
         <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--color-charcoal)" }}>
@@ -310,7 +308,6 @@ export default async function HomePage() {
           value={totalClients}
           icon={Users}
           href="/clients"
-          accentColor="var(--color-clay)"
           iconBg="var(--color-clay-light)"
           iconColor="var(--color-clay)"
         />
@@ -319,7 +316,6 @@ export default async function HomePage() {
           value={totalRecipes}
           icon={BookOpen}
           href="/recipes"
-          accentColor="var(--color-olive)"
           iconBg="var(--color-olive-light)"
           iconColor="var(--color-olive)"
         />
@@ -328,7 +324,6 @@ export default async function HomePage() {
           value={totalActivePlans}
           icon={CalendarDays}
           href="/clients"
-          accentColor="#f59e0b"
           iconBg="#fffbeb"
           iconColor="#d97706"
         />
@@ -383,40 +378,40 @@ export default async function HomePage() {
                   <Link
                     key={client.id}
                     href={`/clients/${client.id}`}
-                    className="flex items-center justify-between px-6 py-3.5 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
+                    className="flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-[#f5f3ee] dark:hover:bg-[#2A2A2A] group"
                     style={{ borderColor: "var(--color-sand)" }}
                   >
-                    <div className="flex items-center gap-3">
-                      <div
-                        className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white text-xs font-semibold"
-                        style={{ background: "var(--color-clay)" }}
-                      >
-                        {clientInitials}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium" style={{ color: "var(--color-charcoal)" }}>
-                          {client.name}
-                        </p>
-                        <p className="text-xs mt-0.5" style={{ color: "var(--color-charcoal-soft)" }}>
-                          {profile ? (
-                            <span className="font-semibold" style={{ color: "var(--color-charcoal)" }}>
-                              {profile.calorieTarget} kcal
-                            </span>
-                          ) : (
-                            t("No target profile", lang)
-                          )}
-                          {client._count.mealPlans > 0 && (
-                            <>
-                              <span className="mx-1.5" style={{ color: "var(--color-sand)" }}>·</span>
-                              <span className="font-semibold" style={{ color: "var(--color-charcoal)" }}>
-                                {client._count.mealPlans}{" "}
-                                {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
-                              </span>
-                            </>
-                          )}
-                        </p>
-                      </div>
+                    <div
+                      className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white text-xs font-semibold"
+                      style={{ background: "var(--color-clay)" }}
+                    >
+                      {clientInitials}
                     </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-medium" style={{ color: "var(--color-charcoal)" }}>
+                        {client.name}
+                      </p>
+                      <p className="text-xs mt-0.5" style={{ color: "var(--color-charcoal-soft)" }}>
+                        {client._count.mealPlans > 0 ? (
+                          <>
+                            {client._count.mealPlans}{" "}
+                            {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
+                          </>
+                        ) : (
+                          t("No target profile", lang)
+                        )}
+                        <span className="mx-1.5" style={{ color: "var(--color-sand)" }}>·</span>
+                        {tStatus("active", lang)}
+                      </p>
+                    </div>
+                    {profile && (
+                      <span
+                        className="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full"
+                        style={{ background: "var(--color-clay-light)", color: "var(--color-clay)" }}
+                      >
+                        {profile.calorieTarget} kcal
+                      </span>
+                    )}
                     <ChevronRight className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: "var(--color-clay)" }} />
                   </Link>
                 );
