@@ -5,7 +5,7 @@ import { ClientListClient } from "@/components/clients/client-list-client";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Clients — MacroLock" };
+export const metadata = { title: "Clients — MacroPie" };
 
 export default async function ClientsPage() {
   const [session, lang] = await Promise.all([auth(), getLang()]);

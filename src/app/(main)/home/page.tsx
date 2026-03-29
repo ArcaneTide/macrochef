@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
 import { t, tStatus } from "@/lib/translations";
 
-export const metadata = { title: "Home — MacroLock" };
+export const metadata = { title: "Home — MacroPie" };
 
 function getGreetingKey(hour: number): "Good morning" | "Good afternoon" | "Good evening" | "Good night" {
   if (hour >= 5 && hour < 12) return "Good morning";
@@ -296,7 +296,7 @@ export default async function HomePage() {
               </div>
               <div>
                 <h2 className="text-base font-semibold" style={{ color: "var(--color-charcoal)" }}>
-                  {t("Welcome to MacroLock", lang)}
+                  {t("Welcome to MacroPie", lang)}
                 </h2>
                 <p className="text-sm" style={{ color: "var(--color-charcoal-soft)" }}>
                   {t("Get started in three steps", lang)}

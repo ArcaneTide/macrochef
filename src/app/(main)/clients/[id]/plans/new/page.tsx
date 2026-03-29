@@ -6,7 +6,7 @@ import { CreatePlanForm } from "@/components/meal-plans/create-plan-form";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "New Meal Plan — MacroLock" };
+export const metadata = { title: "New Meal Plan — MacroPie" };
 
 export default async function NewPlanPage({
   params,

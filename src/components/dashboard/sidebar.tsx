@@ -48,7 +48,7 @@ export function Sidebar({ userName, userEmail, lang, onClose }: SidebarProps) {
         <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#7A8B6F] shadow-sm">
           <Lock className="h-4 w-4 text-white" />
         </div>
-        <span className="text-base font-semibold tracking-tight text-white">MacroLock</span>
+        <span className="text-base font-semibold tracking-tight text-white">MacroPie</span>
       </div>
 
       {/* Coach info */}
