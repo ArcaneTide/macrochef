@@ -8,6 +8,7 @@ import { MealPlanStatus, MealSlot } from "@prisma/client";
 import { calcRecipeMacrosPerServing, type MacroTotals } from "@/lib/macros";
 
 export type ActionResult = { success: true; id: string } | { success: false; error: string };
+export type DuplicateResult = { success: true; id: string; clientId: string } | { success: false; error: string };
 
 export type AssignmentResult = {
   id: string;
@@ -167,6 +168,71 @@ export async function assignMeal(
   } catch (err) {
     console.error("assignMeal:", err);
     return { success: false, error: "Failed to assign meal" };
+  }
+}
+
+export async function duplicatePlan(
+  sourcePlanId: string,
+  targetClientId: string,
+  startDate: string,
+  title?: string
+): Promise<DuplicateResult> {
+  try {
+    const coachId = await getAuthedCoachId();
+
+    // Verify source plan ownership and fetch assignments
+    const source = await db.mealPlan.findUnique({
+      where: { id: sourcePlanId },
+      include: {
+        client: { select: { coachId: true } },
+        mealAssignments: {
+          select: {
+            dayIndex: true,
+            mealSlot: true,
+            recipeId: true,
+            servings: true,
+            ingredientOverrides: true,
+          },
+        },
+      },
+    });
+    if (!source || source.client.coachId !== coachId) throw new Error("Plan not found");
+
+    // Verify target client belongs to same coach
+    const targetClient = await db.client.findUnique({
+      where: { id: targetClientId },
+      select: { coachId: true },
+    });
+    if (!targetClient || targetClient.coachId !== coachId) throw new Error("Client not found");
+
+    const start = new Date(startDate);
+    const end = new Date(startDate);
+    end.setDate(end.getDate() + 6);
+
+    const newPlan = await db.mealPlan.create({
+      data: {
+        clientId: targetClientId,
+        title: title?.trim() || null,
+        status: "draft",
+        startDate: start,
+        endDate: end,
+        mealAssignments: {
+          create: source.mealAssignments.map((a) => ({
+            dayIndex: a.dayIndex,
+            mealSlot: a.mealSlot,
+            recipeId: a.recipeId,
+            servings: a.servings,
+            ingredientOverrides: a.ingredientOverrides ?? undefined,
+          })),
+        },
+      },
+    });
+
+    revalidatePath(`/clients/${targetClientId}`);
+    return { success: true, id: newPlan.id, clientId: targetClientId };
+  } catch (err) {
+    console.error("duplicatePlan:", err);
+    return { success: false, error: "Failed to duplicate plan" };
   }
 }
 

@@ -226,6 +226,11 @@ const dict = {
   "All clients":             { en: "All clients",              el: "Όλοι οι πελάτες" },
   "No plan":                 { en: "No plan",                  el: "Χωρίς πλάνο" },
   "Expired":                 { en: "Expired",                  el: "Ληγμένο" },
+  "Duplicate Plan":          { en: "Duplicate Plan",           el: "Αντιγραφή Πλάνου" },
+  "Duplicate":               { en: "Duplicate",                el: "Αντιγραφή" },
+  "Select client":           { en: "Select client",            el: "Επιλογή πελάτη" },
+  "Copy of":                 { en: "Copy of",                  el: "Αντίγραφο —" },
+  "Duplicating…":            { en: "Duplicating…",             el: "Αντιγραφή…" },
 
   // ── Recipe form placeholders ──────────────────────────────
   "e.g. Grilled Chicken & Rice":    { en: "e.g. Grilled Chicken & Rice",       el: "π.χ. Κοτόπουλο & Ρύζι" },
