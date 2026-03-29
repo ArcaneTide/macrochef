@@ -19,13 +19,16 @@ type Props = {
   planId: string;
   clientId: string;
   currentStatus: "draft" | "active" | "archived";
+  endDate: string;
   lang: Lang;
 };
 
-export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) {
+export function PlanStatusBar({ planId, clientId, currentStatus, endDate, lang }: Props) {
   const router = useRouter();
   const [status, setStatus] = useState(currentStatus);
   const [isPending, startTransition] = useTransition();
+
+  const isExpired = status === "active" && endDate < new Date().toISOString().slice(0, 10);
 
   function changeStatus(next: "draft" | "active" | "archived") {
     startTransition(async () => {
@@ -50,9 +53,12 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
 
       <Badge
         variant="outline"
-        className={cn("text-xs font-medium border", STATUS_STYLES[status])}
+        className={cn(
+          "text-xs font-medium border",
+          isExpired ? "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]" : STATUS_STYLES[status]
+        )}
       >
-        {tStatus(status, lang)}
+        {isExpired ? t("Expired", lang) : tStatus(status, lang)}
       </Badge>
 
       {status === "draft" && (
@@ -73,7 +79,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
           variant="outline"
           onClick={() => changeStatus("archived")}
           disabled={isPending}
-          className="text-slate-500"
+          className={isExpired ? "border-[#e8c0a8] text-[#C4724E] hover:bg-[#FBF0EB]" : "text-slate-500"}
         >
           {isPending && <Loader2 className="h-3.5 w-3.5 animate-spin mr-1" />}
           {t("Archive", lang)}

@@ -225,6 +225,7 @@ const dict = {
   "Plan Status":             { en: "Plan",                     el: "Πλάνο" },
   "All clients":             { en: "All clients",              el: "Όλοι οι πελάτες" },
   "No plan":                 { en: "No plan",                  el: "Χωρίς πλάνο" },
+  "Expired":                 { en: "Expired",                  el: "Ληγμένο" },
 
   // ── Recipe form placeholders ──────────────────────────────
   "e.g. Grilled Chicken & Rice":    { en: "e.g. Grilled Chicken & Rice",       el: "π.χ. Κοτόπουλο & Ρύζι" },

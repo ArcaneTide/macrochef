@@ -72,10 +72,19 @@ function MacroRow({
 }
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  draft: "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]",
-  active: "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  draft:    "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]",
+  active:   "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  expired:  "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
   archived: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
+
+function planDisplayStatus(plan: MealPlanSummary): string {
+  if (plan.status === "active") {
+    const today = new Date().toISOString().slice(0, 10);
+    if (plan.endDate < today) return "expired";
+  }
+  return plan.status;
+}
 
 export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProps) {
   const router = useRouter();
@@ -301,10 +310,10 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                     variant="outline"
                     className={cn(
                       "text-xs font-medium border",
-                      PLAN_STATUS_STYLES[plan.status] ?? PLAN_STATUS_STYLES.draft
+                      PLAN_STATUS_STYLES[planDisplayStatus(plan)] ?? PLAN_STATUS_STYLES.draft
                     )}
                   >
-                    {tStatus(plan.status, lang)}
+                    {planDisplayStatus(plan) === "expired" ? t("Expired", lang) : tStatus(plan.status, lang)}
                   </Badge>
                   <ChevronRight className="h-4 w-4 text-slate-400 dark:text-[#6A6460]" />
                 </div>

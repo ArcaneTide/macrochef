@@ -128,6 +128,7 @@ export default async function PlanDetailPage({
             planId={planId}
             clientId={id}
             currentStatus={plan.status as "draft" | "active" | "archived"}
+            endDate={endDate}
             lang={lang}
           />
         </div>

@@ -23,6 +23,7 @@ export type ClientListItem = {
   email: string | null;
   status: string;
   latestPlanStatus: string;
+  latestPlanEndDate: string | null;
   activeProfile: {
     label: string | null;
     calorieTarget: number;
@@ -38,16 +39,25 @@ const CLIENT_STATUS_STYLES: Record<string, string> = {
 };
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  active: "bg-[#7A8B6F] text-white border-[#6A7B5F]",
-  draft: "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
-  none: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
+  active:   "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  draft:    "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
+  expired:  "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
+  none:     "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
+
+function effectivePlanStatus(latestPlanStatus: string, latestPlanEndDate: string | null): string {
+  if (latestPlanStatus === "active" && latestPlanEndDate) {
+    const today = new Date().toISOString().slice(0, 10);
+    if (latestPlanEndDate < today) return "expired";
+  }
+  return latestPlanStatus;
+}
 
 function PlanStatusBadge({ status, lang }: { status: string; lang: Lang }) {
   const label =
-    status === "none"
-      ? t("No plan", lang)
-      : tStatus(status, lang);
+    status === "none" ? t("No plan", lang)
+    : status === "expired" ? t("Expired", lang)
+    : tStatus(status, lang);
   return (
     <Badge
       variant="outline"
@@ -70,7 +80,9 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
       list = list.filter((c) => c.name.toLowerCase().includes(q));
     }
     if (planFilter !== "all") {
-      list = list.filter((c) => c.latestPlanStatus === planFilter);
+      list = list.filter(
+        (c) => effectivePlanStatus(c.latestPlanStatus, c.latestPlanEndDate) === planFilter
+      );
     }
     return list;
   }, [clients, search, planFilter]);
@@ -97,6 +109,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
             <SelectItem value="none">{t("No plan", lang)}</SelectItem>
             <SelectItem value="draft">{t("Draft", lang)}</SelectItem>
             <SelectItem value="active">{t("Active", lang)}</SelectItem>
+            <SelectItem value="expired">{t("Expired", lang)}</SelectItem>
           </SelectContent>
         </Select>
         <p className="text-sm text-slate-500 dark:text-[#A0998E] sm:ml-auto whitespace-nowrap hidden sm:block">
@@ -167,7 +180,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                     </Badge>
                   </td>
                   <td className="px-4 py-3">
-                    <PlanStatusBadge status={client.latestPlanStatus} lang={lang} />
+                    <PlanStatusBadge status={effectivePlanStatus(client.latestPlanStatus, client.latestPlanEndDate)} lang={lang} />
                   </td>
                   <td className="px-4 py-3 text-sm text-slate-500 dark:text-[#A0998E]">
                     {client.activeProfile?.label ?? (
@@ -216,7 +229,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                     >
                       {tStatus(client.status, lang)}
                     </Badge>
-                    <PlanStatusBadge status={client.latestPlanStatus} lang={lang} />
+                    <PlanStatusBadge status={effectivePlanStatus(client.latestPlanStatus, client.latestPlanEndDate)} lang={lang} />
                   </div>
                 </div>
                 {client.activeProfile && (

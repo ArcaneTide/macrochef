@@ -23,7 +23,7 @@ export default async function ClientsPage() {
         where: { status: { not: "archived" } },
         orderBy: { createdAt: "desc" },
         take: 1,
-        select: { status: true },
+        select: { status: true, endDate: true },
       },
     },
   });
@@ -34,6 +34,7 @@ export default async function ClientsPage() {
     email: c.email,
     status: c.status as string,
     latestPlanStatus: (c.mealPlans[0]?.status ?? "none") as string,
+    latestPlanEndDate: c.mealPlans[0]?.endDate?.toISOString().slice(0, 10) ?? null,
     activeProfile: c.targetProfiles[0]
       ? {
           label: c.targetProfiles[0].label,
