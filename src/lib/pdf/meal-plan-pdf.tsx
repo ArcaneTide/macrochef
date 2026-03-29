@@ -57,9 +57,9 @@ const c = {
   slate400: "#94a3b8",
   slate200: "#e2e8f0",
   slate100: "#f1f5f9",
-  blue: "#2563eb",
-  amber: "#d97706",
-  orange: "#ea580c",
+  blue: "#5A6B4F",
+  amber: "#B8907A",
+  orange: "#C4724E",
   white: "#ffffff",
 };
 

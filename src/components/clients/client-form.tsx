@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { createClient, updateClient } from "@/app/(dashboard)/clients/actions";
+import { createClient, updateClient } from "@/app/(main)/clients/actions";
 import { t, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────
@@ -66,8 +66,8 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
   return (
     <div className="max-w-2xl space-y-6">
       {/* Client info */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
-        <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow space-y-5">
+        <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide">
           {t("Client Info", lang)}
         </h2>
         <div className="space-y-1.5">
@@ -75,25 +75,25 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
           <Input id="name" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Jane Smith" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="email">{t("Email", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span></Label>
           <Input id="email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="jane@example.com" />
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="notes">{t("Notes", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="notes">{t("Notes", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span></Label>
           <Textarea id="notes" value={notes} onChange={(e) => setNotes(e.target.value)} placeholder="Any relevant notes about this client…" rows={3} />
         </div>
       </div>
 
       {/* Initial target profile */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
+      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow space-y-5">
         <div>
-          <h2 className="text-sm font-semibold text-slate-900 uppercase tracking-wide">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide">
             {t("Initial Macro Targets", lang)}
           </h2>
-          <p className="text-xs text-slate-400 mt-0.5">{t("Daily targets", lang)}</p>
+          <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">{t("Daily targets", lang)}</p>
         </div>
         <div className="space-y-1.5">
-          <Label htmlFor="label">{t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+          <Label htmlFor="label">{t("Profile Label", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span></Label>
           <Input id="label" value={label} onChange={(e) => setLabel(e.target.value)} placeholder="e.g. Cut phase, Maintenance" />
         </div>
         <div className="grid grid-cols-2 gap-4">
@@ -133,7 +133,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         <Button variant="outline" onClick={() => router.push("/clients")} disabled={isPending}>
           {t("Cancel", lang)}
         </Button>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Create Client", lang)}
         </Button>
@@ -178,7 +178,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
         <Input id="edit-name" value={name} onChange={(e) => setName(e.target.value)} />
       </div>
       <div className="space-y-1.5">
-        <Label htmlFor="edit-email">{t("Email", lang)} <span className="text-slate-400 font-normal">(optional)</span></Label>
+        <Label htmlFor="edit-email">{t("Email", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span></Label>
         <Input id="edit-email" type="email" value={email} onChange={(e) => setEmail(e.target.value)} />
       </div>
       <div className="space-y-1.5">
@@ -193,7 +193,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
       )}
       <div className="flex gap-3">
         <Button variant="outline" onClick={onCancel} disabled={isPending}>{t("Cancel", lang)}</Button>
-        <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Save", lang)}
         </Button>

@@ -94,19 +94,19 @@ export default async function PlanDetailPage({
   return (
     <div className="p-6 sm:p-8">
       <div className="mb-6">
-        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
-          <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
+        <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-[#6A6460] mb-1.5">
+          <a href="/clients" className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{t("Clients", lang)}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <a href={`/clients/${id}`} className="hover:text-slate-600 transition-colors">{plan.client.name}</a>
+          <a href={`/clients/${id}`} className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{plan.client.name}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-slate-600 font-medium">{plan.title ?? t("Meal Plan", lang)}</span>
+          <span className="text-slate-600 dark:text-[#C0B8B0] font-medium">{plan.title ?? t("Meal Plan", lang)}</span>
         </nav>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-sans font-bold text-slate-900">
+            <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">
               {plan.title ?? t("Meal Plan", lang)}
             </h1>
-            <p className="text-sm text-slate-500 mt-0.5">
+            <p className="text-sm text-slate-500 dark:text-[#A0998E] mt-0.5">
               {new Date(startDate + "T00:00:00").toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
@@ -118,7 +118,7 @@ export default async function PlanDetailPage({
                 year: "numeric",
               })}
               {activeProfile && (
-                <span className="ml-2 text-slate-400">
+                <span className="ml-2 text-slate-400 dark:text-[#6A6460]">
                   · {t("Target:", lang)} {activeProfile.calorieTarget} kcal
                 </span>
               )}
@@ -133,7 +133,7 @@ export default async function PlanDetailPage({
         </div>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 dark:border-[#3A3A3A] bg-white dark:bg-[#242424] shadow-sm overflow-hidden">
         <div className="p-4 sm:p-6">
           <WeeklyPlanEditor
             planId={planId}

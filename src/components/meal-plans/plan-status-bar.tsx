@@ -6,7 +6,7 @@ import { Loader2, Download } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { updateMealPlanStatus } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { updateMealPlanStatus } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 const STATUS_STYLES: Record<string, string> = {
@@ -42,7 +42,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
       <a
         href={`/api/plans/${planId}/pdf`}
         download
-        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50 transition-colors"
+        className="inline-flex items-center gap-1.5 rounded-md border border-slate-200 dark:border-[#3A3A3A] bg-white dark:bg-[#242424] px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-[#C0B8B0] shadow-sm hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
       >
         <Download className="h-3.5 w-3.5" />
         {t("Download PDF", lang)}
@@ -58,7 +58,7 @@ export function PlanStatusBar({ planId, clientId, currentStatus, lang }: Props) 
       {status === "draft" && (
         <Button
           size="sm"
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
           onClick={() => changeStatus("active")}
           disabled={isPending}
         >

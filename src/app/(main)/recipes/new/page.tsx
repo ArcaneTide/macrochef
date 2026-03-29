@@ -26,8 +26,8 @@ export default async function NewRecipePage() {
   return (
     <div className="p-6 sm:p-8 max-w-5xl">
       <div className="mb-6">
-        <h1 className="text-2xl font-sans font-bold text-slate-900">{t("New Recipe", lang)}</h1>
-        <p className="text-slate-500 text-sm mt-1">{t("Build a macro-accurate recipe", lang)}</p>
+        <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">{t("New Recipe", lang)}</h1>
+        <p className="text-slate-500 dark:text-[#A0998E] text-sm mt-1">{t("Build a macro-accurate recipe", lang)}</p>
       </div>
       <RecipeForm availableIngredients={ingredients} lang={lang} />
     </div>

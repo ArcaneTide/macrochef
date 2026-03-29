@@ -65,13 +65,13 @@ export default async function EditRecipePage({
   return (
     <div className="p-6 sm:p-8 max-w-5xl">
       <div className="mb-6">
-        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
-          <a href="/recipes" className="hover:text-slate-600 transition-colors">{t("Recipes", lang)}</a>
+        <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-[#6A6460] mb-1.5">
+          <a href="/recipes" className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{t("Recipes", lang)}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-slate-600 font-medium truncate max-w-[200px]">{recipe.title}</span>
+          <span className="text-slate-600 dark:text-[#C0B8B0] font-medium truncate max-w-[200px]">{recipe.title}</span>
         </nav>
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-2xl font-sans font-bold text-slate-900">{t("Edit Recipe", lang)}</h1>
+          <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">{t("Edit Recipe", lang)}</h1>
           <div className="shrink-0 pt-1">
             <ArchiveRecipeButton id={recipe.id} title={recipe.title} lang={lang} />
           </div>

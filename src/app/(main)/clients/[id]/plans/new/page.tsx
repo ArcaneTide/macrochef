@@ -28,15 +28,15 @@ export default async function NewPlanPage({
   return (
     <div className="p-6 sm:p-8">
       <div className="mb-6">
-        <nav className="flex items-center gap-1 text-sm text-slate-400 mb-1.5">
-          <a href="/clients" className="hover:text-slate-600 transition-colors">{t("Clients", lang)}</a>
+        <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-[#6A6460] mb-1.5">
+          <a href="/clients" className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{t("Clients", lang)}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <a href={`/clients/${id}`} className="hover:text-slate-600 transition-colors">{client.name}</a>
+          <a href={`/clients/${id}`} className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{client.name}</a>
           <ChevronRight className="h-3.5 w-3.5 shrink-0" />
-          <span className="text-slate-600 font-medium">{t("New Plan", lang)}</span>
+          <span className="text-slate-600 dark:text-[#C0B8B0] font-medium">{t("New Plan", lang)}</span>
         </nav>
-        <h1 className="text-2xl font-sans font-bold text-slate-900">{t("New Meal Plan", lang)}</h1>
-        <p className="text-slate-500 text-sm mt-1">
+        <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">{t("New Meal Plan", lang)}</h1>
+        <p className="text-slate-500 dark:text-[#A0998E] text-sm mt-1">
           Create a weekly plan for {client.name}
         </p>
       </div>

@@ -8,6 +8,7 @@ const dict = {
   "Ingredients":             { en: "Ingredients",             el: "Υλικά" },
   "Settings":                { en: "Settings",                el: "Ρυθμίσεις" },
   "Sign out":                { en: "Sign out",                el: "Αποσύνδεση" },
+  "Home":                    { en: "Home",                    el: "Αρχική" },
 
   // ── Buttons ───────────────────────────────────────────────
   "New Recipe":              { en: "New Recipe",              el: "Νέα Συνταγή" },
@@ -89,6 +90,10 @@ const dict = {
   // ── Dashboard greetings ───────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },
   "Welcome back":            { en: "Welcome back",            el: "Καλώς ήρθες ξανά" },
+  "Good morning":            { en: "Good morning",            el: "Καλημέρα" },
+  "Good afternoon":          { en: "Good afternoon",          el: "Καλησπέρα" },
+  "Good evening":            { en: "Good evening",            el: "Καλό βράδυ" },
+  "Good night":              { en: "Good night",              el: "Καληνύχτα" },
 
   // ── Welcome / onboarding ──────────────────────────────────
   "Welcome to MacroLock":        { en: "Welcome to MacroLock!",              el: "Καλώς ήρθες στο MacroLock!" },
@@ -150,7 +155,7 @@ const dict = {
   "Amount":                  { en: "Amount",                  el: "Ποσότητα" },
   "pinch":                   { en: "pinch",                   el: "πρέζα" },
   "Quick add":               { en: "Quick add",               el: "Γρήγορη προσθήκη" },
-  "All statuses":            { en: "All statuses",            el: "Όλες οι καταστάσεις" },
+  "All statuses":            { en: "All statuses",            el: "Όλες οι συνταγές" },
   "Search recipes…":         { en: "Search recipes…",         el: "Αναζήτηση συνταγών…" },
   "Search clients…":         { en: "Search clients…",         el: "Αναζήτηση πελατών…" },
   "Search ingredients…":     { en: "Search ingredients…",     el: "Αναζήτηση υλικών…" },
@@ -210,6 +215,12 @@ const dict = {
   "ingredient plural":       { en: "ingredients",             el: "υλικά" },
   "serving singular":        { en: "serving",                 el: "μερίδα" },
   "serving plural":          { en: "servings",                el: "μερίδες" },
+  "Recent activity empty hint": { en: "No activity yet",      el: "Καμία δραστηριότητα ακόμη" },
+  "Overview":                { en: "Overview",                el: "Επισκόπηση" },
+  "Workspace":               { en: "Workspace",               el: "Χώρος Εργασίας" },
+  "View":                    { en: "View",                    el: "Προβολή" },
+  "Today":                   { en: "Today",                   el: "Σήμερα" },
+  "Earlier":                 { en: "Earlier",                 el: "Παλαιότερα" },
   "Archive client confirm":  { en: "They will no longer appear in your active clients.", el: "Δεν θα εμφανίζεται στους ενεργούς πελάτες." },
 
   // ── Recipe form placeholders ──────────────────────────────

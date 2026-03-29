@@ -6,7 +6,7 @@ import { Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { createTargetProfile } from "@/app/(dashboard)/clients/actions";
+import { createTargetProfile } from "@/app/(main)/clients/actions";
 import { t, type Lang } from "@/lib/translations";
 
 export function NewProfileForm({
@@ -55,7 +55,7 @@ export function NewProfileForm({
     <div className="space-y-4">
       <div className="space-y-1.5">
         <Label htmlFor="p-label">
-          {t("Profile Label", lang)} <span className="text-slate-400 font-normal">(optional)</span>
+          {t("Profile Label", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal">(optional)</span>
         </Label>
         <Input
           id="p-label"
@@ -129,7 +129,7 @@ export function NewProfileForm({
           {t("Cancel", lang)}
         </Button>
         <Button
-          className="bg-emerald-600 hover:bg-emerald-700 text-white"
+          className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
           onClick={handleSubmit}
           disabled={isPending}
         >

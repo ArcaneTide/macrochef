@@ -5,12 +5,12 @@ import { Plus, X, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { type MacroTotals } from "@/lib/macros";
-import { removeMeal } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import { removeMeal } from "@/app/(main)/clients/[id]/plans/actions";
 import {
   AssignRecipeModal,
   type RecipeOption,
 } from "@/components/meal-plans/assign-recipe-modal";
-import type { AssignmentResult } from "@/app/(dashboard)/clients/[id]/plans/actions";
+import type { AssignmentResult } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
 
 const DAYS_COUNT = 7;
@@ -65,20 +65,20 @@ function MacroBar({
     <div className="space-y-1 mt-2">
       {(
         [
-          { label: "P", actual: actual.protein, target: target.proteinTarget, color: "bg-blue-500" },
-          { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-amber-500" },
-          { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-orange-500" },
+          { label: "P", actual: actual.protein, target: target.proteinTarget, color: "bg-[#5A6B4F]" },
+          { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-[#B8907A]" },
+          { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-[#C4724E]" },
         ] as Array<{ label: string; actual: number; target: number; color: string }>
       ).map(({ label, actual: a, target: tgt, color }) => (
         <div key={label} className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-400 w-3">{label}</span>
-          <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
+          <span className="text-xs text-slate-400 dark:text-[#A0998E] w-3">{label}</span>
+          <div className="flex-1 h-1.5 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
             <div
               className={cn("h-full rounded-full transition-all", over(a, tgt) ? "bg-red-400" : color)}
               style={{ width: `${pct(a, tgt)}%` }}
             />
           </div>
-          <span className={cn("text-xs tabular-nums w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500")}>
+          <span className={cn("text-xs tabular-nums w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500 dark:text-[#A0998E]")}>
             {Math.round(a)}g
           </span>
         </div>
@@ -224,22 +224,22 @@ export function WeeklyPlanEditor({
         <table className="w-full border-collapse text-sm">
           <thead>
             <tr>
-              <th className="w-28 p-2 text-left text-xs font-medium text-slate-400 uppercase tracking-wide" />
+              <th className="w-28 p-2 text-left text-xs font-medium text-slate-400 dark:text-[#A0998E] uppercase tracking-wide" />
               {Array.from({ length: DAYS_COUNT }, (_, i) => (
                 <th
                   key={i}
                   className="p-2 text-center min-w-[140px]"
                 >
-                  <p className="font-semibold text-slate-800">{dayLabels[i]}</p>
-                  <p className="text-xs font-normal text-slate-400">{dayDates[i]}</p>
+                  <p className="font-semibold text-slate-800 dark:text-[#F5F1EB]">{dayLabels[i]}</p>
+                  <p className="text-xs font-normal text-slate-400 dark:text-[#A0998E]">{dayDates[i]}</p>
                 </th>
               ))}
             </tr>
           </thead>
           <tbody>
             {SLOTS.map((slot) => (
-              <tr key={slot} className="border-t border-slate-100">
-                <td className="p-2 text-xs font-medium text-slate-500 uppercase tracking-wide align-top pt-3">
+              <tr key={slot} className="border-t border-[#E8E0D4] dark:border-[#3A3A3A]">
+                <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide align-top pt-3">
                   {SLOT_LABELS[slot]}
                 </td>
                 {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => {
@@ -249,11 +249,11 @@ export function WeeklyPlanEditor({
                   return (
                     <td key={dayIndex} className="p-1.5 align-top">
                       {cell ? (
-                        <div className="relative group rounded-lg border border-slate-200 bg-white p-2.5 shadow-sm">
+                        <div className="relative group rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-2.5 shadow-sm">
                           <button
                             onClick={() => handleRemove(key, cell.id)}
                             disabled={isRemoving}
-                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 hover:bg-slate-100 text-slate-400 hover:text-slate-600 cursor-pointer"
+                            className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 transition-opacity rounded p-0.5 hover:bg-slate-100 dark:hover:bg-[#3A3A3A] text-slate-400 hover:text-slate-600 cursor-pointer"
                           >
                             {isRemoving ? (
                               <Loader2 className="h-3 w-3 animate-spin" />
@@ -261,17 +261,17 @@ export function WeeklyPlanEditor({
                               <X className="h-3 w-3" />
                             )}
                           </button>
-                          <p className="text-xs font-medium text-slate-800 leading-snug pr-4">
+                          <p className="text-xs font-medium text-slate-800 dark:text-[#E8E2DA] leading-snug pr-4">
                             {cell.recipeTitle}
                           </p>
-                          <p className="text-xs text-slate-400 mt-0.5">
+                          <p className="text-xs text-slate-400 dark:text-[#A0998E] mt-0.5">
                             {cell.servings}× · {Math.round(cell.macros.calories)} kcal
                           </p>
                         </div>
                       ) : (
                         <button
                           onClick={() => setModal({ dayIndex, mealSlot: slot })}
-                          className="w-full h-14 rounded-lg border border-dashed border-slate-200 flex items-center justify-center text-slate-300 hover:text-slate-400 hover:border-slate-300 hover:bg-slate-50 transition-colors"
+                          className="w-full h-14 rounded-lg border border-dashed border-[#E8E0D4] dark:border-[#3A3A3A] flex items-center justify-center text-slate-300 hover:text-slate-400 hover:border-slate-300 dark:hover:border-[#5A5A5A] hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
                         >
                           <Plus className="h-4 w-4" />
                         </button>
@@ -283,21 +283,21 @@ export function WeeklyPlanEditor({
             ))}
 
             {/* Daily totals row */}
-            <tr className="border-t-2 border-slate-200">
-              <td className="p-2 text-xs font-medium text-slate-500 uppercase tracking-wide">
+            <tr className="border-t-2 border-[#E8E0D4] dark:border-[#3A3A3A]">
+              <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 {t("Daily Total", lang)}
               </td>
               {dailyMacros.map((m, i) => (
                 <td key={i} className="p-2">
-                  <p className="text-sm font-semibold text-slate-800 tabular-nums">
+                  <p className="text-sm font-semibold text-slate-800 dark:text-[#F5F1EB] tabular-nums">
                     {Math.round(m.calories)} kcal
                   </p>
-                  <p className="text-xs text-slate-500 tabular-nums">
-                    <span className="text-blue-500">{m.protein.toFixed(1)}g P</span>
+                  <p className="text-xs text-slate-500 dark:text-[#A0998E] tabular-nums">
+                    <span className="text-[#5A6B4F]">{m.protein.toFixed(1)}g P</span>
                     {" · "}
-                    <span className="text-amber-500">{m.carbs.toFixed(1)}g C</span>
+                    <span className="text-[#B8907A]">{m.carbs.toFixed(1)}g C</span>
                     {" · "}
-                    <span className="text-orange-500">{m.fat.toFixed(1)}g F</span>
+                    <span className="text-[#C4724E]">{m.fat.toFixed(1)}g F</span>
                   </p>
                   {dailyTarget && (
                     <MacroBar actual={m} target={dailyTarget} />
@@ -312,31 +312,31 @@ export function WeeklyPlanEditor({
       {/* Mobile: day cards */}
       <div className="lg:hidden space-y-6">
         {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => (
-          <div key={dayIndex} className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-            <div className="px-4 py-3 bg-slate-50 border-b border-slate-100 flex items-baseline justify-between">
+          <div key={dayIndex} className="rounded-xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow-sm">
+            <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[#E8E0D4] dark:border-[#3A3A3A] flex items-baseline justify-between">
               <div>
-                <span className="font-semibold text-slate-800">{dayLabels[dayIndex]}</span>
-                <span className="ml-1.5 text-xs text-slate-400">{dayDates[dayIndex]}</span>
+                <span className="font-semibold text-slate-800 dark:text-[#F5F1EB]">{dayLabels[dayIndex]}</span>
+                <span className="ml-1.5 text-xs text-slate-400 dark:text-[#A0998E]">{dayDates[dayIndex]}</span>
               </div>
-              <span className="text-sm tabular-nums font-medium text-slate-600">
+              <span className="text-sm tabular-nums font-medium text-slate-600 dark:text-[#A0998E]">
                 {Math.round(dailyMacros[dayIndex].calories)} kcal
               </span>
             </div>
-            <div className="divide-y divide-slate-100">
+            <div className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
               {SLOTS.map((slot) => {
                 const key = cellKey(dayIndex, slot);
                 const cell = cells.get(key);
                 const isRemoving = removingKey === key;
                 return (
                   <div key={slot} className="flex items-center gap-3 px-4 py-3">
-                    <span className="text-xs text-slate-400 w-20 shrink-0">
+                    <span className="text-xs text-slate-400 dark:text-[#A0998E] w-20 shrink-0">
                       {SLOT_LABELS[slot]}
                     </span>
                     {cell ? (
                       <div className="flex-1 flex items-center justify-between gap-2">
                         <div>
-                          <p className="text-sm font-medium text-slate-800">{cell.recipeTitle}</p>
-                          <p className="text-xs text-slate-400">
+                          <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{cell.recipeTitle}</p>
+                          <p className="text-xs text-slate-400 dark:text-[#A0998E]">
                             {cell.servings}× · {Math.round(cell.macros.calories)} kcal
                           </p>
                         </div>
@@ -357,7 +357,7 @@ export function WeeklyPlanEditor({
                     ) : (
                       <button
                         onClick={() => setModal({ dayIndex, mealSlot: slot })}
-                        className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-emerald-600 transition-colors"
+                        className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-[#B8907A] transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         {t("Add recipe", lang)}

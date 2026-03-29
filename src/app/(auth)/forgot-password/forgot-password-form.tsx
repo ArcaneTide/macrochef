@@ -16,7 +16,7 @@ function SubmitButton({ lang }: { lang: Lang }) {
     <Button
       type="submit"
       disabled={pending}
-      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white h-9 rounded-xl font-medium transition-colors"
+      className="w-full bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white h-9 rounded-xl font-medium transition-colors"
     >
       {pending && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
       {pending ? t("Sending…", lang) : t("Send reset link", lang)}
@@ -28,26 +28,26 @@ export function ForgotPasswordForm({ lang }: { lang: Lang }) {
   const [state, action] = useActionState(forgotPasswordAction, null);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white dark:from-[#1A1A1A] dark:to-[#242424] px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
         <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-600 text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#7A8B6F] text-white">
             <Lock className="h-5 w-5" />
           </div>
-          <h1 className="text-xl font-semibold text-slate-900">MacroLock</h1>
-          <p className="text-sm text-slate-500">{t("Reset password", lang)}</p>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-[#F5F1EB]">MacroLock</h1>
+          <p className="text-sm text-slate-500 dark:text-[#A0998E]">{t("Reset password", lang)}</p>
         </div>
 
         {/* Card */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
           {state?.message ? (
             <div className="flex flex-col items-center gap-3 py-2 text-center">
-              <CheckCircle2 className="h-8 w-8 text-emerald-600" />
-              <p className="text-sm text-slate-700">{state.message}</p>
+              <CheckCircle2 className="h-8 w-8 text-[#7A8B6F]" />
+              <p className="text-sm text-slate-700 dark:text-[#F5F1EB]">{state.message}</p>
               <Link
                 href="/login"
-                className="mt-1 text-sm font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
+                className="mt-1 text-sm font-medium text-[#7A8B6F] hover:text-[#6A7B5F] hover:underline"
               >
                 {t("Back to sign in", lang)}
               </Link>
@@ -60,7 +60,7 @@ export function ForgotPasswordForm({ lang }: { lang: Lang }) {
                   {state.error}
                 </div>
               )}
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-500 dark:text-[#A0998E]">
                 {t("Enter your email for reset", lang)}
               </p>
               <div className="flex flex-col gap-1.5">
@@ -80,11 +80,11 @@ export function ForgotPasswordForm({ lang }: { lang: Lang }) {
         </div>
 
         {!state?.message && (
-          <p className="mt-4 text-center text-sm text-slate-500">
+          <p className="mt-4 text-center text-sm text-slate-500 dark:text-[#A0998E]">
             {t("Remember your password?", lang)}{" "}
             <Link
               href="/login"
-              className="font-medium text-emerald-600 hover:text-emerald-700 hover:underline"
+              className="font-medium text-[#7A8B6F] hover:text-[#6A7B5F] hover:underline"
             >
               {t("Sign in", lang)}
             </Link>

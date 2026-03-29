@@ -47,9 +47,9 @@ interface Ingredient {
 type SortKey = "name" | "caloriesPer100g" | "proteinPer100g" | "carbsPer100g" | "fatPer100g";
 
 const CATEGORY_STYLES: Record<IngredientCategory, string> = {
-  protein: "bg-blue-100 text-blue-700 border-blue-200",
-  carb: "bg-amber-100 text-amber-700 border-amber-200",
-  fat: "bg-orange-100 text-orange-700 border-orange-200",
+  protein: "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]",
+  carb: "bg-[#F5EDE8] text-[#B8907A] border-[#dfc5b3]",
+  fat: "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
   vegetable: "bg-green-100 text-green-700 border-green-200",
   fruit: "bg-pink-100 text-pink-700 border-pink-200",
   dairy: "bg-purple-100 text-purple-700 border-purple-200",
@@ -125,8 +125,8 @@ export function IngredientClient({ ingredients, lang }: Props) {
       <button
         onClick={() => toggleSort(col)}
         className={cn(
-          "inline-flex items-center gap-1 hover:text-slate-900 transition-colors",
-          active ? "text-slate-900 font-semibold" : "text-slate-500"
+          "inline-flex items-center gap-1 hover:text-slate-900 dark:hover:text-[#F5F1EB] transition-colors",
+          active ? "text-slate-900 dark:text-[#F5F1EB] font-semibold" : "text-slate-500 dark:text-[#A0998E]"
         )}
       >
         <ArrowUpDown className="h-3 w-3" />
@@ -164,56 +164,56 @@ export function IngredientClient({ ingredients, lang }: Props) {
             ))}
           </SelectContent>
         </Select>
-        <p className="text-sm text-slate-500 sm:ml-auto whitespace-nowrap">
+        <p className="text-sm text-slate-500 dark:text-[#A0998E] sm:ml-auto whitespace-nowrap">
           {filtered.length} {filtered.length !== 1 ? t("ingredient plural", lang) : t("ingredient singular", lang)}
         </p>
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block rounded-2xl border border-slate-200 bg-white overflow-hidden shadow">
+      <div className="hidden sm:block rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50 hover:bg-slate-50">
-              <TableHead className="w-[280px]">
+            <TableRow className="bg-slate-50 dark:bg-[#1E1E1E] hover:bg-slate-50 dark:hover:bg-[#1E1E1E] border-b border-[#E8E0D4] dark:border-[#3A3A3A]">
+              <TableHead className="w-[280px] text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center gap-2">
                   {t("Name", lang)} <SortButton col="name" />
                 </span>
               </TableHead>
-              <TableHead>{t("Category", lang)}</TableHead>
-              <TableHead className="text-right">
+              <TableHead className="text-slate-500 dark:text-[#A0998E]">{t("Category", lang)}</TableHead>
+              <TableHead className="text-right text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center justify-end gap-2">
                   {t("Calories", lang)} <SortButton col="caloriesPer100g" />
                 </span>
               </TableHead>
-              <TableHead className="text-right">
+              <TableHead className="text-right text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center justify-end gap-2">
                   {t("Protein", lang)} <SortButton col="proteinPer100g" />
                 </span>
               </TableHead>
-              <TableHead className="text-right">
+              <TableHead className="text-right text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center justify-end gap-2">
                   {t("Carbs", lang)} <SortButton col="carbsPer100g" />
                 </span>
               </TableHead>
-              <TableHead className="text-right">
+              <TableHead className="text-right text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center justify-end gap-2">
                   {t("Fat", lang)} <SortButton col="fatPer100g" />
                 </span>
               </TableHead>
-              <TableHead className="w-12 text-center">USDA</TableHead>
+              <TableHead className="w-12 text-center text-slate-500 dark:text-[#A0998E]">USDA</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {filtered.length === 0 ? (
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-12 text-slate-400">
+                <TableCell colSpan={7} className="text-center py-12 text-slate-400 dark:text-[#6A6460]">
                   {t("No ingredients found", lang)}
                 </TableCell>
               </TableRow>
             ) : (
               filtered.map((ing) => (
-                <TableRow key={ing.id} className="hover:bg-slate-50/50 even:bg-slate-50/30">
-                  <TableCell className="font-medium text-slate-900">{ingName(ing)}</TableCell>
+                <TableRow key={ing.id} className="hover:bg-slate-50/50 dark:hover:bg-[#2A2A2A] even:bg-slate-50/30 dark:even:bg-[#1E1E1E]/30 border-b border-[#E8E0D4] dark:border-[#3A3A3A]">
+                  <TableCell className="font-medium text-slate-900 dark:text-[#F5F1EB]">{ingName(ing)}</TableCell>
                   <TableCell>
                     <Badge
                       variant="outline"
@@ -222,21 +222,21 @@ export function IngredientClient({ ingredients, lang }: Props) {
                       {CATEGORY_LABELS[ing.category]}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
                     {fmt(ing.caloriesPer100g)} kcal
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
                     {fmt(ing.proteinPer100g)}g
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
                     {fmt(ing.carbsPer100g)}g
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
                     {fmt(ing.fatPer100g)}g
                   </TableCell>
                   <TableCell className="text-center">
                     {ing.isVerified && (
-                      <ShieldCheck className="h-4 w-4 text-emerald-500 mx-auto" aria-label="USDA verified" />
+                      <ShieldCheck className="h-4 w-4 text-[#7A8B6F] mx-auto" aria-label="USDA verified" />
                     )}
                   </TableCell>
                 </TableRow>
@@ -244,7 +244,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
             )}
           </TableBody>
         </Table>
-        <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-400 bg-slate-50">
+        <div className="border-t border-[#E8E0D4] dark:border-[#3A3A3A] px-4 py-2 text-xs text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
           {t("All values per 100g", lang)}
         </div>
       </div>
@@ -252,18 +252,18 @@ export function IngredientClient({ ingredients, lang }: Props) {
       {/* Mobile cards */}
       <div className="sm:hidden space-y-2">
         {filtered.length === 0 ? (
-          <p className="text-center py-12 text-slate-400">{t("No ingredients found", lang)}</p>
+          <p className="text-center py-12 text-slate-400 dark:text-[#6A6460]">{t("No ingredients found", lang)}</p>
         ) : (
           filtered.map((ing) => (
             <div
               key={ing.id}
-              className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm"
+              className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-4 shadow-sm"
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-medium text-slate-900">{ingName(ing)}</span>
+                  <span className="font-medium text-slate-900 dark:text-[#F5F1EB]">{ingName(ing)}</span>
                   {ing.isVerified && (
-                    <ShieldCheck className="h-3.5 w-3.5 text-emerald-500 shrink-0" aria-label="USDA verified" />
+                    <ShieldCheck className="h-3.5 w-3.5 text-[#7A8B6F] shrink-0" aria-label="USDA verified" />
                   )}
                 </div>
                 <Badge
@@ -275,20 +275,20 @@ export function IngredientClient({ ingredients, lang }: Props) {
               </div>
               <div className="grid grid-cols-4 gap-2 text-sm">
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">{t("Calories", lang)}</p>
-                  <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.caloriesPer100g)}</p>
+                  <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Calories", lang)}</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.caloriesPer100g)}</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">{t("Protein", lang)}</p>
-                  <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.proteinPer100g)}g</p>
+                  <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Protein", lang)}</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.proteinPer100g)}g</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">{t("Carbs", lang)}</p>
-                  <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.carbsPer100g)}g</p>
+                  <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Carbs", lang)}</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.carbsPer100g)}g</p>
                 </div>
                 <div className="text-center">
-                  <p className="text-slate-400 text-xs">{t("Fat", lang)}</p>
-                  <p className="font-medium text-slate-700 tabular-nums">{fmt(ing.fatPer100g)}g</p>
+                  <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Fat", lang)}</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.fatPer100g)}g</p>
                 </div>
               </div>
             </div>

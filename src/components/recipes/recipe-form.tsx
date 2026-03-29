@@ -39,7 +39,7 @@ import {
   createRecipe,
   updateRecipe,
   type RecipeFormInput,
-} from "@/app/(dashboard)/recipes/actions";
+} from "@/app/(main)/recipes/actions";
 import { t, tStatus, type Lang } from "@/lib/translations";
 
 // ─── Types ────────────────────────────────────────────────
@@ -170,8 +170,8 @@ function UnitToggle({
           className={cn(
             "h-5 px-1.5 rounded-full text-[10px] font-medium transition-colors",
             unit === u
-              ? "bg-emerald-600 text-white"
-              : "bg-slate-100 text-slate-500 hover:bg-slate-200"
+              ? "bg-[#7A8B6F] text-white"
+              : "bg-slate-100 dark:bg-[#3A3A3A] text-slate-500 dark:text-[#A0998E] hover:bg-slate-200 dark:hover:bg-[#4A4A4A]"
           )}
         >
           {u === "pinch" ? t("pinch", lang) : u}
@@ -266,30 +266,30 @@ function MacroSummary({
   const hasData = macros.calories > 0;
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow">
-      <h3 className="text-sm font-semibold text-slate-900 mb-4">{t("Per Serving", lang)}</h3>
+    <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-5 shadow">
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] mb-4">{t("Per Serving", lang)}</h3>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
-          <span className="text-sm text-slate-500">{t("Calories", lang)}</span>
-          <span className="text-lg font-semibold text-slate-900 tabular-nums">
+          <span className="text-sm text-slate-500 dark:text-[#A0998E]">{t("Calories", lang)}</span>
+          <span className="text-lg font-semibold text-slate-900 dark:text-[#F5F1EB] tabular-nums">
             {hasData ? fmtMacro(macros.calories) : "—"}
-            {hasData && <span className="text-xs font-normal text-slate-400 ml-1">kcal</span>}
+            {hasData && <span className="text-xs font-normal text-slate-400 dark:text-[#6A6460] ml-1">kcal</span>}
           </span>
         </div>
 
         {/* Macro bar */}
-        <div className="flex h-2 rounded-full overflow-hidden bg-slate-100">
+        <div className="flex h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-[#3A3A3A]">
           <div
-            className="bg-blue-500 transition-all duration-300"
+            className="bg-[#5A6B4F] transition-all duration-300"
             style={{ width: `${proteinPct}%` }}
           />
           <div
-            className="bg-amber-400 transition-all duration-300"
+            className="bg-[#B8907A] transition-all duration-300"
             style={{ width: `${carbsPct}%` }}
           />
           <div
-            className="bg-orange-400 transition-all duration-300"
+            className="bg-[#C4724E] transition-all duration-300"
             style={{ width: `${fatPct}%` }}
           />
         </div>
@@ -298,9 +298,9 @@ function MacroSummary({
         <div className="grid grid-cols-3 gap-2 text-center">
           {(
             [
-              { labelKey: "Protein" as const, value: macros.protein, color: "text-blue-600", bg: "bg-blue-50" },
-              { labelKey: "Carbs" as const, value: macros.carbs, color: "text-amber-600", bg: "bg-amber-50" },
-              { labelKey: "Fat" as const, value: macros.fat, color: "text-orange-600", bg: "bg-orange-50" },
+              { labelKey: "Protein" as const, value: macros.protein, color: "text-[#5A6B4F]", bg: "bg-[#EDF1EB]" },
+              { labelKey: "Carbs" as const, value: macros.carbs, color: "text-[#B8907A]", bg: "bg-[#F5EDE8]" },
+              { labelKey: "Fat" as const, value: macros.fat, color: "text-[#C4724E]", bg: "bg-[#FBF0EB]" },
             ]
           ).map(({ labelKey, value, color, bg }) => (
             <div key={labelKey} className={cn("rounded-lg p-2", bg)}>
@@ -308,7 +308,7 @@ function MacroSummary({
                 {hasData ? fmtMacro(value) : "—"}
                 {hasData && <span className="text-xs font-normal ml-0.5">g</span>}
               </p>
-              <p className="text-xs text-slate-500 mt-0.5">{t(labelKey, lang)}</p>
+              <p className="text-xs text-slate-500 dark:text-[#A0998E] mt-0.5">{t(labelKey, lang)}</p>
             </div>
           ))}
         </div>
@@ -317,11 +317,11 @@ function MacroSummary({
         {hasData && (
           <div className="flex items-center justify-center gap-3 pt-1">
             {[
-              { label: "P", color: "bg-blue-500", pct: proteinPct },
-              { label: "C", color: "bg-amber-400", pct: carbsPct },
-              { label: "F", color: "bg-orange-400", pct: fatPct },
+              { label: "P", color: "bg-[#5A6B4F]", pct: proteinPct },
+              { label: "C", color: "bg-[#B8907A]", pct: carbsPct },
+              { label: "F", color: "bg-[#C4724E]", pct: fatPct },
             ].map(({ label, color, pct }) => (
-              <span key={label} className="flex items-center gap-1 text-xs text-slate-400">
+              <span key={label} className="flex items-center gap-1 text-xs text-slate-400 dark:text-[#6A6460]">
                 <span className={cn("inline-block h-2 w-2 rounded-full", color)} />
                 {label} {pct.toFixed(0)}%
               </span>
@@ -331,7 +331,7 @@ function MacroSummary({
       </div>
 
       {!hasData && (
-        <p className="text-xs text-slate-400 text-center mt-3">
+        <p className="text-xs text-slate-400 dark:text-[#6A6460] text-center mt-3">
           {t("No ingredients yet", lang)}
         </p>
       )}
@@ -523,8 +523,8 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       {/* ── Left: form ── */}
       <div className="flex-1 min-w-0 space-y-6">
         {/* Basic info */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow space-y-5">
-          <h2 className="text-sm font-semibold text-slate-900 uppercase">
+        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow space-y-5">
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase">
             {t("Recipe Details", lang)}
           </h2>
 
@@ -594,13 +594,13 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
         </div>
 
         {/* Ingredients */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow">
+        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
           <div className="flex items-center justify-between mb-4">
             <div>
-              <h2 className="text-sm font-semibold text-slate-900 uppercase">
+              <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase">
                 {t("Ingredients", lang)}
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
                 {t("Quantities are for all", lang)} {servings} {servings !== 1 ? t("serving plural", lang) : t("serving singular", lang)}
               </p>
             </div>
@@ -615,12 +615,12 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           {/* Quick-add chips */}
           {(saltIngredient || pepperIngredient) && (
             <div className="flex items-center gap-2 mb-4">
-              <span className="text-xs text-slate-400">{t("Quick add", lang)}:</span>
+              <span className="text-xs text-slate-400 dark:text-[#6A6460]">{t("Quick add", lang)}:</span>
               {saltIngredient && !selectedIds.has(saltIngredient.id) && (
                 <button
                   type="button"
                   onClick={() => addPinch(saltIngredient)}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#2A2A2A] px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:text-[#A0998E] hover:bg-slate-100 dark:hover:bg-[#333] transition-colors"
                 >
                   🧂 {ingDisplayName(saltIngredient, lang)}
                 </button>
@@ -629,7 +629,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 <button
                   type="button"
                   onClick={() => addPinch(pepperIngredient)}
-                  className="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-slate-50 px-2.5 py-0.5 text-xs font-medium text-slate-600 hover:bg-slate-100 transition-colors"
+                  className="inline-flex items-center gap-1 rounded-full border border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#2A2A2A] px-2.5 py-0.5 text-xs font-medium text-slate-600 dark:text-[#A0998E] hover:bg-slate-100 dark:hover:bg-[#333] transition-colors"
                 >
                   🌶️ {ingDisplayName(pepperIngredient, lang)}
                 </button>
@@ -638,13 +638,13 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           )}
 
           {rows.length === 0 ? (
-            <div className="text-center py-8 text-slate-400 text-sm border border-dashed border-slate-200 rounded-lg">
+            <div className="text-center py-8 text-slate-400 dark:text-[#6A6460] text-sm border border-dashed border-[#E8E0D4] dark:border-[#3A3A3A] rounded-lg">
               {t("No ingredients yet", lang)}
             </div>
           ) : (
             <div className="space-y-1">
               {/* Table header */}
-              <div className="flex items-center gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 uppercase">
+              <div className="flex items-center gap-3 px-2 pb-1.5 text-xs font-medium text-slate-400 dark:text-[#6A6460] uppercase">
                 <span className="flex-1">{t("Ingredients", lang)}</span>
                 <span className="w-20 text-right">{t("Amount", lang)}</span>
                 <span className="w-7" />
@@ -658,22 +658,22 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                 return (
                   <div
                     key={row.key}
-                    className="px-2 py-2 rounded-lg hover:bg-slate-50 group"
+                    className="px-2 py-2 rounded-lg hover:bg-slate-50 dark:hover:bg-[#2A2A2A] group"
                   >
                     <div className="flex items-center gap-3">
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm font-medium text-slate-800">
+                        <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">
                           {ingDisplayName(ing, lang)}
                         </p>
-                        <p className="text-xs text-slate-400 tabular-nums">
+                        <p className="text-xs text-slate-400 dark:text-[#6A6460] tabular-nums">
                           {row.unit === "pinch" ? (
-                            <span className="text-slate-400">{t("pinch", lang)} · {t("Calories", lang)}: 0</span>
+                            <span className="text-slate-400 dark:text-[#6A6460]">{t("pinch", lang)} · {t("Calories", lang)}: 0</span>
                           ) : (
                             <>
                               {fmtMacro(macros.calories)} kcal ·{" "}
-                              <span className="text-blue-500">{fmtMacro(macros.protein)}g P</span> ·{" "}
-                              <span className="text-amber-500">{fmtMacro(macros.carbs)}g C</span> ·{" "}
-                              <span className="text-orange-500">{fmtMacro(macros.fat)}g F</span>
+                              <span className="text-[#5A6B4F]">{fmtMacro(macros.protein)}g P</span> ·{" "}
+                              <span className="text-[#B8907A]">{fmtMacro(macros.carbs)}g C</span> ·{" "}
+                              <span className="text-[#C4724E]">{fmtMacro(macros.fat)}g F</span>
                             </>
                           )}
                         </p>
@@ -692,7 +692,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
                             onChange={(v) => updateQuantity(row.key, v)}
                           />
                         ) : (
-                          <span className="inline-block w-20 text-right text-sm text-slate-400">—</span>
+                          <span className="inline-block w-20 text-right text-sm text-slate-400 dark:text-[#6A6460]">—</span>
                         )}
                       </div>
                       <button
@@ -726,16 +726,16 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
           <MacroSummary rows={rows} ingredientMap={ingredientMap} servings={servings} lang={lang} />
 
           {isEditing && (
-            <div className="mt-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
-              <p className="text-xs text-slate-400 mb-2">{t("Status", lang)}</p>
+            <div className="mt-3 rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-4 shadow-sm">
+              <p className="text-xs text-slate-400 dark:text-[#6A6460] mb-2">{t("Status", lang)}</p>
               <Badge
                 className={cn(
                   "text-xs font-medium",
                   initialData.status === "published"
-                    ? "bg-emerald-100 text-emerald-700 border-emerald-200"
+                    ? "bg-[#7A8B6F] text-white border-[#6A7B5F]"
                     : initialData.status === "archived"
-                    ? "bg-red-100 text-red-700 border-red-200"
-                    : "bg-slate-100 text-slate-600 border-slate-200"
+                    ? "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#3A3A3A] dark:text-[#A0998E] dark:border-[#4A4A4A]"
+                    : "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#3A3A3A] dark:text-[#A0998E] dark:border-[#4A4A4A]"
                 )}
                 variant="outline"
               >
@@ -749,7 +749,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
 
     {/* ── Sticky action bar ── */}
     {/* Negative margins escape the page's p-6 sm:p-8 padding so bg-white fills edge-to-edge */}
-    <div className="sticky bottom-0 z-10 bg-white border-t border-slate-200 mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 flex items-center gap-3">
+    <div className="sticky bottom-0 z-10 bg-white dark:bg-[#1A1A1A] border-t border-[#E8E0D4] dark:border-[#3A3A3A] mt-6 -mx-6 sm:-mx-8 px-6 sm:px-8 py-4 flex items-center gap-3">
       <Button
         type="button"
         variant="outline"
@@ -760,7 +760,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       </Button>
       <Button
         type="button"
-        variant="outline"
+        className="border border-[#E8E0D4] bg-transparent text-[#4A4A4A] hover:bg-[#E8E0D4] dark:border-[#3A3A3A] dark:text-[#A0998E] dark:hover:bg-[#3A3A3A]"
         onClick={() => handleSubmit("draft")}
         disabled={isAnySavePending}
       >
@@ -769,7 +769,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
       </Button>
       <Button
         type="button"
-        className="bg-emerald-600 hover:bg-emerald-700 text-white"
+        className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
         onClick={() => handleSubmit("published")}
         disabled={isAnySavePending}
       >
