@@ -182,7 +182,12 @@ export default async function HomePage() {
       orderBy: { name: "asc" },
       include: {
         targetProfiles: { where: { isActive: true }, take: 1 },
-        _count: { select: { mealPlans: true } },
+        mealPlans: {
+          where: { status: { not: "archived" } },
+          orderBy: { createdAt: "desc" },
+          take: 1,
+          select: { status: true, endDate: true },
+        },
       },
     }),
   ]);
@@ -214,9 +219,9 @@ export default async function HomePage() {
   const earlierItems = activity.filter((a) => a.date.toDateString() !== todayStr);
 
   return (
-    <div className="py-8">
+    <div className="py-5">
       {/* Header */}
-      <div className="flex flex-wrap items-start justify-between gap-4 mb-8">
+      <div className="flex flex-wrap items-start justify-between gap-4 mb-5">
         <div>
           <h1 className="text-2xl font-bold" style={{ color: "var(--color-charcoal)" }}>
             {t(greetingKey, lang)}, {firstName}
@@ -255,7 +260,7 @@ export default async function HomePage() {
         if (steps.length === 0) return null;
         return (
           <div
-            className="mb-8 rounded-2xl border p-6 sm:p-8"
+            className="mb-5 rounded-2xl border p-5"
             style={{ borderColor: "var(--color-clay)", background: "var(--color-clay-light)" }}
           >
             <div className="flex items-center gap-3 mb-4">
@@ -299,10 +304,10 @@ export default async function HomePage() {
       })()}
 
       {/* Overview section */}
-      <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-charcoal-soft)" }}>
+      <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--color-charcoal-soft)" }}>
         {t("Overview", lang)}
       </p>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-5">
         <StatCard
           label={t("Active Clients", lang)}
           value={totalClients}
@@ -324,16 +329,16 @@ export default async function HomePage() {
           value={totalActivePlans}
           icon={CalendarDays}
           href="/clients"
-          iconBg="#fffbeb"
-          iconColor="#d97706"
+          iconBg="#FBF0EB"
+          iconColor="#C4724E"
         />
       </div>
 
       {/* Workspace section */}
-      <p className="text-xs font-semibold uppercase tracking-widest mb-3" style={{ color: "var(--color-charcoal-soft)" }}>
+      <p className="text-xs font-semibold uppercase tracking-widest mb-2" style={{ color: "var(--color-charcoal-soft)" }}>
         {t("Workspace", lang)}
       </p>
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
         {/* Active Clients panel */}
         <div className="lg:col-span-3 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
@@ -374,13 +379,37 @@ export default async function HomePage() {
                   .slice(0, 2)
                   .join("")
                   .toUpperCase();
+
+                // Compute effective plan status
+                const latestPlan = client.mealPlans[0] ?? null;
+                const todayIso = now.toISOString().slice(0, 10);
+                const planStatus = !latestPlan
+                  ? "none"
+                  : latestPlan.status === "active" && latestPlan.endDate.toISOString().slice(0, 10) < todayIso
+                  ? "expired"
+                  : latestPlan.status;
+
+                const planBadgeClass =
+                  planStatus === "active"  ? "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]"
+                  : planStatus === "draft"   ? "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]"
+                  : planStatus === "expired" ? "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]"
+                  : "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]";
+
+                const planBadgeLabel =
+                  planStatus === "none"    ? t("No plan", lang)
+                  : planStatus === "expired" ? t("Expired", lang)
+                  : tStatus(planStatus, lang);
+
+                const needsPlan = planStatus === "none" || planStatus === "expired";
+
                 return (
-                  <Link
+                  <div
                     key={client.id}
-                    href={`/clients/${client.id}`}
-                    className="flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-[#f5f3ee] dark:hover:bg-[#2A2A2A] group"
-                    style={{ borderColor: "var(--color-sand)" }}
+                    className="relative flex items-center gap-3 px-6 py-3.5 transition-colors hover:bg-[#f5f3ee] dark:hover:bg-[#2A2A2A] group"
                   >
+                    {/* Stretched link — covers whole row */}
+                    <Link href={`/clients/${client.id}`} className="absolute inset-0" aria-label={client.name} />
+
                     <div
                       className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-white text-xs font-semibold"
                       style={{ background: "var(--color-clay)" }}
@@ -392,28 +421,33 @@ export default async function HomePage() {
                         {client.name}
                       </p>
                       <p className="text-xs mt-0.5" style={{ color: "var(--color-charcoal-soft)" }}>
-                        {client._count.mealPlans > 0 ? (
-                          <>
-                            {client._count.mealPlans}{" "}
-                            {client._count.mealPlans !== 1 ? t("plan plural", lang) : t("plan singular", lang)}
-                          </>
-                        ) : (
-                          t("No target profile", lang)
-                        )}
-                        <span className="mx-1.5" style={{ color: "var(--color-sand)" }}>·</span>
-                        {tStatus("active", lang)}
+                        {profile ? `${profile.calorieTarget} kcal` : t("No target profile", lang)}
                       </p>
                     </div>
-                    {profile && (
-                      <span
-                        className="shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full"
-                        style={{ background: "var(--color-clay-light)", color: "var(--color-clay)" }}
+
+                    {/* Plan status badge */}
+                    <Badge
+                      variant="outline"
+                      className={cn("relative z-10 shrink-0 text-xs font-medium border", planBadgeClass)}
+                    >
+                      {planBadgeLabel}
+                    </Badge>
+
+                    {/* Build plan link — only when no/expired plan */}
+                    {needsPlan ? (
+                      <Link
+                        href={`/clients/${client.id}/plans/new`}
+                        className="relative z-10 shrink-0 flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-medium text-white transition-colors hover:opacity-90"
+                        style={{ background: "var(--color-olive)" }}
+                        aria-label={`${t("New Plan", lang)} — ${client.name}`}
                       >
-                        {profile.calorieTarget} kcal
-                      </span>
+                        <Plus className="h-3 w-3" />
+                        {t("New Plan", lang)}
+                      </Link>
+                    ) : (
+                      <ChevronRight className="relative z-10 h-4 w-4 shrink-0 opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: "var(--color-clay)" }} />
                     )}
-                    <ChevronRight className="h-4 w-4 shrink-0 opacity-40 group-hover:opacity-70 transition-opacity" style={{ color: "var(--color-clay)" }} />
-                  </Link>
+                  </div>
                 );
               })}
             </div>

@@ -63,7 +63,7 @@ export default async function EditRecipePage({
   };
 
   return (
-    <div className="p-6 sm:p-8 max-w-5xl">
+    <div className="py-5 sm:py-6 max-w-5xl">
       <div className="mb-6">
         <nav className="flex items-center gap-1 text-sm text-slate-400 dark:text-[#6A6460] mb-1.5">
           <a href="/recipes" className="hover:text-slate-600 dark:hover:text-[#C0B8B0] transition-colors">{t("Recipes", lang)}</a>

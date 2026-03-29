@@ -19,6 +19,12 @@ export default async function ClientsPage() {
         where: { isActive: true },
         take: 1,
       },
+      mealPlans: {
+        where: { status: { not: "archived" } },
+        orderBy: { createdAt: "desc" },
+        take: 1,
+        select: { status: true, endDate: true },
+      },
     },
   });
 
@@ -27,6 +33,8 @@ export default async function ClientsPage() {
     name: c.name,
     email: c.email,
     status: c.status as string,
+    latestPlanStatus: (c.mealPlans[0]?.status ?? "none") as string,
+    latestPlanEndDate: c.mealPlans[0]?.endDate?.toISOString().slice(0, 10) ?? null,
     activeProfile: c.targetProfiles[0]
       ? {
           label: c.targetProfiles[0].label,
@@ -39,8 +47,8 @@ export default async function ClientsPage() {
   }));
 
   return (
-    <div className="p-6 sm:p-8 max-w-7xl">
-      <div className="mb-6">
+    <div className="py-5 sm:py-6 max-w-7xl">
+      <div className="mb-4">
         <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">{t("Clients", lang)}</h1>
         <p className="text-slate-500 dark:text-[#A0998E] text-sm mt-1">
           {t("Clients page description", lang)}

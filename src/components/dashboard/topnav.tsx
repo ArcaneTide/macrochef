@@ -306,6 +306,43 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                   {t(key, lang)}
                 </Link>
               ))}
+
+              {/* Language selector */}
+              <div className="pt-2 mt-1 border-t dark:border-[#3A3A3A]" style={{ borderColor: "var(--color-sand)" }}>
+                <p className="px-3 pb-1 text-xs font-medium uppercase tracking-wide" style={{ color: "var(--color-charcoal-soft)" }}>
+                  Language
+                </p>
+                {(
+                  [
+                    { code: "en" as const, label: "English", flag: "🇬🇧" },
+                    { code: "el" as const, label: "Ελληνικά", flag: "🇬🇷" },
+                  ] as Array<{ code: import("@/lib/language-client").Lang; label: string; flag: string }>
+                ).map(({ code, label, flag }) => (
+                  <button
+                    key={code}
+                    onClick={() => {
+                      if (code !== lang) {
+                        document.cookie = `${LANG_COOKIE}=${code}; path=/; max-age=31536000; SameSite=Lax`;
+                        window.location.reload();
+                      }
+                    }}
+                    className={cn(
+                      "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
+                      code === lang
+                        ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                        : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
+                    )}
+                  >
+                    <span className="text-base leading-none w-4 shrink-0">{flag}</span>
+                    <span className="flex-1 text-left">{label}</span>
+                    {code === lang && (
+                      <svg className="h-3.5 w-3.5 shrink-0" viewBox="0 0 12 12" fill="none">
+                        <path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                      </svg>
+                    )}
+                  </button>
+                ))}
+              </div>
             </nav>
 
             {/* Mobile bottom actions */}
@@ -335,15 +372,15 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
               <div className="flex items-center gap-1">
                 <button
                   onClick={() => {
-                    const next = lang === "en" ? "el" : "en";
-                    document.cookie = `${LANG_COOKIE}=${next}; path=/; max-age=31536000; SameSite=Lax`;
-                    window.location.reload();
+                    const isDark = document.documentElement.classList.toggle("dark");
+                    document.cookie = `mc_theme=${isDark ? "dark" : "light"}; path=/; max-age=31536000; SameSite=Lax`;
                   }}
-                  className="flex items-center gap-1.5 h-8 rounded-lg px-2 text-sm font-medium transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg transition-colors hover:bg-[#F5EDE8] dark:hover:bg-[#2A2A2A]"
                   style={{ color: "var(--color-charcoal-soft)" }}
+                  aria-label="Toggle dark mode"
                 >
-                  <span className="text-base leading-none">{lang === "en" ? "🇬🇷" : "🇬🇧"}</span>
-                  <span className="text-xs">{lang === "en" ? "EL" : "EN"}</span>
+                  <Moon className="h-4 w-4 dark:hidden" />
+                  <Sun className="h-4 w-4 hidden dark:block" />
                 </button>
                 <button
                   onClick={() => signOut({ callbackUrl: "/login" })}

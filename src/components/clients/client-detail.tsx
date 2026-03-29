@@ -45,8 +45,8 @@ export type ClientDetailProps = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-500 border-[#E8E0D4]",
+  active: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  archived: "bg-slate-100 text-slate-500 border-[#E8E0D4] dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
 function MacroRow({
@@ -72,10 +72,19 @@ function MacroRow({
 }
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  draft: "bg-slate-100 text-slate-600 border-[#E8E0D4]",
-  active: "bg-emerald-100 text-emerald-700 border-emerald-200",
-  archived: "bg-slate-100 text-slate-400 border-[#E8E0D4]",
+  draft:    "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]",
+  active:   "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  expired:  "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
+  archived: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
+
+function planDisplayStatus(plan: MealPlanSummary): string {
+  if (plan.status === "active") {
+    const today = new Date().toISOString().slice(0, 10);
+    if (plan.endDate < today) return "expired";
+  }
+  return plan.status;
+}
 
 export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProps) {
   const router = useRouter();
@@ -174,7 +183,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               {t("Active Macro Targets", lang)}
             </h3>
             {activeProfile?.label && (
-              <p className="text-xs text-emerald-600 font-medium mt-0.5">{activeProfile.label}</p>
+              <p className="text-xs font-medium mt-0.5" style={{ color: "var(--color-olive)" }}>{activeProfile.label}</p>
             )}
           </div>
           {!isAddingProfile && (
@@ -238,11 +247,11 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                 <div className="text-right text-xs text-slate-500 dark:text-[#A0998E] tabular-nums space-y-0.5">
                   <p>{profile.calorieTarget} kcal</p>
                   <p>
-                    <span className="text-blue-500">{profile.proteinTarget}g P</span>
+                    <span className="text-[#5A6B4F]">{profile.proteinTarget}g P</span>
                     {" · "}
-                    <span className="text-amber-500">{profile.carbsTarget}g C</span>
+                    <span className="text-[#B8907A]">{profile.carbsTarget}g C</span>
                     {" · "}
-                    <span className="text-orange-500">{profile.fatTarget}g F</span>
+                    <span className="text-[#C4724E]">{profile.fatTarget}g F</span>
                   </p>
                 </div>
               </div>
@@ -301,10 +310,10 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                     variant="outline"
                     className={cn(
                       "text-xs font-medium border",
-                      PLAN_STATUS_STYLES[plan.status] ?? PLAN_STATUS_STYLES.draft
+                      PLAN_STATUS_STYLES[planDisplayStatus(plan)] ?? PLAN_STATUS_STYLES.draft
                     )}
                   >
-                    {tStatus(plan.status, lang)}
+                    {planDisplayStatus(plan) === "expired" ? t("Expired", lang) : tStatus(plan.status, lang)}
                   </Badge>
                   <ChevronRight className="h-4 w-4 text-slate-400 dark:text-[#6A6460]" />
                 </div>
