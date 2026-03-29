@@ -347,7 +347,7 @@ interface RecipeFormProps {
   lang: Lang;
 }
 
-const DRAFT_KEY = "macrochef_new_recipe_draft";
+const DRAFT_KEY = "macropie_new_recipe_draft";
 
 type DraftState = {
   title: string;

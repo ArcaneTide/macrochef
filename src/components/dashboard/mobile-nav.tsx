@@ -29,7 +29,7 @@ export function MobileNav({ userName, userEmail, lang }: MobileNavProps) {
           <div className="flex h-7 w-7 items-center justify-center rounded-xl bg-[#7A8B6F]">
             <Lock className="h-4 w-4 text-white" />
           </div>
-          <span className="text-sm font-semibold text-slate-900">MacroLock</span>
+          <span className="text-sm font-semibold text-slate-900">MacroPie</span>
         </div>
         <span className="flex-1 text-sm text-slate-500 truncate mx-4">{userName}</span>
         <button

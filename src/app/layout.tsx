@@ -11,7 +11,7 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "MacroLock",
+  title: "MacroPie",
   description: "Macro-accurate meal plans for nutrition coaches",
 };
 

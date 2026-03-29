@@ -99,7 +99,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
             <Lock className="h-4 w-4 text-white" />
           </div>
           <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>
-            MacroLock
+            MacroPie
           </span>
         </Link>
 

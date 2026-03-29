@@ -96,7 +96,7 @@ const dict = {
   "Good night":              { en: "Good night",              el: "Καληνύχτα" },
 
   // ── Welcome / onboarding ──────────────────────────────────
-  "Welcome to MacroLock":        { en: "Welcome to MacroLock!",              el: "Καλώς ήρθες στο MacroLock!" },
+  "Welcome to MacroPie":        { en: "Welcome to MacroPie!",              el: "Καλώς ήρθες στο MacroPie!" },
   "Get started in three steps":  { en: "Get started in three steps.",         el: "Ξεκίνα με τρία βήματα." },
   "Create your first recipe":    { en: "Create your first recipe",            el: "Δημιούργησε την πρώτη σου συνταγή" },
   "Add a client":                { en: "Add a client with macro targets",      el: "Πρόσθεσε πελάτη με στόχους" },
@@ -118,6 +118,9 @@ const dict = {
   "Untitled Plan":           { en: "Untitled Plan",           el: "Ανώνυμο Πλάνο" },
   "Meal Plan":               { en: "Meal Plan",               el: "Πλάνο Γευμάτων" },
   "Add your first client":   { en: "Add your first client",   el: "Πρόσθεσε τον πρώτο σου πελάτη" },
+  "Most Used Recipes":       { en: "Most Used Recipes",       el: "Πιο Χρησιμοποιημένες Συνταγές" },
+  "assigned":                { en: "assigned",                el: "αναθέσεις" },
+  "Not used yet":            { en: "No recipes have been assigned to a plan yet.", el: "Δεν έχει ανατεθεί ακόμη καμία συνταγή σε πλάνο." },
   "Add recipe":              { en: "Add recipe",              el: "Προσθήκη συνταγής" },
   "All macros per serving":  { en: "All macros per serving",  el: "Όλα τα μακρο ανά μερίδα" },
   "All values per 100g":     { en: "All values per 100g",     el: "Τιμές ανά 100γρ" },

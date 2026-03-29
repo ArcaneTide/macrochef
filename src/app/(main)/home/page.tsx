@@ -15,7 +15,7 @@ import { cn } from "@/lib/utils";
 import { getLang } from "@/lib/language";
 import { t, tStatus } from "@/lib/translations";
 
-export const metadata = { title: "Home — MacroLock" };
+export const metadata = { title: "Home — MacroPie" };
 
 function getGreetingKey(hour: number): "Good morning" | "Good afternoon" | "Good evening" | "Good night" {
   if (hour >= 5 && hour < 12) return "Good morning";
@@ -158,6 +158,7 @@ export default async function HomePage() {
     recentRecipes,
     recentClients,
     activeClients,
+    topAssignments,
   ] = await Promise.all([
     db.client.count({ where: { coachId, status: "active" } }),
     db.recipe.count({ where: { userId: coachId, status: "published" } }),
@@ -190,6 +191,13 @@ export default async function HomePage() {
         },
       },
     }),
+    db.mealAssignment.groupBy({
+      by: ["recipeId"],
+      where: { mealPlan: { client: { coachId } } },
+      _count: { recipeId: true },
+      orderBy: { _count: { recipeId: "desc" } },
+      take: 5,
+    }),
   ]);
 
   const activity: ActivityItem[] = [
@@ -210,6 +218,22 @@ export default async function HomePage() {
   ]
     .sort((a, b) => b.date.getTime() - a.date.getTime())
     .slice(0, 6);
+
+  // Resolve recipe details for most-used panel
+  const topRecipeIds = topAssignments.map((a) => a.recipeId);
+  const topRecipeDetails = topRecipeIds.length > 0
+    ? await db.recipe.findMany({
+        where: { id: { in: topRecipeIds } },
+        select: { id: true, title: true, status: true },
+      })
+    : [];
+  const mostUsedRecipes = topAssignments
+    .map((a) => {
+      const recipe = topRecipeDetails.find((r) => r.id === a.recipeId);
+      if (!recipe) return null;
+      return { count: a._count.recipeId, id: recipe.id, title: recipe.title };
+    })
+    .filter((x): x is { count: number; id: string; title: string } => x !== null);
 
   const firstName = session.user.name?.split(" ")[0] ?? "Coach";
 
@@ -272,7 +296,7 @@ export default async function HomePage() {
               </div>
               <div>
                 <h2 className="text-base font-semibold" style={{ color: "var(--color-charcoal)" }}>
-                  {t("Welcome to MacroLock", lang)}
+                  {t("Welcome to MacroPie", lang)}
                 </h2>
                 <p className="text-sm" style={{ color: "var(--color-charcoal-soft)" }}>
                   {t("Get started in three steps", lang)}
@@ -341,7 +365,7 @@ export default async function HomePage() {
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
 
         {/* Active Clients panel */}
-        <div className="lg:col-span-3 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
+        <div className="lg:col-span-3 lg:row-span-2 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
           <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
             <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--color-charcoal)" }}>
               {t("Active Clients", lang)}
@@ -454,8 +478,59 @@ export default async function HomePage() {
           )}
         </div>
 
+        {/* Most Used Recipes panel */}
+        <div className="lg:col-span-2 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm self-start" style={{ borderColor: "var(--color-sand)" }}>
+          <div className="flex items-center justify-between px-6 py-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
+            <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--color-charcoal)" }}>
+              {t("Most Used Recipes", lang)}
+            </h2>
+            <Link
+              href="/recipes"
+              className="text-xs font-medium transition-colors hover:underline"
+              style={{ color: "var(--color-clay)" }}
+            >
+              {t("View all", lang)}
+            </Link>
+          </div>
+
+          {mostUsedRecipes.length === 0 ? (
+            <div className="px-6 py-10 text-center">
+              <p className="text-sm" style={{ color: "var(--color-charcoal-soft)" }}>
+                {t("Not used yet", lang)}
+              </p>
+            </div>
+          ) : (
+            <div className="divide-y" style={{ "--tw-divide-opacity": "1" } as React.CSSProperties}>
+              {mostUsedRecipes.map(({ id, title, count }) => (
+                <Link
+                  key={id}
+                  href={`/recipes/${id}/edit`}
+                  className="flex items-center gap-3 px-6 py-3 transition-colors hover:bg-[#FDFBF8] dark:hover:bg-[#2A2A2A] group"
+                >
+                  <div
+                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+                    style={{ background: "var(--color-olive-light)", color: "var(--color-olive)" }}
+                  >
+                    <BookOpen className="h-3.5 w-3.5" />
+                  </div>
+                  <p className="flex-1 min-w-0 text-sm font-medium truncate" style={{ color: "var(--color-charcoal)" }}>
+                    {title}
+                  </p>
+                  <span className="text-xs tabular-nums shrink-0" style={{ color: "var(--color-charcoal-soft)" }}>
+                    ×{count}
+                  </span>
+                  <ChevronRight
+                    className="h-4 w-4 shrink-0 opacity-0 group-hover:opacity-60 transition-opacity"
+                    style={{ color: "var(--color-clay)" }}
+                  />
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Recent Activity panel */}
-        <div className="lg:col-span-2 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm" style={{ borderColor: "var(--color-sand)" }}>
+        <div className="lg:col-span-2 rounded-2xl border bg-white dark:bg-[#242424] shadow-sm self-start" style={{ borderColor: "var(--color-sand)" }}>
           <div className="px-6 py-4 border-b" style={{ borderColor: "var(--color-sand)" }}>
             <h2 className="text-sm font-semibold uppercase tracking-wide" style={{ color: "var(--color-charcoal)" }}>
               {t("Recent Activity", lang)}

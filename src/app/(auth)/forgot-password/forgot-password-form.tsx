@@ -35,7 +35,7 @@ export function ForgotPasswordForm({ lang }: { lang: Lang }) {
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#7A8B6F] text-white">
             <Lock className="h-5 w-5" />
           </div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-[#F5F1EB]">MacroLock</h1>
+          <h1 className="text-xl font-semibold text-slate-900 dark:text-[#F5F1EB]">MacroPie</h1>
           <p className="text-sm text-slate-500 dark:text-[#A0998E]">{t("Reset password", lang)}</p>
         </div>
 

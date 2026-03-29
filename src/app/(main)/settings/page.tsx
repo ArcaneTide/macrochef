@@ -1,7 +1,7 @@
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Settings — MacroLock" };
+export const metadata = { title: "Settings — MacroPie" };
 
 export default async function SettingsPage() {
   const lang = await getLang();
