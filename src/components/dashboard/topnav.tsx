@@ -91,12 +91,13 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
       >
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-2 shrink-0 mr-6">
-          <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
-            <circle cx="12" cy="12" r="10" fill="#7A8B6F"/>
-            <path d="M12 2a10 10 0 0 1 8.66 5L12 12V2z" fill="#B8907A"/>
-            <path d="M20.66 7A10 10 0 0 1 12 22V12l8.66-5z" fill="#C4724E"/>
-            <path d="M12 22A10 10 0 0 1 3.34 7L12 12v10z" fill="#E8E0D4"/>
-            <circle cx="12" cy="12" r="1.5" fill="white"/>
+          <svg viewBox="0 0 22 22" fill="none" className="h-7 w-7">
+            <circle cx="11" cy="11" r="10" stroke="#2C2C2C" strokeWidth="0.8" opacity="0.12" fill="none"/>
+            <path d="M11 3.5 A7.5 7.5 0 0 1 17.5 8 L11 11 Z" fill="#7A8B6F" opacity="0.8"/>
+            <path d="M17.5 8 A7.5 7.5 0 0 1 13.5 18 L11 11 Z" fill="#B8907A" opacity="0.8"/>
+            <path d="M13.5 18 A7.5 7.5 0 0 1 4.5 9 L11 11 Z" fill="#C4724E" opacity="0.8"/>
+            <path d="M4.5 9 A7.5 7.5 0 0 1 11 3.5 L11 11 Z" fill="#C4B9A8" opacity="0.5"/>
+            <circle cx="11" cy="11" r="2" fill="#FDFBF8"/>
           </svg>
           <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>
             Macro<span style={{ color: "#C4724E" }}>Πie</span>
