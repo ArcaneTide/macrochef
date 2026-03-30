@@ -6,7 +6,7 @@ import { RecipeListClient } from "@/components/recipes/recipe-list-client";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Recipes — MacroPie" };
+export const metadata = { title: "Recipes — MacroΠie" };
 
 export default async function RecipesPage() {
   const [session, lang] = await Promise.all([auth(), getLang()]);

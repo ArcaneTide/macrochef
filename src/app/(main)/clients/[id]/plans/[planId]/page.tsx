@@ -9,7 +9,7 @@ import { DuplicatePlanModal } from "@/components/meal-plans/duplicate-plan-modal
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Meal Plan — MacroPie" };
+export const metadata = { title: "Meal Plan — MacroΠie" };
 
 export default async function PlanDetailPage({
   params,

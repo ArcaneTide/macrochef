@@ -7,7 +7,7 @@ import { ArchiveRecipeButton } from "@/components/recipes/archive-recipe-button"
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Edit Recipe — MacroPie" };
+export const metadata = { title: "Edit Recipe — MacroΠie" };
 
 export default async function EditRecipePage({
   params,

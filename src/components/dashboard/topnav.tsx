@@ -10,7 +10,6 @@ import {
   Users,
   Package,
   Settings,
-  Lock,
   LogOut,
   Menu,
   X,
@@ -92,14 +91,15 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
       >
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-2 shrink-0 mr-6">
-          <div
-            className="flex h-7 w-7 items-center justify-center rounded-lg"
-            style={{ background: "var(--color-clay)" }}
-          >
-            <Lock className="h-4 w-4 text-white" />
-          </div>
+          <svg viewBox="0 0 24 24" fill="none" className="h-7 w-7">
+            <circle cx="12" cy="12" r="10" fill="#7A8B6F"/>
+            <path d="M12 2a10 10 0 0 1 8.66 5L12 12V2z" fill="#B8907A"/>
+            <path d="M20.66 7A10 10 0 0 1 12 22V12l8.66-5z" fill="#C4724E"/>
+            <path d="M12 22A10 10 0 0 1 3.34 7L12 12v10z" fill="#E8E0D4"/>
+            <circle cx="12" cy="12" r="1.5" fill="white"/>
+          </svg>
           <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>
-            MacroPie
+            MacroΠie
           </span>
         </Link>
 
