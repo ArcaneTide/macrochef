@@ -3,7 +3,7 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { Lock, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
+import { Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -29,15 +29,12 @@ export function ResetPasswordForm({ token, lang }: { token: string; lang: Lang }
 
   if (!token) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white dark:from-[#1A1A1A] dark:to-[#242424] px-4">
+      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#F9F5EF] to-[#FDFBF8] dark:from-[#1A1A1A] dark:to-[#242424] px-4">
         <div className="w-full max-w-sm text-center">
-          <div className="rounded-2xl border border-red-200 bg-white dark:bg-[#242424] p-8 shadow">
+          <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-8 shadow">
             <AlertCircle className="mx-auto h-8 w-8 text-red-500 mb-3" />
             <p className="text-sm text-slate-700 dark:text-[#F5F1EB] mb-4">{t("Reset link invalid", lang)}</p>
-            <Link
-              href="/forgot-password"
-              className="text-sm font-medium text-[#7A8B6F] hover:text-[#6A7B5F] hover:underline"
-            >
+            <Link href="/forgot-password" className="text-sm font-medium text-[#B8907A] hover:underline">
               {t("Request a new link", lang)}
             </Link>
           </div>
@@ -47,15 +44,21 @@ export function ResetPasswordForm({ token, lang }: { token: string; lang: Lang }
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white dark:from-[#1A1A1A] dark:to-[#242424] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#F9F5EF] to-[#FDFBF8] dark:from-[#1A1A1A] dark:to-[#242424] px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#7A8B6F] text-white">
-            <Lock className="h-5 w-5" />
-          </div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-[#F5F1EB]">MacroΠie</h1>
-          <p className="text-sm text-slate-500 dark:text-[#A0998E]">{t("Choose a new password", lang)}</p>
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10">
+            <circle cx="12" cy="12" r="10" fill="#7A8B6F"/>
+            <path d="M12 2a10 10 0 0 1 8.66 5L12 12V2z" fill="#B8907A"/>
+            <path d="M20.66 7A10 10 0 0 1 12 22V12l8.66-5z" fill="#C4724E"/>
+            <path d="M12 22A10 10 0 0 1 3.34 7L12 12v10z" fill="#E8E0D4"/>
+            <circle cx="12" cy="12" r="1.5" fill="white"/>
+          </svg>
+          <h1 className="font-serif text-2xl text-slate-900 dark:text-[#F5F1EB]">
+            MacroΠ<span style={{ color: "#C4724E" }}>ie</span>
+          </h1>
+          <p className="text-sm text-[#4A4A4A] dark:text-[#A0998E]">{t("Choose a new password", lang)}</p>
         </div>
 
         {/* Card */}
@@ -64,10 +67,7 @@ export function ResetPasswordForm({ token, lang }: { token: string; lang: Lang }
             <div className="flex flex-col items-center gap-3 py-2 text-center">
               <CheckCircle2 className="h-8 w-8 text-[#7A8B6F]" />
               <p className="text-sm text-slate-700 dark:text-[#F5F1EB]">{t("Password has been reset", lang)}</p>
-              <Link
-                href="/login"
-                className="mt-1 text-sm font-medium text-[#7A8B6F] hover:text-[#6A7B5F] hover:underline"
-              >
+              <Link href="/login" className="mt-1 text-sm font-medium text-[#B8907A] hover:underline">
                 {t("Sign in with new password", lang)}
               </Link>
             </div>

@@ -3,7 +3,6 @@
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import Link from "next/link";
-import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -27,15 +26,21 @@ export function SignupForm({ lang }: { lang: Lang }) {
   const [state, action] = useActionState(signupAction, null);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-slate-50 to-white dark:from-[#1A1A1A] dark:to-[#242424] px-4">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-[#F9F5EF] to-[#FDFBF8] dark:from-[#1A1A1A] dark:to-[#242424] px-4">
       <div className="w-full max-w-sm">
         {/* Logo */}
-        <div className="mb-8 flex flex-col items-center gap-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#7A8B6F] text-white">
-            <Lock className="h-5 w-5" />
-          </div>
-          <h1 className="text-xl font-semibold text-slate-900 dark:text-[#F5F1EB]">MacroΠie</h1>
-          <p className="text-sm text-slate-500 dark:text-[#A0998E]">{t("Create your coach account", lang)}</p>
+        <div className="mb-8 flex flex-col items-center gap-3">
+          <svg viewBox="0 0 24 24" fill="none" className="h-10 w-10">
+            <circle cx="12" cy="12" r="10" fill="#7A8B6F"/>
+            <path d="M12 2a10 10 0 0 1 8.66 5L12 12V2z" fill="#B8907A"/>
+            <path d="M20.66 7A10 10 0 0 1 12 22V12l8.66-5z" fill="#C4724E"/>
+            <path d="M12 22A10 10 0 0 1 3.34 7L12 12v10z" fill="#E8E0D4"/>
+            <circle cx="12" cy="12" r="1.5" fill="white"/>
+          </svg>
+          <h1 className="font-serif text-2xl text-slate-900 dark:text-[#F5F1EB]">
+            MacroΠ<span style={{ color: "#C4724E" }}>ie</span>
+          </h1>
+          <p className="text-sm text-[#4A4A4A] dark:text-[#A0998E]">{t("Create your coach account", lang)}</p>
         </div>
 
         {/* Card */}
@@ -88,12 +93,9 @@ export function SignupForm({ lang }: { lang: Lang }) {
           </form>
         </div>
 
-        <p className="mt-4 text-center text-sm text-slate-500 dark:text-[#A0998E]">
+        <p className="mt-4 text-center text-sm text-[#4A4A4A] dark:text-[#A0998E]">
           {t("Already have an account?", lang)}{" "}
-          <Link
-            href="/login"
-            className="font-medium text-[#7A8B6F] hover:text-[#6A7B5F] hover:underline"
-          >
+          <Link href="/login" className="font-medium text-[#B8907A] hover:underline">
             {t("Sign in", lang)}
           </Link>
         </p>
