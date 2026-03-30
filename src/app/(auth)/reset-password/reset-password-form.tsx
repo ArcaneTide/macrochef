@@ -56,7 +56,7 @@ export function ResetPasswordForm({ token, lang }: { token: string; lang: Lang }
             <circle cx="12" cy="12" r="1.5" fill="white"/>
           </svg>
           <h1 className="font-serif text-2xl text-slate-900 dark:text-[#F5F1EB]">
-            MacroΠ<span style={{ color: "#C4724E" }}>ie</span>
+            Macro<span style={{ color: "#C4724E" }}>Πie</span>
           </h1>
           <p className="text-sm text-[#4A4A4A] dark:text-[#A0998E]">{t("Choose a new password", lang)}</p>
         </div>

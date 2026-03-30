@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Outfit, DM_Serif_Display, Sora } from "next/font/google";
+import { Outfit, DM_Serif_Display, Sora, Fraunces } from "next/font/google";
 import { Providers } from "@/components/providers";
 import { getDarkMode } from "@/lib/theme";
 import "./globals.css";
@@ -25,6 +25,14 @@ const sora = Sora({
   display: "swap",
 });
 
+const fraunces = Fraunces({
+  variable: "--font-fraunces",
+  subsets: ["latin"],
+  weight: ["300", "400"],
+  style: ["italic"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "MacroΠie",
   description: "Macro-accurate meal plans for nutrition coaches",
@@ -39,7 +47,7 @@ export default async function RootLayout({
   return (
     <html
       lang="en"
-      className={`${outfit.variable} ${dmSerifDisplay.variable} ${sora.variable}${isDark ? " dark" : ""}`}
+      className={`${outfit.variable} ${dmSerifDisplay.variable} ${sora.variable} ${fraunces.variable}${isDark ? " dark" : ""}`}
     >
       <body className="font-sans antialiased">
         <Providers>{children}</Providers>

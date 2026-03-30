@@ -99,7 +99,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
             <circle cx="12" cy="12" r="1.5" fill="white"/>
           </svg>
           <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>
-            MacroΠie
+            Macro<span style={{ color: "#C4724E" }}>Πie</span>
           </span>
         </Link>
 
