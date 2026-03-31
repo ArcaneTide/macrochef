@@ -185,9 +185,11 @@ export async function GET(
           proteinTarget: activeProfile.proteinTarget,
           carbsTarget: activeProfile.carbsTarget,
           fatTarget: activeProfile.fatTarget,
+          label: activeProfile.label ?? null,
         }
       : null,
     weeklyAvg,
+    planNotes: plan.notes ?? null,
   }) as ReactElement<DocumentProps, string | JSXElementConstructor<unknown>>;
 
   const pdfBuffer = await renderToBuffer(element);
