@@ -4,7 +4,7 @@ import { ShieldCheck } from "lucide-react";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Ingredients — MacroPie" };
+export const metadata = { title: "Ingredients — MacroΠie" };
 
 export default async function IngredientsPage() {
   const [ingredients, lang] = await Promise.all([

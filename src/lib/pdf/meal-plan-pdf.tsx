@@ -399,7 +399,7 @@ export function MealPlanPdfDocument({
   });
 
   return (
-    <Document title={planTitle} author="MacroPie">
+    <Document title={planTitle} author="MacroΠie">
       <Page size="A4" style={s.page}>
         {/* Header */}
         <View style={s.header}>
@@ -449,7 +449,7 @@ export function MealPlanPdfDocument({
 
         {/* Footer */}
         <View style={s.footer} fixed>
-          <Text style={s.footerText}>MacroPie · {planTitle}</Text>
+          <Text style={s.footerText}>MacroΠie · {planTitle}</Text>
           <Text style={s.footerText}>Generated {generatedDate}</Text>
         </View>
       </Page>

@@ -34,14 +34,14 @@ export type ClientListItem = {
 };
 
 const CLIENT_STATUS_STYLES: Record<string, string> = {
-  active: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  active: "bg-[#EDF1EB] text-[var(--color-olive)] border-[#c5d0bf]",
   archived: "bg-slate-100 text-slate-500 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
-  active:   "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  active:   "bg-[var(--color-olive)] text-white border-[#6A7B5F]",
   draft:    "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
-  expired:  "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
+  expired:  "bg-[#FBF0EB] text-[var(--color-terracotta)] border-[#e8c0a8]",
   none:     "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
@@ -116,7 +116,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           {filtered.length} {filtered.length !== 1 ? t("client plural", lang) : t("client singular", lang)}
         </p>
         <Link href="/clients/new" className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
+          <Button className="w-full sm:w-auto bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white gap-1.5">
             <Plus className="h-4 w-4" />
             {t("New Client", lang)}
           </Button>
@@ -129,7 +129,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
             <div className="space-y-3">
               <p>{t("No clients yet", lang)}</p>
               <Link href="/clients/new">
-                <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
+                <Button className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white gap-1.5">
                   <Plus className="h-4 w-4" />
                   {t("Add your first client", lang)}
                 </Button>
@@ -140,11 +140,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
-              <tr className="border-b border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
+              <tr className="border-b border-[var(--color-sand)] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 <th className="text-left px-4 py-3">{t("Name", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Status", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Plan Status", lang)}</th>
@@ -155,7 +155,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                 <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+            <tbody className="divide-y divide-[var(--color-sand)]">
               {filtered.map((client) => (
                 <tr
                   key={client.id}
@@ -187,16 +187,16 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                       <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>
                     )}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-slate-600 dark:text-[#A0998E] tabular-nums">
+                  <td className="px-4 py-3 text-right text-sm text-slate-600 dark:text-[#A0998E] tabular-nums font-data">
                     {client.activeProfile ? `${client.activeProfile.calorieTarget} kcal` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-[#5A6B4F] tabular-nums font-medium">
+                  <td className="px-4 py-3 text-right text-sm text-[#5A6B4F] tabular-nums font-data font-medium">
                     {client.activeProfile ? `${client.activeProfile.proteinTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-[#B8907A] tabular-nums font-medium">
+                  <td className="px-4 py-3 text-right text-sm text-[var(--color-clay)] tabular-nums font-data font-medium">
                     {client.activeProfile ? `${client.activeProfile.carbsTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
-                  <td className="px-4 py-3 text-right text-sm text-[#C4724E] tabular-nums font-medium">
+                  <td className="px-4 py-3 text-right text-sm text-[var(--color-terracotta)] tabular-nums font-data font-medium">
                     {client.activeProfile ? `${client.activeProfile.fatTarget}g` : <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>}
                   </td>
                 </tr>
@@ -205,7 +205,7 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
           </table>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+          <div className="sm:hidden divide-y divide-[var(--color-sand)]">
             {filtered.map((client) => (
               <div
                 key={client.id}
@@ -237,11 +237,11 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
                     {[
                       { label: "Kcal", value: `${client.activeProfile.calorieTarget}`, color: "text-slate-700 dark:text-[#A0998E]" },
                       { label: "P", value: `${client.activeProfile.proteinTarget}g`, color: "text-[#5A6B4F]" },
-                      { label: "C", value: `${client.activeProfile.carbsTarget}g`, color: "text-[#B8907A]" },
-                      { label: "F", value: `${client.activeProfile.fatTarget}g`, color: "text-[#C4724E]" },
+                      { label: "C", value: `${client.activeProfile.carbsTarget}g`, color: "text-[var(--color-clay)]" },
+                      { label: "F", value: `${client.activeProfile.fatTarget}g`, color: "text-[var(--color-terracotta)]" },
                     ].map(({ label, value, color }) => (
                       <div key={label}>
-                        <p className={cn("font-medium tabular-nums", color)}>{value}</p>
+                        <p className={cn("font-medium tabular-nums font-data", color)}>{value}</p>
                         <p className="text-slate-400 dark:text-[#6A6460]">{label}</p>
                       </div>
                     ))}

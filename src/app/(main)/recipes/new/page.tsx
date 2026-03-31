@@ -3,7 +3,7 @@ import { RecipeForm } from "@/components/recipes/recipe-form";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "New Recipe — MacroPie" };
+export const metadata = { title: "New Recipe — MacroΠie" };
 
 export default async function NewRecipePage() {
   const [ingredients, lang] = await Promise.all([

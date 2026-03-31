@@ -44,9 +44,9 @@ export async function forgotPasswordAction(
     const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
     await resend.emails.send({
-      from: "MacroPie <noreply@macropie.com>",
+      from: "MacroΠie <noreply@macropie.com>",
       to: email,
-      subject: "Reset your MacroPie password",
+      subject: "Reset your MacroΠie password",
       html: `
         <div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:32px 24px;">
           <h2 style="font-size:20px;font-weight:600;color:#1a1a1a;margin:0 0 8px;">Reset your password</h2>

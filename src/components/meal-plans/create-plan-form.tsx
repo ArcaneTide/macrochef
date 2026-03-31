@@ -96,7 +96,7 @@ export function CreatePlanForm({ clientId, lang }: { clientId: string; lang: Lan
           {t("Cancel", lang)}
         </Button>
         <Button
-          className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
+          className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white"
           onClick={handleSubmit}
           disabled={isPending}
         >

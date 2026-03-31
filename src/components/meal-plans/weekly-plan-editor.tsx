@@ -66,8 +66,8 @@ function MacroBar({
       {(
         [
           { label: "P", actual: actual.protein, target: target.proteinTarget, color: "bg-[#5A6B4F]" },
-          { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-[#B8907A]" },
-          { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-[#C4724E]" },
+          { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-[var(--color-clay)]" },
+          { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-[var(--color-terracotta)]" },
         ] as Array<{ label: string; actual: number; target: number; color: string }>
       ).map(({ label, actual: a, target: tgt, color }) => (
         <div key={label} className="flex items-center gap-1.5">
@@ -78,7 +78,7 @@ function MacroBar({
               style={{ width: `${pct(a, tgt)}%` }}
             />
           </div>
-          <span className={cn("text-xs tabular-nums w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500 dark:text-[#A0998E]")}>
+          <span className={cn("text-xs tabular-nums font-data w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500 dark:text-[#A0998E]")}>
             {Math.round(a)}g
           </span>
         </div>
@@ -238,7 +238,7 @@ export function WeeklyPlanEditor({
           </thead>
           <tbody>
             {SLOTS.map((slot) => (
-              <tr key={slot} className="border-t border-[#E8E0D4] dark:border-[#3A3A3A]">
+              <tr key={slot} className="border-t border-[var(--color-sand)]">
                 <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide align-top pt-3">
                   {SLOT_LABELS[slot]}
                 </td>
@@ -249,7 +249,7 @@ export function WeeklyPlanEditor({
                   return (
                     <td key={dayIndex} className="p-1.5 align-top">
                       {cell ? (
-                        <div className="relative group rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-2.5 shadow-sm">
+                        <div className="relative group rounded-lg border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-2.5 shadow-sm">
                           <button
                             onClick={() => handleRemove(key, cell.id)}
                             disabled={isRemoving}
@@ -271,7 +271,7 @@ export function WeeklyPlanEditor({
                       ) : (
                         <button
                           onClick={() => setModal({ dayIndex, mealSlot: slot })}
-                          className="w-full h-14 rounded-lg border border-dashed border-[#E8E0D4] dark:border-[#3A3A3A] flex items-center justify-center text-slate-300 hover:text-slate-400 hover:border-slate-300 dark:hover:border-[#5A5A5A] hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
+                          className="w-full h-14 rounded-lg border border-dashed border-[var(--color-sand)] flex items-center justify-center text-slate-300 hover:text-slate-400 hover:border-slate-300 dark:hover:border-[#5A5A5A] hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
                         >
                           <Plus className="h-4 w-4" />
                         </button>
@@ -283,21 +283,21 @@ export function WeeklyPlanEditor({
             ))}
 
             {/* Daily totals row */}
-            <tr className="border-t-2 border-[#E8E0D4] dark:border-[#3A3A3A]">
+            <tr className="border-t-2 border-[var(--color-sand)]">
               <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 {t("Daily Total", lang)}
               </td>
               {dailyMacros.map((m, i) => (
                 <td key={i} className="p-2">
-                  <p className="text-sm font-semibold text-slate-800 dark:text-[#F5F1EB] tabular-nums">
+                  <p className="text-sm font-semibold text-slate-800 dark:text-[#F5F1EB] tabular-nums font-data">
                     {Math.round(m.calories)} kcal
                   </p>
-                  <p className="text-xs text-slate-500 dark:text-[#A0998E] tabular-nums">
+                  <p className="text-xs text-slate-500 dark:text-[#A0998E] tabular-nums font-data">
                     <span className="text-[#5A6B4F]">{m.protein.toFixed(1)}g P</span>
                     {" · "}
-                    <span className="text-[#B8907A]">{m.carbs.toFixed(1)}g C</span>
+                    <span className="text-[var(--color-clay)]">{m.carbs.toFixed(1)}g C</span>
                     {" · "}
-                    <span className="text-[#C4724E]">{m.fat.toFixed(1)}g F</span>
+                    <span className="text-[var(--color-terracotta)]">{m.fat.toFixed(1)}g F</span>
                   </p>
                   {dailyTarget && (
                     <MacroBar actual={m} target={dailyTarget} />
@@ -312,17 +312,17 @@ export function WeeklyPlanEditor({
       {/* Mobile: day cards */}
       <div className="lg:hidden space-y-6">
         {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => (
-          <div key={dayIndex} className="rounded-xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow-sm">
-            <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[#E8E0D4] dark:border-[#3A3A3A] flex items-baseline justify-between">
+          <div key={dayIndex} className="rounded-xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow-sm">
+            <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[var(--color-sand)] flex items-baseline justify-between">
               <div>
                 <span className="font-semibold text-slate-800 dark:text-[#F5F1EB]">{dayLabels[dayIndex]}</span>
                 <span className="ml-1.5 text-xs text-slate-400 dark:text-[#A0998E]">{dayDates[dayIndex]}</span>
               </div>
-              <span className="text-sm tabular-nums font-medium text-slate-600 dark:text-[#A0998E]">
+              <span className="text-sm tabular-nums font-data font-medium text-slate-600 dark:text-[#A0998E]">
                 {Math.round(dailyMacros[dayIndex].calories)} kcal
               </span>
             </div>
-            <div className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+            <div className="divide-y divide-[var(--color-sand)]">
               {SLOTS.map((slot) => {
                 const key = cellKey(dayIndex, slot);
                 const cell = cells.get(key);
@@ -357,7 +357,7 @@ export function WeeklyPlanEditor({
                     ) : (
                       <button
                         onClick={() => setModal({ dayIndex, mealSlot: slot })}
-                        className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-[#B8907A] transition-colors"
+                        className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-[var(--color-clay)] transition-colors"
                       >
                         <Plus className="h-3.5 w-3.5" />
                         {t("Add recipe", lang)}

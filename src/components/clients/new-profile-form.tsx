@@ -78,7 +78,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-protein">
-            {t("Protein", lang)} <span className="text-[#5A6B4F]">(g)</span>
+            {t("Protein", lang)} <span className="text-[var(--color-olive)]">(g)</span>
           </Label>
           <Input
             id="p-protein"
@@ -91,7 +91,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-carbs">
-            {t("Carbs", lang)} <span className="text-[#B8907A]">(g)</span>
+            {t("Carbs", lang)} <span className="text-[var(--color-clay)]">(g)</span>
           </Label>
           <Input
             id="p-carbs"
@@ -104,7 +104,7 @@ export function NewProfileForm({
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="p-fat">
-            {t("Fat", lang)} <span className="text-[#C4724E]">(g)</span>
+            {t("Fat", lang)} <span className="text-[var(--color-terracotta)]">(g)</span>
           </Label>
           <Input
             id="p-fat"
@@ -129,7 +129,7 @@ export function NewProfileForm({
           {t("Cancel", lang)}
         </Button>
         <Button
-          className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
+          className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white"
           onClick={handleSubmit}
           disabled={isPending}
         >

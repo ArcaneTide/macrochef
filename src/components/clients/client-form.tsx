@@ -103,19 +103,19 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="protein">
-              {t("Protein", lang)} <span className="text-[#5A6B4F]">(g)</span>
+              {t("Protein", lang)} <span className="text-[var(--color-olive)]">(g)</span>
             </Label>
             <Input id="protein" type="number" min={0} value={proteinTarget} onChange={(e) => setProteinTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="150" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="carbs">
-              {t("Carbs", lang)} <span className="text-[#B8907A]">(g)</span>
+              {t("Carbs", lang)} <span className="text-[var(--color-clay)]">(g)</span>
             </Label>
             <Input id="carbs" type="number" min={0} value={carbsTarget} onChange={(e) => setCarbsTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="200" />
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="fat">
-              {t("Fat", lang)} <span className="text-[#C4724E]">(g)</span>
+              {t("Fat", lang)} <span className="text-[var(--color-terracotta)]">(g)</span>
             </Label>
             <Input id="fat" type="number" min={0} value={fatTarget} onChange={(e) => setFatTarget(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-"].includes(e.key)) e.preventDefault(); }} placeholder="70" />
           </div>
@@ -133,7 +133,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         <Button variant="outline" onClick={() => router.push("/clients")} disabled={isPending}>
           {t("Cancel", lang)}
         </Button>
-        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Create Client", lang)}
         </Button>
@@ -193,7 +193,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
       )}
       <div className="flex gap-3">
         <Button variant="outline" onClick={onCancel} disabled={isPending}>{t("Cancel", lang)}</Button>
-        <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
+        <Button className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white" onClick={handleSubmit} disabled={isPending}>
           {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
           {t("Save", lang)}
         </Button>

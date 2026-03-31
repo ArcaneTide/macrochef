@@ -36,7 +36,7 @@ export type RecipeListItem = {
 
 const STATUS_STYLES: Record<string, string> = {
   draft: "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc]",
-  published: "bg-[#7A8B6F] text-white border-[#6A7B5F]",
+  published: "bg-[var(--color-olive)] text-white border-[#6A7B5F]",
   archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 
@@ -51,7 +51,7 @@ function MacroCell({
 }) {
   if (value <= 0) return <span className="text-slate-300 dark:text-[#4A4A4A]">—</span>;
   return (
-    <span className={cn("tabular-nums font-medium", color)}>
+    <span className={cn("tabular-nums font-data font-medium", color)}>
       {fmtMacro(value)}
       {suffix}
     </span>
@@ -115,7 +115,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
           {filtered.length} {filtered.length !== 1 ? t("recipe plural", lang) : t("recipe singular", lang)}
         </p>
         <Link href="/recipes/new" className="w-full sm:w-auto">
-          <Button className="w-full sm:w-auto bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
+          <Button className="w-full sm:w-auto bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white gap-1.5">
             <Plus className="h-4 w-4" />
             {t("New Recipe", lang)}
           </Button>
@@ -129,7 +129,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
             <div className="space-y-3">
               <p>{t("No recipes yet", lang)}</p>
               <Link href="/recipes/new">
-                <Button className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white gap-1.5">
+                <Button className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white gap-1.5">
                   <Plus className="h-4 w-4" />
                   {t("Create your first recipe", lang)}
                 </Button>
@@ -140,11 +140,11 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
           )}
         </div>
       ) : (
-        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow">
           {/* Desktop table */}
           <table className="w-full hidden sm:table">
             <thead>
-              <tr className="border-b border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
+              <tr className="border-b border-[var(--color-sand)] bg-slate-50 dark:bg-[#1E1E1E] text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide">
                 <th className="text-left px-4 py-3 w-[280px]">{t("Title", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Type / Cuisine", lang)}</th>
                 <th className="text-left px-4 py-3">{t("Status", lang)}</th>
@@ -154,7 +154,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                 <th className="text-right px-4 py-3">{t("Fat", lang)}</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+            <tbody className="divide-y divide-[var(--color-sand)]">
               {filtered.map((recipe) => (
                 <tr
                   key={recipe.id}
@@ -199,10 +199,10 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                     <MacroCell value={recipe.macrosPerServing.protein} color="text-[#5A6B4F]" />
                   </td>
                   <td className="px-4 py-3 text-right text-sm">
-                    <MacroCell value={recipe.macrosPerServing.carbs} color="text-[#B8907A]" />
+                    <MacroCell value={recipe.macrosPerServing.carbs} color="text-[var(--color-clay)]" />
                   </td>
                   <td className="px-4 py-3 text-right text-sm">
-                    <MacroCell value={recipe.macrosPerServing.fat} color="text-[#C4724E]" />
+                    <MacroCell value={recipe.macrosPerServing.fat} color="text-[var(--color-terracotta)]" />
                   </td>
                 </tr>
               ))}
@@ -210,7 +210,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
           </table>
 
           {/* Mobile cards */}
-          <div className="sm:hidden divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+          <div className="sm:hidden divide-y divide-[var(--color-sand)]">
             {filtered.map((recipe) => (
               <div
                 key={recipe.id}
@@ -253,18 +253,18 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
                     {
                       label: "C",
                       value: recipe.macrosPerServing.carbs,
-                      color: "text-[#B8907A]",
+                      color: "text-[var(--color-clay)]",
                       suffix: "g",
                     },
                     {
                       label: "F",
                       value: recipe.macrosPerServing.fat,
-                      color: "text-[#C4724E]",
+                      color: "text-[var(--color-terracotta)]",
                       suffix: "g",
                     },
                   ].map(({ label, value, color, suffix }) => (
                     <div key={label}>
-                      <p className={cn("font-medium tabular-nums", color)}>
+                      <p className={cn("font-medium tabular-nums font-data", color)}>
                         {value > 0 ? `${fmtMacro(value)}${suffix}` : "—"}
                       </p>
                       <p className="text-slate-400 dark:text-[#6A6460]">{label}</p>
@@ -275,7 +275,7 @@ export function RecipeListClient({ recipes, lang }: { recipes: RecipeListItem[];
             ))}
           </div>
 
-          <div className="border-t border-[#E8E0D4] dark:border-[#3A3A3A] px-4 py-2 text-xs text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
+          <div className="border-t border-[var(--color-sand)] px-4 py-2 text-xs text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
             {t("All macros per serving", lang)}
           </div>
         </div>

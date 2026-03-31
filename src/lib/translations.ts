@@ -96,7 +96,7 @@ const dict = {
   "Good night":              { en: "Good night",              el: "Καληνύχτα" },
 
   // ── Welcome / onboarding ──────────────────────────────────
-  "Welcome to MacroPie":        { en: "Welcome to MacroPie!",              el: "Καλώς ήρθες στο MacroPie!" },
+  "Welcome to MacroΠie":        { en: "Welcome to MacroΠie!",              el: "Καλώς ήρθες στο MacroΠie!" },
   "Get started in three steps":  { en: "Get started in three steps.",         el: "Ξεκίνα με τρία βήματα." },
   "Create your first recipe":    { en: "Create your first recipe",            el: "Δημιούργησε την πρώτη σου συνταγή" },
   "Add a client":                { en: "Add a client with macro targets",      el: "Πρόσθεσε πελάτη με στόχους" },

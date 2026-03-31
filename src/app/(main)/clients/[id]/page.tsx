@@ -6,7 +6,7 @@ import { ClientDetail } from "@/components/clients/client-detail";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
-export const metadata = { title: "Client — MacroPie" };
+export const metadata = { title: "Client — MacroΠie" };
 
 export default async function ClientPage({
   params,
