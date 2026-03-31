@@ -49,6 +49,7 @@ next-env.d.ts
 PROJECT_STATUS.md
 CLAUDE.md
 docs/
+macropie-brand-v4.html
 !.env.example
 
 # Sentry Config File
