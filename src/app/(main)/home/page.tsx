@@ -52,7 +52,7 @@ function StatCard({
         <Icon className="h-6 w-6" style={{ color: iconColor }} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className="text-3xl font-bold tabular-nums" style={{ color: "var(--color-charcoal)" }}>
+        <p className="text-3xl font-bold tabular-nums font-data" style={{ color: "var(--color-charcoal)" }}>
           {value}
         </p>
         <p className="text-sm" style={{ color: "var(--color-charcoal-soft)" }}>
@@ -68,12 +68,12 @@ function StatCard({
 }
 
 const RECIPE_STATUS_STYLES: Record<string, string> = {
-  published: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  published: "bg-[#EDF1EB] text-[var(--color-olive)] border-[#c5d0bf]",
   draft: "bg-[#E8E0D4] text-[#7a6f65] border-[#d4c8bc]",
   archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 const CLIENT_STATUS_STYLES: Record<string, string> = {
-  active: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  active: "bg-[#EDF1EB] text-[var(--color-olive)] border-[#c5d0bf]",
   archived: "bg-slate-100 text-slate-400 border-slate-200",
 };
 
@@ -354,7 +354,7 @@ export default async function HomePage() {
           icon={CalendarDays}
           href="/clients"
           iconBg="#FBF0EB"
-          iconColor="#C4724E"
+          iconColor="var(--color-terracotta)"
         />
       </div>
 
@@ -416,7 +416,7 @@ export default async function HomePage() {
                 const planBadgeClass =
                   planStatus === "active"  ? "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]"
                   : planStatus === "draft"   ? "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]"
-                  : planStatus === "expired" ? "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]"
+                  : planStatus === "expired" ? "bg-[#FBF0EB] text-[var(--color-terracotta)] border-[#e8c0a8]"
                   : "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]";
 
                 const planBadgeLabel =
@@ -516,7 +516,7 @@ export default async function HomePage() {
                   <p className="flex-1 min-w-0 text-sm font-medium truncate" style={{ color: "var(--color-charcoal)" }}>
                     {title}
                   </p>
-                  <span className="text-xs tabular-nums shrink-0" style={{ color: "var(--color-charcoal-soft)" }}>
+                  <span className="text-xs tabular-nums font-data shrink-0" style={{ color: "var(--color-charcoal-soft)" }}>
                     ×{count}
                   </span>
                   <ChevronRight

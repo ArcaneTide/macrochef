@@ -45,7 +45,7 @@ export type ClientDetailProps = {
 };
 
 const STATUS_STYLES: Record<string, string> = {
-  active: "bg-[#EDF1EB] text-[#7A8B6F] border-[#c5d0bf]",
+  active: "bg-[#EDF1EB] text-[var(--color-olive)] border-[#c5d0bf]",
   archived: "bg-slate-100 text-slate-500 border-[#E8E0D4] dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
@@ -63,7 +63,7 @@ function MacroRow({
   return (
     <div className="flex items-center justify-between py-1.5">
       <span className="text-sm text-slate-500 dark:text-[#A0998E]">{label}</span>
-      <span className={cn("text-sm font-semibold tabular-nums", color)}>
+      <span className={cn("text-sm font-semibold tabular-nums font-data", color)}>
         {value}
         <span className="text-xs font-normal ml-0.5 text-slate-400 dark:text-[#6A6460]">{unit}</span>
       </span>
@@ -73,8 +73,8 @@ function MacroRow({
 
 const PLAN_STATUS_STYLES: Record<string, string> = {
   draft:    "bg-[#E8E0D4] text-[#4A4A4A] border-[#d4c8bc] dark:bg-[#2A2A2A] dark:text-[#A0998E] dark:border-[#3A3A3A]",
-  active:   "bg-[#7A8B6F] text-white border-[#6A7B5F]",
-  expired:  "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
+  active:   "bg-[var(--color-olive)] text-white border-[#6A7B5F]",
+  expired:  "bg-[#FBF0EB] text-[var(--color-terracotta)] border-[#e8c0a8]",
   archived: "bg-slate-100 text-slate-400 border-slate-200 dark:bg-[#2A2A2A] dark:text-[#6A6460] dark:border-[#3A3A3A]",
 };
 
@@ -106,7 +106,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
   return (
     <div className="max-w-3xl space-y-6">
       {/* Client info card */}
-      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
+      <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-6 shadow">
         {isEditing ? (
           <>
             <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide mb-5">
@@ -176,7 +176,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       </div>
 
       {/* Active target profile */}
-      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
+      <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide">
@@ -206,11 +206,11 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             lang={lang}
           />
         ) : activeProfile ? (
-          <div className="divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+          <div className="divide-y divide-[var(--color-sand)]">
             <MacroRow label={t("Calories", lang)} value={activeProfile.calorieTarget} unit="kcal" color="text-slate-900 dark:text-[#F5F1EB]" />
             <MacroRow label={t("Protein", lang)} value={activeProfile.proteinTarget} unit="g" color="text-[#5A6B4F]" />
-            <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-[#B8907A]" />
-            <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-[#C4724E]" />
+            <MacroRow label={t("Carbs", lang)} value={activeProfile.carbsTarget} unit="g" color="text-[var(--color-clay)]" />
+            <MacroRow label={t("Fat", lang)} value={activeProfile.fatTarget} unit="g" color="text-[var(--color-terracotta)]" />
           </div>
         ) : (
           <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-4">
@@ -221,7 +221,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
 
       {/* Profile history */}
       {pastProfiles.length > 0 && (
-        <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
+        <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-6 shadow">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide mb-4">
             {t("Profile History", lang)}
           </h3>
@@ -229,7 +229,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
             {pastProfiles.map((profile) => (
               <div
                 key={profile.id}
-                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#1E1E1E] border border-[#E8E0D4] dark:border-[#3A3A3A]"
+                className="flex items-center justify-between p-3 rounded-lg bg-slate-50 dark:bg-[#1E1E1E] border border-[var(--color-sand)]"
               >
                 <div>
                   <p className="text-sm font-medium text-slate-700 dark:text-[#D4CEC7]">
@@ -244,14 +244,14 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
                     })}
                   </p>
                 </div>
-                <div className="text-right text-xs text-slate-500 dark:text-[#A0998E] tabular-nums space-y-0.5">
+                <div className="text-right text-xs text-slate-500 dark:text-[#A0998E] tabular-nums font-data space-y-0.5">
                   <p>{profile.calorieTarget} kcal</p>
                   <p>
                     <span className="text-[#5A6B4F]">{profile.proteinTarget}g P</span>
                     {" · "}
-                    <span className="text-[#B8907A]">{profile.carbsTarget}g C</span>
+                    <span className="text-[var(--color-clay)]">{profile.carbsTarget}g C</span>
                     {" · "}
-                    <span className="text-[#C4724E]">{profile.fatTarget}g F</span>
+                    <span className="text-[var(--color-terracotta)]">{profile.fatTarget}g F</span>
                   </p>
                 </div>
               </div>
@@ -261,7 +261,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
       )}
 
       {/* Meal Plans */}
-      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow">
+      <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-6 shadow">
         <div className="flex items-center justify-between mb-4">
           <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide">
             {t("Meal Plans", lang)}
@@ -285,7 +285,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               <a
                 key={plan.id}
                 href={`/clients/${client.id}/plans/${plan.id}`}
-                className="flex items-center justify-between p-3 rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] hover:bg-slate-100 dark:hover:bg-[#2A2A2A] transition-colors group"
+                className="flex items-center justify-between p-3 rounded-lg border border-[var(--color-sand)] bg-slate-50 dark:bg-[#1E1E1E] hover:bg-slate-100 dark:hover:bg-[#2A2A2A] transition-colors group"
               >
                 <div>
                   <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA] group-hover:text-slate-900 dark:group-hover:text-[#F5F1EB]">

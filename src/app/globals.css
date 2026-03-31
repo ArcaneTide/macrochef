@@ -9,6 +9,7 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-outfit);
   --font-serif: var(--font-dm-serif);
+  /* Sora — used for numeric/data displays (macro values, stats, tables) */
   --font-data: var(--font-sora);
   --font-tagline: var(--font-fraunces);
   --font-mono: var(--font-geist-mono);
@@ -91,6 +92,7 @@
   --color-olive-light: #EDF1EB;
   --color-warm-white: #f5f3ee;
   --color-sand: #E8E0D4;
+  --color-terracotta: #C4724E;
   --color-charcoal: #2C2C2C;
   --color-charcoal-soft: #4A4A4A;
 }
@@ -135,6 +137,7 @@
   --color-olive-light: #1E241C;
   --color-warm-white: #1A1A1A;
   --color-sand: #3A3A3A;
+  --color-terracotta: #C4724E;
   --color-charcoal: #F5F1EB;
   --color-charcoal-soft: #A0998E;
 }

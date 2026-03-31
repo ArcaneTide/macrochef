@@ -20,6 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 import { LANG_COOKIE, type Lang } from "@/lib/language-client";
 import { t, type TranslationKey } from "@/lib/translations";
+import { Logo } from "@/components/ui/logo";
 
 const navItems: { href: string; key: TranslationKey; icon: React.ElementType }[] = [
   { href: "/home",        key: "Home",        icon: Home },
@@ -91,17 +92,7 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
       >
         {/* Logo */}
         <Link href="/home" className="flex items-center gap-2 shrink-0 mr-6">
-          <svg viewBox="0 0 22 22" fill="none" className="h-7 w-7">
-            <circle cx="11" cy="11" r="10" stroke="#2C2C2C" strokeWidth="0.8" opacity="0.12" fill="none"/>
-            <path d="M11 3.5 A7.5 7.5 0 0 1 17.5 8 L11 11 Z" fill="#7A8B6F" opacity="0.8"/>
-            <path d="M17.5 8 A7.5 7.5 0 0 1 13.5 18 L11 11 Z" fill="#B8907A" opacity="0.8"/>
-            <path d="M13.5 18 A7.5 7.5 0 0 1 4.5 9 L11 11 Z" fill="#C4724E" opacity="0.8"/>
-            <path d="M4.5 9 A7.5 7.5 0 0 1 11 3.5 L11 11 Z" fill="#C4B9A8" opacity="0.5"/>
-            <circle cx="11" cy="11" r="2" fill="#FDFBF8"/>
-          </svg>
-          <span className="text-sm font-semibold" style={{ color: "var(--color-charcoal)" }}>
-            Macro<span style={{ color: "#C4724E" }}>Πie</span>
-          </span>
+          <Logo size="nav" />
         </Link>
 
         {/* Desktop nav links */}
@@ -113,8 +104,8 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
               className={cn(
                 "flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-sm font-medium transition-colors",
                 isActive(href)
-                  ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
-                  : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
+                  ? "text-[var(--color-clay)] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                  : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[var(--color-clay)]"
               )}
             >
               <Icon className="h-4 w-4 shrink-0" />
@@ -299,8 +290,8 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                   className={cn(
                     "flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                     isActive(href)
-                      ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
-                      : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
+                      ? "text-[var(--color-clay)] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                      : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[var(--color-clay)]"
                   )}
                 >
                   <Icon className="h-4 w-4 shrink-0" />
@@ -330,8 +321,8 @@ export function TopNav({ userName, userEmail, lang }: TopNavProps) {
                     className={cn(
                       "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-colors",
                       code === lang
-                        ? "text-[#B8907A] bg-[#F5EDE8] dark:bg-[#2D2420]"
-                        : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[#B8907A]"
+                        ? "text-[var(--color-clay)] bg-[#F5EDE8] dark:bg-[#2D2420]"
+                        : "text-[#4A4A4A] dark:text-[#A0998E] hover:bg-[#F5EDE8] dark:hover:bg-[#2D2420] hover:text-[var(--color-clay)]"
                     )}
                   >
                     <span className="text-base leading-none w-4 shrink-0">{flag}</span>

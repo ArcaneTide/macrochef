@@ -175,7 +175,7 @@ export function DuplicatePlanModal({
             <Button
               onClick={handleSubmit}
               disabled={isPending}
-              className="flex-1 bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
+              className="flex-1 bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white"
             >
               {isPending && <Loader2 className="h-4 w-4 animate-spin mr-1" />}
               {isPending ? t("Duplicating…", lang) : t("Duplicate", lang)}

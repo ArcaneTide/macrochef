@@ -41,10 +41,10 @@ function FitBadge({ score }: { score: number }) {
     score >= FIT_SCORE_GREEN
       ? "text-[#5A6B4F] bg-[#EDF1EB] border-[#c5d0bf]"
       : score >= FIT_SCORE_AMBER
-      ? "text-[#B8907A] bg-[#F5EDE8] border-[#dfc5b3]"
+      ? "text-[var(--color-clay)] bg-[#F5EDE8] border-[#dfc5b3]"
       : "text-red-700 bg-red-50 border-red-200";
   return (
-    <span className={cn("text-xs font-semibold border rounded px-1.5 py-0.5 tabular-nums", color)}>
+    <span className={cn("text-xs font-semibold border rounded px-1.5 py-0.5 tabular-nums font-data", color)}>
       {score}%
     </span>
   );
@@ -153,7 +153,7 @@ export function AssignRecipeModal({
           </div>
 
           {/* Recipe list */}
-          <div className="max-h-52 overflow-y-auto rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] divide-y divide-[#E8E0D4] dark:divide-[#3A3A3A]">
+          <div className="max-h-52 overflow-y-auto rounded-lg border border-[var(--color-sand)] divide-y divide-[var(--color-sand)]">
             {filtered.length === 0 ? (
               <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">{t("No recipes found", lang)}</p>
             ) : (
@@ -174,13 +174,13 @@ export function AssignRecipeModal({
                     <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
                       {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
                       <span className="text-[#5A6B4F]">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
-                      <span className="text-[#B8907A]">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
-                      <span className="text-[#C4724E]">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
+                      <span className="text-[var(--color-clay)]">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
+                      <span className="text-[var(--color-terracotta)]">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
                       {" "}<span className="text-slate-300 dark:text-[#4A4A4A]">{t("/ serving", lang)}</span>
                     </p>
                   </div>
                   {selectedId === recipe.id && (
-                    <Check className="h-4 w-4 text-[#7A8B6F] shrink-0" />
+                    <Check className="h-4 w-4 text-[var(--color-olive)] shrink-0" />
                   )}
                 </button>
               ))
@@ -189,7 +189,7 @@ export function AssignRecipeModal({
 
           {/* Servings + preview */}
           {selected && (
-            <div className="rounded-lg border border-[#E8E0D4] dark:border-[#3A3A3A] bg-slate-50 dark:bg-[#1E1E1E] p-4 space-y-3">
+            <div className="rounded-lg border border-[var(--color-sand)] bg-slate-50 dark:bg-[#1E1E1E] p-4 space-y-3">
               <div className="flex items-center gap-4">
                 <div className="flex-1 space-y-1">
                   <Label htmlFor="servings">{t("Servings", lang)}</Label>
@@ -220,25 +220,25 @@ export function AssignRecipeModal({
               {previewMacros && (
                 <div className="grid grid-cols-4 gap-2 text-center text-xs">
                   <div>
-                    <p className="font-semibold text-slate-800 dark:text-[#E8E2DA] tabular-nums">
+                    <p className="font-semibold text-slate-800 dark:text-[#E8E2DA] tabular-nums font-data">
                       {previewMacros.calories}
                     </p>
                     <p className="text-slate-400 dark:text-[#6A6460]">kcal</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#5A6B4F] tabular-nums">
+                    <p className="font-semibold text-[#5A6B4F] tabular-nums font-data">
                       {previewMacros.protein}g
                     </p>
                     <p className="text-slate-400 dark:text-[#6A6460]">{t("Protein", lang)}</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#B8907A] tabular-nums">
+                    <p className="font-semibold text-[var(--color-clay)] tabular-nums font-data">
                       {previewMacros.carbs}g
                     </p>
                     <p className="text-slate-400 dark:text-[#6A6460]">{t("Carbs", lang)}</p>
                   </div>
                   <div>
-                    <p className="font-semibold text-[#C4724E] tabular-nums">
+                    <p className="font-semibold text-[var(--color-terracotta)] tabular-nums font-data">
                       {previewMacros.fat}g
                     </p>
                     <p className="text-slate-400 dark:text-[#6A6460]">{t("Fat", lang)}</p>
@@ -260,7 +260,7 @@ export function AssignRecipeModal({
               {t("Cancel", lang)}
             </Button>
             <Button
-              className="bg-[#7A8B6F] hover:bg-[#6A7B5F] text-white"
+              className="bg-[var(--color-olive)] hover:bg-[#6A7B5F] text-white"
               onClick={handleAssign}
               disabled={isPending || !selectedId}
             >

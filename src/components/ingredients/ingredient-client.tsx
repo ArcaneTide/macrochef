@@ -48,8 +48,8 @@ type SortKey = "name" | "caloriesPer100g" | "proteinPer100g" | "carbsPer100g" | 
 
 const CATEGORY_STYLES: Record<IngredientCategory, string> = {
   protein: "bg-[#EDF1EB] text-[#5A6B4F] border-[#c5d0bf]",
-  carb: "bg-[#F5EDE8] text-[#B8907A] border-[#dfc5b3]",
-  fat: "bg-[#FBF0EB] text-[#C4724E] border-[#e8c0a8]",
+  carb: "bg-[#F5EDE8] text-[var(--color-clay)] border-[#dfc5b3]",
+  fat: "bg-[#FBF0EB] text-[var(--color-terracotta)] border-[#e8c0a8]",
   vegetable: "bg-green-50 text-green-700 border-green-200",
   fruit: "bg-pink-100 text-pink-700 border-pink-200",
   dairy: "bg-purple-100 text-purple-700 border-purple-200",
@@ -170,10 +170,10 @@ export function IngredientClient({ ingredients, lang }: Props) {
       </div>
 
       {/* Desktop table */}
-      <div className="hidden sm:block rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] overflow-hidden shadow">
+      <div className="hidden sm:block rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow">
         <Table>
           <TableHeader>
-            <TableRow className="bg-slate-50 dark:bg-[#1E1E1E] hover:bg-slate-50 dark:hover:bg-[#1E1E1E] border-b border-[#E8E0D4] dark:border-[#3A3A3A]">
+            <TableRow className="bg-slate-50 dark:bg-[#1E1E1E] hover:bg-slate-50 dark:hover:bg-[#1E1E1E] border-b border-[var(--color-sand)]">
               <TableHead className="w-[280px] text-slate-500 dark:text-[#A0998E]">
                 <span className="flex items-center gap-2">
                   {t("Name", lang)} <SortButton col="name" />
@@ -212,7 +212,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
               </TableRow>
             ) : (
               filtered.map((ing) => (
-                <TableRow key={ing.id} className="hover:bg-slate-50/50 dark:hover:bg-[#2A2A2A] even:bg-slate-50/30 dark:even:bg-[#1E1E1E]/30 border-b border-[#E8E0D4] dark:border-[#3A3A3A]">
+                <TableRow key={ing.id} className="hover:bg-slate-50/50 dark:hover:bg-[#2A2A2A] even:bg-slate-50/30 dark:even:bg-[#1E1E1E]/30 border-b border-[var(--color-sand)]">
                   <TableCell className="font-medium text-slate-900 dark:text-[#F5F1EB]">{ingName(ing)}</TableCell>
                   <TableCell>
                     <Badge
@@ -222,21 +222,21 @@ export function IngredientClient({ ingredients, lang }: Props) {
                       {CATEGORY_LABELS[ing.category]}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums font-data">
                     {fmt(ing.caloriesPer100g)} kcal
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums font-data">
                     {fmt(ing.proteinPer100g)}g
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums font-data">
                     {fmt(ing.carbsPer100g)}g
                   </TableCell>
-                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums">
+                  <TableCell className="text-right text-slate-600 dark:text-[#A0998E] tabular-nums font-data">
                     {fmt(ing.fatPer100g)}g
                   </TableCell>
                   <TableCell className="text-center">
                     {ing.isVerified && (
-                      <ShieldCheck className="h-4 w-4 text-[#7A8B6F] mx-auto" aria-label="USDA verified" />
+                      <ShieldCheck className="h-4 w-4 text-[var(--color-olive)] mx-auto" aria-label="USDA verified" />
                     )}
                   </TableCell>
                 </TableRow>
@@ -244,7 +244,7 @@ export function IngredientClient({ ingredients, lang }: Props) {
             )}
           </TableBody>
         </Table>
-        <div className="border-t border-[#E8E0D4] dark:border-[#3A3A3A] px-4 py-2 text-xs text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
+        <div className="border-t border-[var(--color-sand)] px-4 py-2 text-xs text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
           {t("All values per 100g", lang)}
         </div>
       </div>
@@ -257,13 +257,13 @@ export function IngredientClient({ ingredients, lang }: Props) {
           filtered.map((ing) => (
             <div
               key={ing.id}
-              className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-4 shadow-sm"
+              className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-4 shadow-sm"
             >
               <div className="flex items-start justify-between gap-2 mb-2">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-medium text-slate-900 dark:text-[#F5F1EB]">{ingName(ing)}</span>
                   {ing.isVerified && (
-                    <ShieldCheck className="h-3.5 w-3.5 text-[#7A8B6F] shrink-0" aria-label="USDA verified" />
+                    <ShieldCheck className="h-3.5 w-3.5 text-[var(--color-olive)] shrink-0" aria-label="USDA verified" />
                   )}
                 </div>
                 <Badge
@@ -276,19 +276,19 @@ export function IngredientClient({ ingredients, lang }: Props) {
               <div className="grid grid-cols-4 gap-2 text-sm">
                 <div className="text-center">
                   <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Calories", lang)}</p>
-                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.caloriesPer100g)}</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums font-data">{fmt(ing.caloriesPer100g)}</p>
                 </div>
                 <div className="text-center">
                   <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Protein", lang)}</p>
-                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.proteinPer100g)}g</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums font-data">{fmt(ing.proteinPer100g)}g</p>
                 </div>
                 <div className="text-center">
                   <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Carbs", lang)}</p>
-                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.carbsPer100g)}g</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums font-data">{fmt(ing.carbsPer100g)}g</p>
                 </div>
                 <div className="text-center">
                   <p className="text-slate-400 dark:text-[#6A6460] text-xs">{t("Fat", lang)}</p>
-                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums">{fmt(ing.fatPer100g)}g</p>
+                  <p className="font-medium text-slate-700 dark:text-[#A0998E] tabular-nums font-data">{fmt(ing.fatPer100g)}g</p>
                 </div>
               </div>
             </div>
