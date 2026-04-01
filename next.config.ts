@@ -16,6 +16,11 @@ export default withSentryConfig(nextConfig, {
   // Only print logs for uploading source maps in CI
   silent: !process.env.CI,
 
+  // Do not fail the build if Sentry source map upload fails (e.g. invalid token)
+  errorHandler: (err: Error) => {
+    console.warn("Sentry upload warning:", err.message);
+  },
+
   // For all available options, see:
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/manual-setup/
 
