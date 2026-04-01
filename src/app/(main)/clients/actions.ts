@@ -111,7 +111,13 @@ export async function archiveClient(id: string): Promise<ActionResult> {
     const coachId = await getAuthedCoachId();
     await assertClientOwnership(id, coachId);
 
-    await db.client.update({ where: { id }, data: { status: "archived" } });
+    await db.$transaction([
+      db.mealPlan.updateMany({
+        where: { clientId: id, status: "active" },
+        data: { status: "archived" },
+      }),
+      db.client.update({ where: { id }, data: { status: "archived" } }),
+    ]);
 
     revalidatePath(`/clients/${id}`);
     revalidatePath("/clients");

@@ -6,6 +6,8 @@ import { calcRecipeMacrosPerServing } from "@/lib/macros";
 import { WeeklyPlanEditor } from "@/components/meal-plans/weekly-plan-editor";
 import { PlanStatusBar } from "@/components/meal-plans/plan-status-bar";
 import { DuplicatePlanModal } from "@/components/meal-plans/duplicate-plan-modal";
+import { PlanTitleEditor } from "@/components/meal-plans/plan-title-editor";
+import { PlanNotesEditor } from "@/components/meal-plans/plan-notes-editor";
 import { getLang } from "@/lib/language";
 import { t } from "@/lib/translations";
 
@@ -63,6 +65,7 @@ export default async function PlanDetailPage({
     id: r.id,
     title: r.title,
     servings: r.servings,
+    mealType: r.mealType as string | null,
     macrosPerServing: calcRecipeMacrosPerServing(
       r.ingredients.map((ri) => ({ ingredient: ri.ingredient, quantityGrams: ri.quantityGrams })),
       r.servings
@@ -103,9 +106,11 @@ export default async function PlanDetailPage({
         </nav>
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-sans font-bold text-slate-900 dark:text-[#F5F1EB]">
-              {plan.title ?? t("Meal Plan", lang)}
-            </h1>
+            <PlanTitleEditor
+              planId={planId}
+              initialTitle={plan.title}
+              fallbackLabel={t("Meal Plan", lang)}
+            />
             <p className="text-sm text-slate-500 dark:text-[#A0998E] mt-0.5">
               {new Date(startDate + "T00:00:00").toLocaleDateString(lang === "el" ? "el-GR" : "en-US", {
                 month: "short",
@@ -141,6 +146,10 @@ export default async function PlanDetailPage({
             />
           </div>
         </div>
+      </div>
+
+      <div className="mb-4">
+        <PlanNotesEditor planId={planId} initialNotes={plan.notes} />
       </div>
 
       <div className="rounded-xl border border-slate-200 dark:border-[#3A3A3A] bg-white dark:bg-[#242424] shadow-sm overflow-hidden">

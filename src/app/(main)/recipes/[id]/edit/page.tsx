@@ -39,6 +39,8 @@ export default async function EditRecipePage({
         proteinPer100g: true,
         carbsPer100g: true,
         fatPer100g: true,
+        defaultUnit: true,
+        defaultQuantity: true,
       },
     }),
   ]);
