@@ -21,6 +21,7 @@ export type RecipeOption = {
   id: string;
   title: string;
   servings: number;
+  mealType: string | null;
   macrosPerServing: MacroTotals;
 };
 
@@ -75,13 +76,22 @@ export function AssignRecipeModal({
     snack2: t("Snack 2", lang),
   };
 
-  const filtered = useMemo(
-    () =>
-      recipes.filter((r) =>
-        r.title.toLowerCase().includes(search.toLowerCase())
-      ),
-    [recipes, search]
-  );
+  // Map slot → matching mealType (snack1/snack2 → "snack")
+  const slotMealType = mealSlot === "snack1" || mealSlot === "snack2" ? "snack" : mealSlot;
+
+  const { matchGroup, untaggedGroup, otherGroup } = useMemo(() => {
+    const q = search.toLowerCase();
+    const visible = recipes.filter((r) => r.title.toLowerCase().includes(q));
+    const match: typeof recipes = [];
+    const untagged: typeof recipes = [];
+    const other: typeof recipes = [];
+    for (const r of visible) {
+      if (r.mealType === slotMealType) match.push(r);
+      else if (!r.mealType) untagged.push(r);
+      else other.push(r);
+    }
+    return { matchGroup: match, untaggedGroup: untagged, otherGroup: other };
+  }, [recipes, search, slotMealType]);
 
   const selected = recipes.find((r) => r.id === selectedId) ?? null;
 
@@ -154,36 +164,53 @@ export function AssignRecipeModal({
 
           {/* Recipe list */}
           <div className="max-h-52 overflow-y-auto rounded-lg border border-[var(--color-sand)] divide-y divide-[var(--color-sand)]">
-            {filtered.length === 0 ? (
+            {matchGroup.length === 0 && untaggedGroup.length === 0 && otherGroup.length === 0 ? (
               <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">{t("No recipes found", lang)}</p>
             ) : (
-              filtered.map((recipe) => (
-                <button
-                  key={recipe.id}
-                  type="button"
-                  onClick={() => setSelectedId(recipe.id)}
-                  className={cn(
-                    "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
-                    selectedId === recipe.id
-                      ? "bg-[#F5EDE8] dark:bg-[#2D2420]"
-                      : "hover:bg-slate-50 dark:hover:bg-[#2A2A2A]"
-                  )}
-                >
-                  <div>
-                    <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{recipe.title}</p>
-                    <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
-                      {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
-                      <span className="text-[#5A6B4F]">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
-                      <span className="text-[var(--color-clay)]">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
-                      <span className="text-[var(--color-terracotta)]">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
-                      {" "}<span className="text-slate-300 dark:text-[#4A4A4A]">{t("/ serving", lang)}</span>
-                    </p>
-                  </div>
-                  {selectedId === recipe.id && (
-                    <Check className="h-4 w-4 text-[var(--color-olive)] shrink-0" />
-                  )}
-                </button>
-              ))
+              <>
+                {[
+                  { group: matchGroup, label: null },
+                  { group: untaggedGroup, label: matchGroup.length > 0 ? t("All meals", lang) : null },
+                  { group: otherGroup, label: t("Other", lang) },
+                ].map(({ group, label }) =>
+                  group.length === 0 ? null : (
+                    <div key={label ?? "match"}>
+                      {label && (
+                        <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
+                          {label}
+                        </p>
+                      )}
+                      {group.map((recipe) => (
+                        <button
+                          key={recipe.id}
+                          type="button"
+                          onClick={() => setSelectedId(recipe.id)}
+                          className={cn(
+                            "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
+                            selectedId === recipe.id
+                              ? "bg-[#F5EDE8] dark:bg-[#2D2420]"
+                              : "hover:bg-slate-50 dark:hover:bg-[#2A2A2A]"
+                          )}
+                        >
+                          <div>
+                            <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{recipe.title}</p>
+                            <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
+                              {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
+                              <span className="text-[#5A6B4F]">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
+                              <span className="text-[var(--color-clay)]">{recipe.macrosPerServing.carbs.toFixed(1)}g C</span>{" "}
+                              <span className="text-[var(--color-terracotta)]">{recipe.macrosPerServing.fat.toFixed(1)}g F</span>
+                              {" "}<span className="text-slate-300 dark:text-[#4A4A4A]">{t("/ serving", lang)}</span>
+                            </p>
+                          </div>
+                          {selectedId === recipe.id && (
+                            <Check className="h-4 w-4 text-[var(--color-olive)] shrink-0" />
+                          )}
+                        </button>
+                      ))}
+                    </div>
+                  )
+                )}
+              </>
             )}
           </div>
 

@@ -53,6 +53,8 @@ export type IngredientOption = {
   proteinPer100g: number;
   carbsPer100g: number;
   fatPer100g: number;
+  defaultUnit: string;
+  defaultQuantity: number;
 };
 
 export type RecipeInitialData = {
@@ -75,7 +77,7 @@ type IngredientRow = {
 
 // ─── Unit Helpers ─────────────────────────────────────────
 
-const UNITS = ["g", "ml", "tsp", "tbsp", "pinch"] as const;
+const UNITS = ["g", "ml", "tsp", "tbsp", "piece", "pinch"] as const;
 type Unit = (typeof UNITS)[number];
 
 const UNIT_TO_GRAMS: Record<string, number> = {
@@ -83,6 +85,7 @@ const UNIT_TO_GRAMS: Record<string, number> = {
   ml: 1,
   tsp: 5,
   tbsp: 15,
+  piece: 60, // avg whole egg ≈ 60g; reasonable for other "piece" items
   pinch: 0,
 };
 
@@ -251,7 +254,7 @@ function MacroSummary({
   servings: number;
   lang: Lang;
 }) {
-  const macros = useMemo(() => {
+  const perServing = useMemo(() => {
     const items = rows
       .map((r) => {
         const ing = ingredientMap.get(r.ingredientId);
@@ -262,12 +265,27 @@ function MacroSummary({
     return calcRecipeMacrosPerServing(items, Math.max(servings, 1));
   }, [rows, ingredientMap, servings]);
 
-  const { proteinPct, carbsPct, fatPct } = macroCalorieSplit(macros);
-  const hasData = macros.calories > 0;
+  const sv = Math.max(servings, 1);
+  const showTotal = sv > 1;
+  const macros = showTotal
+    ? {
+        calories: perServing.calories * sv,
+        protein: perServing.protein * sv,
+        carbs: perServing.carbs * sv,
+        fat: perServing.fat * sv,
+      }
+    : perServing;
+
+  const { proteinPct, carbsPct, fatPct } = macroCalorieSplit(perServing);
+  const hasData = perServing.calories > 0;
+
+  const headingLabel = showTotal
+    ? `${t("Total", lang)} (${sv} ${sv !== 1 ? t("serving plural", lang) : t("serving singular", lang)})`
+    : t("Per Serving", lang);
 
   return (
     <div className="rounded-2xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] p-5 shadow">
-      <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] mb-4">{t("Per Serving", lang)}</h3>
+      <h3 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] mb-4">{headingLabel}</h3>
 
       <div className="space-y-3">
         <div className="flex items-center justify-between">
@@ -432,7 +450,7 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     [availableIngredients]
   );
 
-  function addIngredient(ing: IngredientOption, unit: string = "g", qty: number = 100) {
+  function addIngredient(ing: IngredientOption, unit: string = ing.defaultUnit, qty: number = ing.defaultQuantity) {
     setRows((prev) => [
       ...prev,
       { key: nextKey(), ingredientId: ing.id, quantity: qty, unit },
@@ -461,9 +479,18 @@ export function RecipeForm({ availableIngredients, initialData, lang }: RecipeFo
     setRows((prev) =>
       prev.map((r) => {
         if (r.key !== key) return r;
-        // When switching to pinch: reset quantity to 0
-        // When switching from pinch: restore a sensible default
-        const quantity = unit === "pinch" ? 0 : r.unit === "pinch" ? 1 : r.quantity;
+        let quantity: number;
+        if (unit === "pinch") {
+          quantity = 0;
+        } else if (unit === "g") {
+          const ing = ingredientMap.get(r.ingredientId);
+          quantity = ing?.defaultQuantity ?? 100;
+        } else if (unit === "ml") {
+          quantity = 100;
+        } else {
+          // tsp, tbsp, piece → 1
+          quantity = 1;
+        }
         return { ...r, unit, quantity };
       })
     );

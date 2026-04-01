@@ -100,6 +100,8 @@ model Ingredient {
   fatPer100g      Float              @map("fat_per_100g")
   fiberPer100g    Float?             @map("fiber_per_100g")
   isVerified      Boolean            @default(false) @map("is_verified")
+  defaultUnit     String             @default("g") @map("default_unit")
+  defaultQuantity Float              @default(100) @map("default_quantity")
   createdAt       DateTime           @default(now()) @map("created_at")
 
   // Relations

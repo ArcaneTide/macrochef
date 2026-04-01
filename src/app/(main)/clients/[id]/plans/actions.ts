@@ -236,6 +236,48 @@ export async function duplicatePlan(
   }
 }
 
+export async function updatePlanTitle(
+  planId: string,
+  title: string
+): Promise<ActionResult> {
+  try {
+    const coachId = await getAuthedCoachId();
+    const clientId = await assertPlanOwnership(planId, coachId);
+
+    await db.mealPlan.update({
+      where: { id: planId },
+      data: { title: title.trim() || null },
+    });
+
+    revalidatePath(`/clients/${clientId}/plans/${planId}`);
+    return { success: true, id: planId };
+  } catch (err) {
+    console.error("updatePlanTitle:", err);
+    return { success: false, error: "Failed to update plan title" };
+  }
+}
+
+export async function updatePlanNotes(
+  planId: string,
+  notes: string
+): Promise<ActionResult> {
+  try {
+    const coachId = await getAuthedCoachId();
+    const clientId = await assertPlanOwnership(planId, coachId);
+
+    await db.mealPlan.update({
+      where: { id: planId },
+      data: { notes: notes.trim() || null },
+    });
+
+    revalidatePath(`/clients/${clientId}/plans/${planId}`);
+    return { success: true, id: planId };
+  } catch (err) {
+    console.error("updatePlanNotes:", err);
+    return { success: false, error: "Failed to update plan notes" };
+  }
+}
+
 export async function removeMeal(
   planId: string,
   assignmentId: string
