@@ -94,6 +94,13 @@ export default async function PlanDetailPage({
   const startDate = plan.startDate.toISOString().slice(0, 10);
   const endDate = plan.endDate.toISOString().slice(0, 10);
 
+  const activeSlots = Array.isArray(plan.activeSlots)
+    ? (plan.activeSlots as string[])
+    : ["breakfast", "lunch", "dinner", "snack1"];
+  const slotDistribution = plan.slotDistribution
+    ? (plan.slotDistribution as Record<string, number>)
+    : null;
+
   return (
     <div className="py-5 sm:py-6">
       <div className="mb-6">
@@ -170,6 +177,8 @@ export default async function PlanDetailPage({
             }
             startDate={startDate}
             lang={lang}
+            activeSlots={activeSlots}
+            slotDistribution={slotDistribution}
           />
         </div>
       </div>

@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useTransition, useCallback } from "react";
-import { Plus, X, Loader2 } from "lucide-react";
+import { Plus, X, Loader2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { type MacroTotals } from "@/lib/macros";
+import { type MacroTotals, calcFitScore } from "@/lib/macros";
+import { computeSlotBudgets, type SlotBudgets } from "@/lib/slot-budget";
 import { removeMeal } from "@/app/(main)/clients/[id]/plans/actions";
 import {
   AssignRecipeModal,
@@ -14,7 +15,7 @@ import type { AssignmentResult } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
 
 const DAYS_COUNT = 7;
-const SLOTS = ["breakfast", "lunch", "dinner", "snack1", "snack2"] as const;
+const ALL_SLOTS = ["breakfast", "lunch", "dinner", "snack1", "snack2"] as const;
 
 type CellKey = `${number}:${string}`;
 
@@ -49,40 +50,104 @@ type DailyTarget = {
   fatTarget: number;
 };
 
-function MacroBar({
+function DailyFitCell({
   actual,
   target,
+  lang,
 }: {
   actual: MacroTotals;
   target: DailyTarget | null;
+  lang: Lang;
 }) {
-  if (!target) return null;
-  const pct = (a: number, t: number) =>
-    t > 0 ? Math.min(100, Math.round((a / t) * 100)) : 0;
-  const over = (a: number, t: number) => t > 0 && a > t * 1.1;
+  const [expanded, setExpanded] = useState(false);
+
+  if (!target || actual.calories === 0) {
+    return (
+      <p className="text-sm tabular-nums font-data text-slate-400 dark:text-[#6A6460]">
+        — kcal
+      </p>
+    );
+  }
+
+  const budget: MacroTotals = {
+    calories: target.calorieTarget,
+    protein: target.proteinTarget,
+    carbs: target.carbsTarget,
+    fat: target.fatTarget,
+  };
+  const fitPct = calcFitScore(actual, budget);
+  const barColor =
+    fitPct >= 90
+      ? "bg-[#5A6B4F]"
+      : fitPct >= 80
+      ? "bg-[var(--color-clay)]"
+      : "bg-red-400";
+  const textColor =
+    fitPct >= 90
+      ? "text-[#5A6B4F]"
+      : fitPct >= 80
+      ? "text-[var(--color-clay)]"
+      : "text-red-500";
 
   return (
-    <div className="space-y-1 mt-2">
-      {(
-        [
-          { label: "P", actual: actual.protein, target: target.proteinTarget, color: "bg-[#5A6B4F]" },
-          { label: "C", actual: actual.carbs, target: target.carbsTarget, color: "bg-[var(--color-clay)]" },
-          { label: "F", actual: actual.fat, target: target.fatTarget, color: "bg-[var(--color-terracotta)]" },
-        ] as Array<{ label: string; actual: number; target: number; color: string }>
-      ).map(({ label, actual: a, target: tgt, color }) => (
-        <div key={label} className="flex items-center gap-1.5">
-          <span className="text-xs text-slate-400 dark:text-[#A0998E] w-3">{label}</span>
-          <div className="flex-1 h-1.5 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
+    <div>
+      <p className="text-sm font-semibold tabular-nums font-data text-slate-800 dark:text-[#F5F1EB]">
+        {Math.round(actual.calories)} kcal
+      </p>
+      <p className="text-[10px] text-slate-400 dark:text-[#6A6460] font-data tabular-nums">
+        {t("of", lang)} {target.calorieTarget} kcal
+      </p>
+      <button
+        type="button"
+        onClick={() => setExpanded((v) => !v)}
+        className="w-full mt-1.5 text-left"
+      >
+        <div className="flex items-center gap-1.5">
+          <div className="flex-1 h-2 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
             <div
-              className={cn("h-full rounded-full transition-all", over(a, tgt) ? "bg-red-400" : color)}
-              style={{ width: `${pct(a, tgt)}%` }}
+              className={cn("h-full rounded-full transition-all", barColor)}
+              style={{ width: `${fitPct}%` }}
             />
           </div>
-          <span className={cn("text-xs tabular-nums font-data w-8 text-right", over(a, tgt) ? "text-red-500" : "text-slate-500 dark:text-[#A0998E]")}>
-            {Math.round(a)}g
+          <span className={cn("text-[10px] tabular-nums font-data", textColor)}>
+            {fitPct}%
           </span>
+          <ChevronDown
+            className={cn(
+              "h-3 w-3 text-slate-400 transition-transform",
+              expanded && "rotate-180"
+            )}
+          />
         </div>
-      ))}
+        {expanded && (
+          <div className="mt-1.5 space-y-1">
+            {(
+              [
+                { label: "P", actual: actual.protein, target: target.proteinTarget, color: "bg-[#5A6B4F]" },
+                { label: "C", actual: actual.carbs,   target: target.carbsTarget,   color: "bg-[var(--color-clay)]" },
+                { label: "F", actual: actual.fat,     target: target.fatTarget,     color: "bg-[var(--color-terracotta)]" },
+              ] as Array<{ label: string; actual: number; target: number; color: string }>
+            ).map(({ label, actual: a, target: tgt, color }) => {
+              const over = tgt > 0 && a > tgt * 1.1;
+              const pct = tgt > 0 ? Math.min(100, Math.round((a / tgt) * 100)) : 0;
+              return (
+                <div key={label} className="flex items-center gap-1.5">
+                  <span className="text-xs text-slate-400 dark:text-[#A0998E] w-3">{label}</span>
+                  <div className="flex-1 h-1.5 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
+                    <div
+                      className={cn("h-full rounded-full", over ? "bg-red-400" : color)}
+                      style={{ width: `${pct}%` }}
+                    />
+                  </div>
+                  <span className="text-xs tabular-nums font-data text-slate-400 dark:text-[#A0998E] w-8 text-right">
+                    {Math.round(a)}g
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </button>
     </div>
   );
 }
@@ -107,6 +172,8 @@ type Props = {
   } | null;
   startDate: string;
   lang: Lang;
+  activeSlots?: string[];
+  slotDistribution?: Record<string, number> | null;
 };
 
 export function WeeklyPlanEditor({
@@ -116,6 +183,8 @@ export function WeeklyPlanEditor({
   targetMacros,
   startDate,
   lang,
+  activeSlots,
+  slotDistribution,
 }: Props) {
   const SLOT_LABELS: Record<string, string> = {
     breakfast: t("Breakfast", lang),
@@ -124,6 +193,17 @@ export function WeeklyPlanEditor({
     snack1: t("Snack 1", lang),
     snack2: t("Snack 2", lang),
   };
+
+  const effectiveSlots =
+    activeSlots && activeSlots.length > 0
+      ? activeSlots
+      : ["breakfast", "lunch", "dinner", "snack1", "snack2"];
+
+  const visibleSlots = ALL_SLOTS.filter((s) => effectiveSlots.includes(s));
+
+  const slotBudgets: SlotBudgets = targetMacros
+    ? computeSlotBudgets(targetMacros, effectiveSlots, slotDistribution ?? null)
+    : {};
 
   const [cells, setCells] = useState<Map<CellKey, AssignmentCell>>(() => {
     const map = new Map<CellKey, AssignmentCell>();
@@ -148,7 +228,6 @@ export function WeeklyPlanEditor({
   const [removingKey, setRemovingKey] = useState<CellKey | null>(null);
   const [, startRemoveTransition] = useTransition();
 
-  // Compute day names and date labels from actual start date
   const dayLabels = Array.from({ length: DAYS_COUNT }, (_, i) => {
     const d = new Date(startDate + "T00:00:00");
     d.setDate(d.getDate() + i);
@@ -161,29 +240,26 @@ export function WeeklyPlanEditor({
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   });
 
-  const handleAssigned = useCallback(
-    (assignment: AssignmentResult) => {
-      const key = cellKey(assignment.dayIndex, assignment.mealSlot);
-      const s = assignment.servings;
-      setCells((prev) => {
-        const next = new Map(prev);
-        next.set(key, {
-          id: assignment.id,
-          recipeId: assignment.recipe.id,
-          recipeTitle: assignment.recipe.title,
-          servings: s,
-          macros: {
-            calories: Math.round(assignment.recipe.macrosPerServing.calories * s),
-            protein: Math.round(assignment.recipe.macrosPerServing.protein * s * 10) / 10,
-            carbs: Math.round(assignment.recipe.macrosPerServing.carbs * s * 10) / 10,
-            fat: Math.round(assignment.recipe.macrosPerServing.fat * s * 10) / 10,
-          },
-        });
-        return next;
+  const handleAssigned = useCallback((assignment: AssignmentResult) => {
+    const key = cellKey(assignment.dayIndex, assignment.mealSlot);
+    const s = assignment.servings;
+    setCells((prev) => {
+      const next = new Map(prev);
+      next.set(key, {
+        id: assignment.id,
+        recipeId: assignment.recipe.id,
+        recipeTitle: assignment.recipe.title,
+        servings: s,
+        macros: {
+          calories: Math.round(assignment.recipe.macrosPerServing.calories * s),
+          protein: Math.round(assignment.recipe.macrosPerServing.protein * s * 10) / 10,
+          carbs: Math.round(assignment.recipe.macrosPerServing.carbs * s * 10) / 10,
+          fat: Math.round(assignment.recipe.macrosPerServing.fat * s * 10) / 10,
+        },
       });
-    },
-    []
-  );
+      return next;
+    });
+  }, []);
 
   function handleRemove(key: CellKey, assignmentId: string) {
     setRemovingKey(key);
@@ -204,7 +280,9 @@ export function WeeklyPlanEditor({
   }
 
   const dailyMacros = Array.from({ length: DAYS_COUNT }, (_, i) => {
-    const dayCells = SLOTS.map((s) => cells.get(cellKey(i, s))).filter(Boolean) as AssignmentCell[];
+    const dayCells = visibleSlots
+      .map((s) => cells.get(cellKey(i, s)))
+      .filter(Boolean) as AssignmentCell[];
     return sumMacros(dayCells);
   });
 
@@ -217,6 +295,10 @@ export function WeeklyPlanEditor({
       }
     : null;
 
+  const modalSlotBudget: MacroTotals | null = modal
+    ? (slotBudgets[modal.mealSlot] ?? null)
+    : null;
+
   return (
     <>
       {/* Desktop grid */}
@@ -226,10 +308,7 @@ export function WeeklyPlanEditor({
             <tr>
               <th className="w-28 p-2 text-left text-xs font-medium text-slate-400 dark:text-[#A0998E] uppercase tracking-wide" />
               {Array.from({ length: DAYS_COUNT }, (_, i) => (
-                <th
-                  key={i}
-                  className="p-2 text-center min-w-[140px]"
-                >
+                <th key={i} className="p-2 text-center min-w-[140px]">
                   <p className="font-semibold text-slate-800 dark:text-[#F5F1EB]">{dayLabels[i]}</p>
                   <p className="text-xs font-normal text-slate-400 dark:text-[#A0998E]">{dayDates[i]}</p>
                 </th>
@@ -237,7 +316,7 @@ export function WeeklyPlanEditor({
             </tr>
           </thead>
           <tbody>
-            {SLOTS.map((slot) => (
+            {visibleSlots.map((slot) => (
               <tr key={slot} className="border-t border-[var(--color-sand)]">
                 <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide align-top pt-3">
                   {SLOT_LABELS[slot]}
@@ -289,19 +368,7 @@ export function WeeklyPlanEditor({
               </td>
               {dailyMacros.map((m, i) => (
                 <td key={i} className="p-2">
-                  <p className="text-sm font-semibold text-slate-800 dark:text-[#F5F1EB] tabular-nums font-data">
-                    {Math.round(m.calories)} kcal
-                  </p>
-                  <p className="text-xs text-slate-500 dark:text-[#A0998E] tabular-nums font-data">
-                    <span className="text-[#5A6B4F]">{m.protein.toFixed(1)}g P</span>
-                    {" · "}
-                    <span className="text-[var(--color-clay)]">{m.carbs.toFixed(1)}g C</span>
-                    {" · "}
-                    <span className="text-[var(--color-terracotta)]">{m.fat.toFixed(1)}g F</span>
-                  </p>
-                  {dailyTarget && (
-                    <MacroBar actual={m} target={dailyTarget} />
-                  )}
+                  <DailyFitCell actual={m} target={dailyTarget} lang={lang} />
                 </td>
               ))}
             </tr>
@@ -312,30 +379,48 @@ export function WeeklyPlanEditor({
       {/* Mobile: day cards */}
       <div className="lg:hidden space-y-6">
         {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => (
-          <div key={dayIndex} className="rounded-xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow-sm">
-            <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[var(--color-sand)] flex items-baseline justify-between">
-              <div>
-                <span className="font-semibold text-slate-800 dark:text-[#F5F1EB]">{dayLabels[dayIndex]}</span>
-                <span className="ml-1.5 text-xs text-slate-400 dark:text-[#A0998E]">{dayDates[dayIndex]}</span>
+          <div
+            key={dayIndex}
+            className="rounded-xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow-sm"
+          >
+            <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[var(--color-sand)]">
+              <div className="flex items-baseline justify-between mb-2">
+                <div>
+                  <span className="font-semibold text-slate-800 dark:text-[#F5F1EB]">
+                    {dayLabels[dayIndex]}
+                  </span>
+                  <span className="ml-1.5 text-xs text-slate-400 dark:text-[#A0998E]">
+                    {dayDates[dayIndex]}
+                  </span>
+                </div>
+                <span className="text-sm tabular-nums font-data font-medium text-slate-600 dark:text-[#A0998E]">
+                  {Math.round(dailyMacros[dayIndex].calories)} kcal
+                </span>
               </div>
-              <span className="text-sm tabular-nums font-data font-medium text-slate-600 dark:text-[#A0998E]">
-                {Math.round(dailyMacros[dayIndex].calories)} kcal
-              </span>
+              <DailyFitCell
+                actual={dailyMacros[dayIndex]}
+                target={dailyTarget}
+                lang={lang}
+              />
             </div>
             <div className="divide-y divide-[var(--color-sand)]">
-              {SLOTS.map((slot) => {
+              {visibleSlots.map((slot) => {
                 const key = cellKey(dayIndex, slot);
                 const cell = cells.get(key);
                 const isRemoving = removingKey === key;
                 return (
                   <div key={slot} className="flex items-center gap-3 px-4 py-3">
-                    <span className="text-xs text-slate-400 dark:text-[#A0998E] w-20 shrink-0">
-                      {SLOT_LABELS[slot]}
-                    </span>
+                    <div className="w-20 shrink-0">
+                      <p className="text-xs text-slate-400 dark:text-[#A0998E]">
+                        {SLOT_LABELS[slot]}
+                      </p>
+                    </div>
                     {cell ? (
                       <div className="flex-1 flex items-center justify-between gap-2">
                         <div>
-                          <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{cell.recipeTitle}</p>
+                          <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">
+                            {cell.recipeTitle}
+                          </p>
                           <p className="text-xs text-slate-400 dark:text-[#A0998E]">
                             {cell.servings}× · {Math.round(cell.macros.calories)} kcal
                           </p>
@@ -379,16 +464,7 @@ export function WeeklyPlanEditor({
           dayIndex={modal.dayIndex}
           mealSlot={modal.mealSlot}
           recipes={recipes}
-          targetMacros={
-            targetMacros
-              ? {
-                  calories: targetMacros.calorieTarget,
-                  protein: targetMacros.proteinTarget,
-                  carbs: targetMacros.carbsTarget,
-                  fat: targetMacros.fatTarget,
-                }
-              : null
-          }
+          slotBudget={modalSlotBudget}
           onAssigned={handleAssigned}
           lang={lang}
         />

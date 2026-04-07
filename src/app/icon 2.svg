@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 50 50" fill="none">
+  <!-- Outer ring guide -->
+  <circle cx="25" cy="25" r="22" stroke="#2C2C2C" stroke-width="1.8" opacity="0.15" fill="none"/>
+  <!-- Inner ring guide -->
+  <circle cx="25" cy="25" r="16" stroke="#2C2C2C" stroke-width="0.8" opacity="0.08" fill="none"/>
+  <!-- Olive segment (top-right, ~25%) -->
+  <path d="M25 9 A16 16 0 0 1 39.5 19.5 L25 25 Z" fill="#7A8B6F" opacity="0.85"/>
+  <!-- Clay segment (right-bottom, ~35%) -->
+  <path d="M39.5 19.5 A16 16 0 0 1 30 40 L25 25 Z" fill="#B8907A" opacity="0.85"/>
+  <!-- Terracotta segment (bottom-left, ~30%) -->
+  <path d="M30 40 A16 16 0 0 1 10.5 20 L25 25 Z" fill="#C4724E" opacity="0.85"/>
+  <!-- Sand segment (left-top, ~10%) -->
+  <path d="M10.5 20 A16 16 0 0 1 25 9 L25 25 Z" fill="#C4B9A8" opacity="0.6"/>
+  <!-- Donut hole -->
+  <circle cx="25" cy="25" r="4" fill="#FDFBF8"/>
+</svg>

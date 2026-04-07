@@ -4,7 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { db } from "@/lib/db";
 import { auth } from "@/lib/auth";
-import { MealPlanStatus, MealSlot } from "@prisma/client";
+import { Prisma, MealPlanStatus, MealSlot } from "@prisma/client";
 import { calcRecipeMacrosPerServing, type MacroTotals } from "@/lib/macros";
 
 export type ActionResult = { success: true; id: string } | { success: false; error: string };
@@ -42,13 +42,18 @@ async function assertPlanOwnership(planId: string, coachId: string): Promise<str
 const createPlanSchema = z.object({
   title: z.string().optional(),
   startDate: z.string().min(1, "Start date is required"),
+  activeSlots: z
+    .array(z.enum(["breakfast", "lunch", "dinner", "snack1", "snack2"]))
+    .min(1)
+    .optional(),
+  slotDistribution: z.record(z.string(), z.number()).nullable().optional(),
 });
 
 const assignSchema = z.object({
   dayIndex: z.number().int().min(0).max(6),
   mealSlot: z.enum(["breakfast", "lunch", "dinner", "snack1", "snack2"]),
   recipeId: z.string().uuid(),
-  servings: z.number().positive().multipleOf(0.5),
+  servings: z.number().positive().multipleOf(0.25),
 });
 
 // ─── Actions ──────────────────────────────────────────────
@@ -77,6 +82,8 @@ export async function createMealPlan(
         status: "draft",
         startDate,
         endDate,
+        activeSlots: (parsed.activeSlots ?? ["breakfast", "lunch", "dinner", "snack1"]) as Prisma.InputJsonValue,
+        ...(parsed.slotDistribution != null ? { slotDistribution: parsed.slotDistribution as Prisma.InputJsonValue } : {}),
       },
     });
 
@@ -216,6 +223,8 @@ export async function duplicatePlan(
         status: "draft",
         startDate: start,
         endDate: end,
+        activeSlots: (source.activeSlots ?? ["breakfast", "lunch", "dinner", "snack1"]) as Prisma.InputJsonValue,
+        ...(source.slotDistribution != null ? { slotDistribution: source.slotDistribution as Prisma.InputJsonValue } : {}),
         mealAssignments: {
           create: source.mealAssignments.map((a) => ({
             dayIndex: a.dayIndex,

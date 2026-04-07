@@ -217,15 +217,17 @@ model PasswordReset {
 // ─── MEAL PLANS ──────────────────────────────────────────
 
 model MealPlan {
-  id        String         @id @default(uuid())
-  clientId  String         @map("client_id")
-  title     String?
-  status    MealPlanStatus @default(draft)
-  startDate DateTime       @map("start_date") @db.Date
-  endDate   DateTime       @map("end_date") @db.Date
-  notes     String?
-  createdAt DateTime       @default(now()) @map("created_at")
-  updatedAt DateTime       @updatedAt @map("updated_at")
+  id               String         @id @default(uuid())
+  clientId         String         @map("client_id")
+  title            String?
+  status           MealPlanStatus @default(draft)
+  startDate        DateTime       @map("start_date") @db.Date
+  endDate          DateTime       @map("end_date") @db.Date
+  notes            String?
+  activeSlots      Json           @default("[\"breakfast\",\"lunch\",\"dinner\",\"snack1\"]") @map("active_slots")
+  slotDistribution Json?          @map("slot_distribution")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
 
   // Relations
   client          Client           @relation(fields: [clientId], references: [id], onDelete: Cascade)

@@ -12,10 +12,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { calcFitScore, FIT_SCORE_GREEN, FIT_SCORE_AMBER, type MacroTotals } from "@/lib/macros";
+import { type MacroTotals } from "@/lib/macros";
+import { suggestServings } from "@/lib/slot-budget";
 import { assignMeal, type AssignmentResult } from "@/app/(main)/clients/[id]/plans/actions";
 import { t, type Lang } from "@/lib/translations";
-
 
 export type RecipeOption = {
   id: string;
@@ -32,24 +32,10 @@ type Props = {
   dayIndex: number;
   mealSlot: string;
   recipes: RecipeOption[];
-  targetMacros: MacroTotals | null;
+  slotBudget: MacroTotals | null;
   onAssigned: (assignment: AssignmentResult) => void;
   lang: Lang;
 };
-
-function FitBadge({ score }: { score: number }) {
-  const color =
-    score >= FIT_SCORE_GREEN
-      ? "text-[#5A6B4F] bg-[#EDF1EB] border-[#c5d0bf]"
-      : score >= FIT_SCORE_AMBER
-      ? "text-[var(--color-clay)] bg-[#F5EDE8] border-[#dfc5b3]"
-      : "text-red-700 bg-red-50 border-red-200";
-  return (
-    <span className={cn("text-xs font-semibold border rounded px-1.5 py-0.5 tabular-nums font-data", color)}>
-      {score}%
-    </span>
-  );
-}
 
 export function AssignRecipeModal({
   open,
@@ -58,13 +44,14 @@ export function AssignRecipeModal({
   dayIndex,
   mealSlot,
   recipes,
-  targetMacros,
+  slotBudget,
   onAssigned,
   lang,
 }: Props) {
   const [search, setSearch] = useState("");
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [servings, setServings] = useState("1");
+  const [suggestedServings, setSuggestedServings] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
   const [error, setError] = useState<string | null>(null);
 
@@ -76,7 +63,6 @@ export function AssignRecipeModal({
     snack2: t("Snack 2", lang),
   };
 
-  // Map slot → matching mealType (snack1/snack2 → "snack")
   const slotMealType = mealSlot === "snack1" || mealSlot === "snack2" ? "snack" : mealSlot;
 
   const { matchGroup, untaggedGroup, otherGroup } = useMemo(() => {
@@ -95,6 +81,9 @@ export function AssignRecipeModal({
 
   const selected = recipes.find((r) => r.id === selectedId) ?? null;
 
+  const servingsNum = parseFloat(servings) || 1;
+  const sliderValue = Math.min(3.0, Math.max(0.5, servingsNum));
+
   const previewMacros: MacroTotals | null = useMemo(() => {
     if (!selected) return null;
     const s = parseFloat(servings) || 1;
@@ -106,10 +95,18 @@ export function AssignRecipeModal({
     };
   }, [selected, servings]);
 
-  const fitScore = useMemo(() => {
-    if (!previewMacros || !targetMacros) return null;
-    return calcFitScore(previewMacros, targetMacros);
-  }, [previewMacros, targetMacros]);
+  function handleSelectRecipe(id: string) {
+    const recipe = recipes.find((r) => r.id === id);
+    setSelectedId(id);
+    if (recipe && slotBudget) {
+      const s = suggestServings(recipe.macrosPerServing, slotBudget);
+      setSuggestedServings(s);
+      setServings(String(s));
+    } else {
+      setSuggestedServings(null);
+      setServings("1");
+    }
+  }
 
   function handleAssign() {
     if (!selectedId) { setError("Select a recipe."); return; }
@@ -137,13 +134,14 @@ export function AssignRecipeModal({
     setSearch("");
     setSelectedId(null);
     setServings("1");
+    setSuggestedServings(null);
     setError(null);
     onClose();
   }
 
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
-      <DialogContent className="max-w-lg">
+      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>
             {t("Assign Recipe", lang)} — {SLOT_LABELS[mealSlot] ?? mealSlot}
@@ -163,9 +161,11 @@ export function AssignRecipeModal({
           </div>
 
           {/* Recipe list */}
-          <div className="max-h-52 overflow-y-auto rounded-lg border border-[var(--color-sand)] divide-y divide-[var(--color-sand)]">
+          <div className="max-h-48 overflow-y-auto rounded-lg border border-[var(--color-sand)] divide-y divide-[var(--color-sand)]">
             {matchGroup.length === 0 && untaggedGroup.length === 0 && otherGroup.length === 0 ? (
-              <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">{t("No recipes found", lang)}</p>
+              <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">
+                {t("No recipes found", lang)}
+              </p>
             ) : (
               <>
                 {[
@@ -184,7 +184,7 @@ export function AssignRecipeModal({
                         <button
                           key={recipe.id}
                           type="button"
-                          onClick={() => setSelectedId(recipe.id)}
+                          onClick={() => handleSelectRecipe(recipe.id)}
                           className={cn(
                             "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
                             selectedId === recipe.id
@@ -193,7 +193,9 @@ export function AssignRecipeModal({
                           )}
                         >
                           <div>
-                            <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">{recipe.title}</p>
+                            <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">
+                              {recipe.title}
+                            </p>
                             <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5">
                               {Math.round(recipe.macrosPerServing.calories)} kcal ·{" "}
                               <span className="text-[#5A6B4F]">{recipe.macrosPerServing.protein.toFixed(1)}g P</span>{" "}
@@ -217,59 +219,77 @@ export function AssignRecipeModal({
           {/* Servings + preview */}
           {selected && (
             <div className="rounded-lg border border-[var(--color-sand)] bg-slate-50 dark:bg-[#1E1E1E] p-4 space-y-3">
-              <div className="flex items-center gap-4">
-                <div className="flex-1 space-y-1">
-                  <Label htmlFor="servings">{t("Servings", lang)}</Label>
+              {/* Serving slider */}
+              <div className="space-y-1.5">
+                <div className="flex items-center justify-between">
+                  <Label>{t("Servings", lang)}</Label>
+                  {suggestedServings !== null && (
+                    <span className="text-xs text-slate-400 dark:text-[#6A6460]">
+                      {t("Suggested", lang)}: {suggestedServings} {t("servings", lang)}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <input
+                    type="range"
+                    min={0.5}
+                    max={3.0}
+                    step={0.25}
+                    value={sliderValue}
+                    onChange={(e) => setServings(e.target.value)}
+                    style={{ accentColor: "var(--color-olive)" }}
+                    className="flex-1 cursor-pointer"
+                  />
                   <Input
-                    id="servings"
                     type="number"
                     min={0.5}
-                    step={0.5}
+                    max={10}
+                    step={0.25}
                     value={servings}
                     onChange={(e) => setServings(e.target.value)}
                     onKeyDown={(e) => {
                       if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
                     }}
-                    className="w-28 bg-white dark:bg-[#242424]"
+                    className="w-20 bg-white dark:bg-[#242424]"
                   />
                 </div>
-                {fitScore !== null && targetMacros && (
-                  <div className="text-right">
-                    <p className="text-xs text-slate-500 dark:text-[#A0998E] mb-1">{t("Fit score", lang)}</p>
-                    <FitBadge score={fitScore} />
-                    <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-1 max-w-[120px]">
-                      {t("Fit score help", lang)}
-                    </p>
-                  </div>
-                )}
               </div>
 
+              {/* Macro preview */}
               {previewMacros && (
-                <div className="grid grid-cols-4 gap-2 text-center text-xs">
-                  <div>
-                    <p className="font-semibold text-slate-800 dark:text-[#E8E2DA] tabular-nums font-data">
-                      {previewMacros.calories}
-                    </p>
-                    <p className="text-slate-400 dark:text-[#6A6460]">kcal</p>
+                <div className="space-y-1.5">
+                  <div className="grid grid-cols-4 gap-2 text-center text-xs">
+                    <div>
+                      <p className="font-semibold text-slate-800 dark:text-[#E8E2DA] tabular-nums font-data">
+                        {previewMacros.calories}
+                      </p>
+                      <p className="text-slate-400 dark:text-[#6A6460]">kcal</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[#5A6B4F] tabular-nums font-data">
+                        {previewMacros.protein}g
+                      </p>
+                      <p className="text-slate-400 dark:text-[#6A6460]">{t("Protein", lang)}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--color-clay)] tabular-nums font-data">
+                        {previewMacros.carbs}g
+                      </p>
+                      <p className="text-slate-400 dark:text-[#6A6460]">{t("Carbs", lang)}</p>
+                    </div>
+                    <div>
+                      <p className="font-semibold text-[var(--color-terracotta)] tabular-nums font-data">
+                        {previewMacros.fat}g
+                      </p>
+                      <p className="text-slate-400 dark:text-[#6A6460]">{t("Fat", lang)}</p>
+                    </div>
                   </div>
-                  <div>
-                    <p className="font-semibold text-[#5A6B4F] tabular-nums font-data">
-                      {previewMacros.protein}g
+
+                  {slotBudget && (
+                    <p className="text-[11px] text-slate-400 dark:text-[#6A6460] text-center font-data tabular-nums">
+                      {t("Slot target", lang)}: {slotBudget.calories} kcal · {slotBudget.protein.toFixed(0)}P · {slotBudget.carbs.toFixed(0)}C · {slotBudget.fat.toFixed(0)}F
                     </p>
-                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Protein", lang)}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[var(--color-clay)] tabular-nums font-data">
-                      {previewMacros.carbs}g
-                    </p>
-                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Carbs", lang)}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-[var(--color-terracotta)] tabular-nums font-data">
-                      {previewMacros.fat}g
-                    </p>
-                    <p className="text-slate-400 dark:text-[#6A6460]">{t("Fat", lang)}</p>
-                  </div>
+                  )}
                 </div>
               )}
             </div>
