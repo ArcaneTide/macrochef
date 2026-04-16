@@ -104,6 +104,9 @@ const dict = {
   "servings":                { en: "servings",                el: "μερίδες" },
   "Slot target":             { en: "Slot target",             el: "Στόχος θέσης" },
   "Customize meal distribution": { en: "Customize meal distribution", el: "Προσαρμογή κατανομής" },
+  "try adding":              { en: "try adding a",            el: "δοκίμασε να προσθέσεις" },
+  "a snack":                 { en: "snack",                   el: "σνακ" },
+  "a meal":                  { en: "meal",                    el: "γεύμα" },
 
   // ── Dashboard greetings ───────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },

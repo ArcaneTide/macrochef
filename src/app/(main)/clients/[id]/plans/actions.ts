@@ -304,3 +304,42 @@ export async function removeMeal(
     return { success: false, error: "Failed to remove meal" };
   }
 }
+
+type UpdateServingsResult =
+  | { success: true; servings: number; macrosPerServing: MacroTotals }
+  | { success: false; error: string };
+
+export async function updateMealServings(
+  planId: string,
+  assignmentId: string,
+  servings: number
+): Promise<UpdateServingsResult> {
+  try {
+    const coachId = await getAuthedCoachId();
+    const clientId = await assertPlanOwnership(planId, coachId);
+
+    const assignment = await db.mealAssignment.update({
+      where: { id: assignmentId },
+      data: { servings },
+      include: {
+        recipe: {
+          include: { ingredients: { include: { ingredient: true } } },
+        },
+      },
+    });
+
+    const macrosPerServing = calcRecipeMacrosPerServing(
+      assignment.recipe.ingredients.map((ri) => ({
+        ingredient: ri.ingredient,
+        quantityGrams: ri.quantityGrams,
+      })),
+      assignment.recipe.servings
+    );
+
+    revalidatePath(`/clients/${clientId}/plans/${planId}`);
+    return { success: true, servings, macrosPerServing };
+  } catch (err) {
+    console.error("updateMealServings:", err);
+    return { success: false, error: "Failed to update servings" };
+  }
+}
