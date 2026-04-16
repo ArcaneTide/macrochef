@@ -2,7 +2,7 @@ import type { MacroTotals } from "@/lib/macros";
 
 export type SlotBudgets = Record<string, MacroTotals>;
 
-const SERVING_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0, 2.25, 2.5, 2.75, 3.0];
+const SERVING_STEPS = [0.5, 0.75, 1.0, 1.25, 1.5, 1.75, 2.0];
 
 /**
  * Returns the serving multiplier (0.5–3.0, step 0.25) that minimises weighted
