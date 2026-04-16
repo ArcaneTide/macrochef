@@ -421,19 +421,26 @@ export function WeeklyPlanEditor({
       }
     : null;
 
-  // Smart nudge: show remaining budget details when empty slots have >100 kcal
+  // Smart nudge: compare assigned to daily target; show when empty slots remain and >100 kcal needed
   const dailyNudges = Array.from({ length: DAYS_COUNT }, (_, i) => {
     if (!targetMacros) return null;
     const emptySlots = visibleSlots.filter((s) => !cells.get(cellKey(i, s)));
     if (emptySlots.length === 0) return null;
-    const calories = Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.calories ?? 0), 0));
+    const assigned = dailyMacros[i];
+    const calories = Math.round(targetMacros.calorieTarget - assigned.calories);
     if (calories <= 100) return null;
     return {
       calories,
-      protein: Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.protein ?? 0), 0)),
-      carbs:   Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.carbs   ?? 0), 0)),
-      fat:     Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.fat     ?? 0), 0)),
+      protein: Math.round((targetMacros.proteinTarget - assigned.protein) * 10) / 10,
+      carbs:   Math.round((targetMacros.carbsTarget   - assigned.carbs  ) * 10) / 10,
+      fat:     Math.round((targetMacros.fatTarget      - assigned.fat    ) * 10) / 10,
       count:   emptySlots.length,
+      target: {
+        calories: targetMacros.calorieTarget,
+        protein:  targetMacros.proteinTarget,
+        carbs:    targetMacros.carbsTarget,
+        fat:      targetMacros.fatTarget,
+      },
     };
   });
 
@@ -510,14 +517,53 @@ export function WeeklyPlanEditor({
     );
   }
 
-  function renderNudge(nudge: { calories: number; protein: number; carbs: number; fat: number; count: number } | null) {
+  function renderNudge(nudge: {
+    calories: number; protein: number; carbs: number; fat: number;
+    count: number; target: { calories: number; protein: number; carbs: number; fat: number };
+  } | null) {
     if (!nudge) return null;
-    const mealLabel = nudge.count === 1 ? t("meal singular", lang) : t("meal plural", lang);
+    const { calories, protein, carbs, fat, count, target } = nudge;
+    const hints: string[] = [];
+
+    // Overflow hints: a macro already exceeds daily target
+    if (carbs < -10 && hints.length < 2) {
+      hints.push(t("hint carbs over", lang).replace("{n}", String(Math.round(-carbs))));
+    }
+    if (fat < -10 && hints.length < 2) {
+      hints.push(t("hint fat over", lang).replace("{n}", String(Math.round(-fat))));
+    }
+    if (protein < -10 && hints.length < 2) {
+      hints.push(t("hint protein over", lang).replace("{n}", String(Math.round(-protein))));
+    }
+
+    // Deficit hints: which macro is most needed relative to target
+    if (hints.length < 2) {
+      const protPct  = target.protein > 0 ? protein  / target.protein  : 0;
+      const carbsPct = target.carbs   > 0 ? carbs    / target.carbs    : 0;
+      if (protPct >= carbsPct && protPct > 0.2) {
+        hints.push(t("hint protein low", lang));
+      } else if (carbsPct > protPct && carbsPct > 0.2) {
+        hints.push(t("hint carbs low", lang));
+      } else if (calories > 0) {
+        hints.push(count === 1 ? t("hint light snack", lang) : t("hint light meal", lang));
+      }
+    }
+
+    if (hints.length === 0) return null;
+
+    const mealLabel = count === 1 ? t("meal singular", lang) : t("meal plural", lang);
     return (
-      <p className="text-[11px] italic text-[var(--color-olive)] dark:text-[#8FAB7D] mt-1">
-        {t("Remaining", lang)}: ~{nudge.calories} kcal · {nudge.protein}g P · {nudge.carbs}g C · {nudge.fat}g F{" "}
-        {t("across", lang)} {nudge.count} {mealLabel}
-      </p>
+      <div className="mt-1.5">
+        {hints.map((h, idx) => (
+          <p key={idx} className="text-[11px] font-medium text-[var(--color-olive)] dark:text-[#8FAB7D]">
+            {h}
+          </p>
+        ))}
+        <p className="text-[10px] italic text-slate-400 dark:text-[#6A6460] tabular-nums mt-0.5">
+          {t("Remaining", lang)}: ~{Math.round(calories)} kcal · {protein}g P · {carbs}g C · {fat}g F{" "}
+          {t("across", lang)} {count} {mealLabel}
+        </p>
+      </div>
     );
   }
 
@@ -573,7 +619,7 @@ export function WeeklyPlanEditor({
                               {cell.recipeTitle}
                             </p>
                             <p className="text-xs text-slate-400 dark:text-[#A0998E] mt-0.5">
-                              {cell.servings}× · {Math.round(cell.macros.calories)} kcal
+                              {Math.round(cell.macros.calories)} kcal
                             </p>
                           </div>
                         )
@@ -663,7 +709,7 @@ export function WeeklyPlanEditor({
                                 {cell.recipeTitle}
                               </p>
                               <p className="text-xs text-slate-400 dark:text-[#A0998E]">
-                                {cell.servings}× · {Math.round(cell.macros.calories)} kcal
+                                {Math.round(cell.macros.calories)} kcal
                               </p>
                             </div>
                             <Button

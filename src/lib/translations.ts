@@ -110,6 +110,13 @@ const dict = {
   "across":                  { en: "across",                  el: "σε" },
   "meal singular":           { en: "meal",                    el: "γεύμα" },
   "meal plural":             { en: "meals",                   el: "γεύματα" },
+  "hint protein over":       { en: "Protein over target (+{n}g) — consider lighter protein sources", el: "Πρωτεΐνη υπεράνω στόχου (+{n}g) — επέλεξε πιο ελαφρά" },
+  "hint carbs over":         { en: "Carbs over target (+{n}g) — consider swapping a carb-heavy meal", el: "Υδατάνθρακες υπεράνω στόχου (+{n}g) — σκέψου να αλλάξεις" },
+  "hint fat over":           { en: "Fat over target (+{n}g) — consider lighter options", el: "Λίπος υπεράνω στόχου (+{n}g) — επέλεξε πιο ελαφρύ" },
+  "hint protein low":        { en: "Needs more protein — try a lean meat or fish dish", el: "Χρειάζεται πρωτεΐνη — δοκίμασε κρέας ή ψάρι" },
+  "hint carbs low":          { en: "Needs more carbs — try rice, pasta, or oats", el: "Χρειάζεται υδατάνθρακες — ρύζι, ζυμαρικά ή βρώμη" },
+  "hint light snack":        { en: "A bit light — try adding a snack", el: "Λίγο ελαφρύ — πρόσθεσε σνακ" },
+  "hint light meal":         { en: "A bit light — try adding a meal", el: "Λίγο ελαφρύ — πρόσθεσε γεύμα" },
 
   // ── Dashboard greetings ───────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },

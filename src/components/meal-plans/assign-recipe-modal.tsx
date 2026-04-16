@@ -29,7 +29,7 @@ type Props = {
   dayIndex: number;
   mealSlot: string;
   recipes: RecipeOption[];
-  /** Full daily macro target (not per-slot). Null if no target profile. */
+  /** Full daily macro target. Null if no target profile. */
   dailyTarget: MacroTotals | null;
   /** Sum of macros already assigned to other slots on this day. */
   dayAssignedMacros: MacroTotals;
@@ -65,19 +65,22 @@ export function AssignRecipeModal({
     snack2: t("Snack 2", lang),
   };
 
+  // mealType tag to match against recipes
+  const slotMealType = mealSlot === "snack1" || mealSlot === "snack2" ? "snack" : mealSlot;
+
   // Effective per-slot budget = remaining daily budget / unfilled slots
   const effectiveBudget = useMemo((): MacroTotals | null => {
     if (!dailyTarget) return null;
     const count = Math.max(1, emptySlotCount);
     return {
       calories: Math.max(0, (dailyTarget.calories - dayAssignedMacros.calories) / count),
-      protein: Math.max(0, (dailyTarget.protein - dayAssignedMacros.protein) / count),
-      carbs: Math.max(0, (dailyTarget.carbs - dayAssignedMacros.carbs) / count),
-      fat: Math.max(0, (dailyTarget.fat - dayAssignedMacros.fat) / count),
+      protein:  Math.max(0, (dailyTarget.protein  - dayAssignedMacros.protein)  / count),
+      carbs:    Math.max(0, (dailyTarget.carbs     - dayAssignedMacros.carbs)    / count),
+      fat:      Math.max(0, (dailyTarget.fat       - dayAssignedMacros.fat)      / count),
     };
   }, [dailyTarget, dayAssignedMacros, emptySlotCount]);
 
-  // Pre-compute suggested servings for all recipes
+  // Pre-compute suggested servings for every recipe
   const suggestedMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const r of recipes) {
@@ -86,33 +89,46 @@ export function AssignRecipeModal({
     return map;
   }, [recipes, effectiveBudget]);
 
-  // Score each recipe by weighted fit at suggested servings (lower = better fit)
+  // Weighted fit score at suggested servings (lower = better)
   const scoreMap = useMemo(() => {
     const map = new Map<string, number>();
     for (const r of recipes) {
       if (!effectiveBudget) { map.set(r.id, 0); continue; }
       const s = suggestedMap.get(r.id) ?? 1;
-      const cal = effectiveBudget.calories || 1;
-      const prot = effectiveBudget.protein || 1;
-      const carbs = effectiveBudget.carbs || 1;
-      const fat = effectiveBudget.fat || 1;
+      const cal  = effectiveBudget.calories || 1;
+      const prot = effectiveBudget.protein  || 1;
+      const carb = effectiveBudget.carbs    || 1;
+      const fat  = effectiveBudget.fat      || 1;
       map.set(r.id,
-        0.4  * Math.abs(r.macrosPerServing.calories * s - effectiveBudget.calories) / cal +
+        0.4  * Math.abs(r.macrosPerServing.calories * s - effectiveBudget.calories) / cal  +
         0.3  * Math.abs(r.macrosPerServing.protein  * s - effectiveBudget.protein)  / prot +
-        0.15 * Math.abs(r.macrosPerServing.carbs    * s - effectiveBudget.carbs)    / carbs +
+        0.15 * Math.abs(r.macrosPerServing.carbs    * s - effectiveBudget.carbs)    / carb +
         0.15 * Math.abs(r.macrosPerServing.fat      * s - effectiveBudget.fat)      / fat
       );
     }
     return map;
   }, [recipes, suggestedMap, effectiveBudget]);
 
-  // Filter by search, sort by fit score (best first)
-  const sortedRecipes = useMemo(() => {
+  // Three groups: matching mealType → untagged → other; sorted by fit within each group
+  const { matchGroup, untaggedGroup, otherGroup } = useMemo(() => {
     const q = search.toLowerCase();
-    return [...recipes]
-      .filter((r) => r.title.toLowerCase().includes(q))
-      .sort((a, b) => (scoreMap.get(a.id) ?? 0) - (scoreMap.get(b.id) ?? 0));
-  }, [recipes, search, scoreMap]);
+    const visible = recipes.filter((r) => r.title.toLowerCase().includes(q));
+    const match: RecipeOption[] = [];
+    const untagged: RecipeOption[] = [];
+    const other: RecipeOption[] = [];
+    for (const r of visible) {
+      if (r.mealType === slotMealType) match.push(r);
+      else if (!r.mealType) untagged.push(r);
+      else other.push(r);
+    }
+    const byFit = (a: RecipeOption, b: RecipeOption) =>
+      (scoreMap.get(a.id) ?? 0) - (scoreMap.get(b.id) ?? 0);
+    return {
+      matchGroup:   match.sort(byFit),
+      untaggedGroup: untagged.sort(byFit),
+      otherGroup:   other.sort(byFit),
+    };
+  }, [recipes, search, scoreMap, slotMealType]);
 
   function handleTapRecipe(recipe: RecipeOption) {
     if (isPending) return;
@@ -148,6 +164,60 @@ export function AssignRecipeModal({
     onClose();
   }
 
+  function renderRecipeButton(recipe: RecipeOption) {
+    const suggested = suggestedMap.get(recipe.id) ?? 1;
+    const isAssigning = assigningId === recipe.id;
+    const kcal  = Math.round(recipe.macrosPerServing.calories * suggested);
+    const prot  = (recipe.macrosPerServing.protein * suggested).toFixed(1);
+    const carbs = (recipe.macrosPerServing.carbs   * suggested).toFixed(1);
+    const fat   = (recipe.macrosPerServing.fat     * suggested).toFixed(1);
+    return (
+      <button
+        key={recipe.id}
+        type="button"
+        disabled={isPending}
+        onClick={() => handleTapRecipe(recipe)}
+        className={cn(
+          "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
+          isPending && assigningId !== recipe.id
+            ? "opacity-40"
+            : "hover:bg-slate-50 dark:hover:bg-[#2A2A2A]"
+        )}
+      >
+        <div className="min-w-0">
+          <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">
+            {recipe.title}
+          </p>
+          <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5 font-data tabular-nums">
+            {kcal} kcal ·{" "}
+            <span className="text-[#5A6B4F]">{prot}g P</span>{" "}
+            <span className="text-[var(--color-clay)]">{carbs}g C</span>{" "}
+            <span className="text-[var(--color-terracotta)]">{fat}g F</span>
+          </p>
+        </div>
+        {isAssigning && (
+          <Loader2 className="h-4 w-4 animate-spin text-[var(--color-olive)] shrink-0" />
+        )}
+      </button>
+    );
+  }
+
+  function renderGroup(group: RecipeOption[], label: string | null) {
+    if (group.length === 0) return null;
+    return (
+      <div key={label ?? "match"}>
+        {label && (
+          <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-[#6A6460] bg-slate-50 dark:bg-[#1E1E1E]">
+            {label}
+          </p>
+        )}
+        {group.map(renderRecipeButton)}
+      </div>
+    );
+  }
+
+  const isEmpty = matchGroup.length === 0 && untaggedGroup.length === 0 && otherGroup.length === 0;
+
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) handleClose(); }}>
       <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
@@ -170,50 +240,21 @@ export function AssignRecipeModal({
             />
           </div>
 
-          {/* Recipe list — sorted by fit, tap to assign */}
+          {/* Recipe list — grouped by meal type, sorted by fit within group */}
           <div className="max-h-[60vh] overflow-y-auto rounded-lg border border-[var(--color-sand)] divide-y divide-[var(--color-sand)]">
-            {sortedRecipes.length === 0 ? (
+            {isEmpty ? (
               <p className="text-sm text-slate-400 dark:text-[#6A6460] text-center py-6">
                 {t("No recipes found", lang)}
               </p>
             ) : (
-              sortedRecipes.map((recipe) => {
-                const suggested = suggestedMap.get(recipe.id) ?? 1;
-                const isAssigning = assigningId === recipe.id;
-                const kcal = Math.round(recipe.macrosPerServing.calories * suggested);
-                const prot = (recipe.macrosPerServing.protein * suggested).toFixed(1);
-                const carbs = (recipe.macrosPerServing.carbs * suggested).toFixed(1);
-                const fat  = (recipe.macrosPerServing.fat * suggested).toFixed(1);
-                return (
-                  <button
-                    key={recipe.id}
-                    type="button"
-                    disabled={isPending}
-                    onClick={() => handleTapRecipe(recipe)}
-                    className={cn(
-                      "w-full flex items-center justify-between gap-3 px-3 py-2.5 text-left transition-colors",
-                      isPending && assigningId !== recipe.id
-                        ? "opacity-40"
-                        : "hover:bg-slate-50 dark:hover:bg-[#2A2A2A]"
-                    )}
-                  >
-                    <div className="min-w-0">
-                      <p className="text-sm font-medium text-slate-800 dark:text-[#E8E2DA]">
-                        {recipe.title}
-                      </p>
-                      <p className="text-xs text-slate-400 dark:text-[#6A6460] mt-0.5 font-data tabular-nums">
-                        {suggested}× · {kcal} kcal ·{" "}
-                        <span className="text-[#5A6B4F]">{prot}g P</span>{" "}
-                        <span className="text-[var(--color-clay)]">{carbs}g C</span>{" "}
-                        <span className="text-[var(--color-terracotta)]">{fat}g F</span>
-                      </p>
-                    </div>
-                    {isAssigning && (
-                      <Loader2 className="h-4 w-4 animate-spin text-[var(--color-olive)] shrink-0" />
-                    )}
-                  </button>
-                );
-              })
+              <>
+                {renderGroup(matchGroup, null)}
+                {renderGroup(
+                  untaggedGroup,
+                  matchGroup.length > 0 ? t("All meals", lang) : null
+                )}
+                {renderGroup(otherGroup, t("Other", lang))}
+              </>
             )}
           </div>
 
