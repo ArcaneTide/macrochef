@@ -107,6 +107,9 @@ const dict = {
   "try adding":              { en: "try adding a",            el: "δοκίμασε να προσθέσεις" },
   "a snack":                 { en: "snack",                   el: "σνακ" },
   "a meal":                  { en: "meal",                    el: "γεύμα" },
+  "across":                  { en: "across",                  el: "σε" },
+  "meal singular":           { en: "meal",                    el: "γεύμα" },
+  "meal plural":             { en: "meals",                   el: "γεύματα" },
 
   // ── Dashboard greetings ───────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },

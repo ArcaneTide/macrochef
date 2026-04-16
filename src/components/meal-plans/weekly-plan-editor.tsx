@@ -5,7 +5,7 @@ import { Plus, X, Loader2, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
-import { type MacroTotals, calcFitScore } from "@/lib/macros";
+import { type MacroTotals } from "@/lib/macros";
 import { computeSlotBudgets, type SlotBudgets } from "@/lib/slot-budget";
 import { removeMeal, updateMealServings } from "@/app/(main)/clients/[id]/plans/actions";
 import {
@@ -53,7 +53,19 @@ type DailyTarget = {
   fatTarget: number;
 };
 
-/** Renders the overflow-aware bar + optional per-macro expand. */
+/** Weighted fit score: cal 40%, protein 30%, carbs 15%, fat 15% */
+function calcWeightedFit(actual: MacroTotals, target: DailyTarget): number {
+  const dev = (a: number, tgt: number) =>
+    tgt > 0 ? Math.abs(a - tgt) / tgt : a > 0 ? 1.0 : 0;
+  const score =
+    0.4  * dev(actual.calories, target.calorieTarget) +
+    0.3  * dev(actual.protein,  target.proteinTarget) +
+    0.15 * dev(actual.carbs,    target.carbsTarget)   +
+    0.15 * dev(actual.fat,      target.fatTarget);
+  return Math.max(0, Math.round((1 - score) * 100));
+}
+
+/** Overflow-aware fit bar + per-macro expand on click. */
 function DailyFitCell({
   actual,
   target,
@@ -73,26 +85,19 @@ function DailyFitCell({
     );
   }
 
-  const budget: MacroTotals = {
-    calories: target.calorieTarget,
-    protein: target.proteinTarget,
-    carbs: target.carbsTarget,
-    fat: target.fatTarget,
-  };
-  const fitPct = calcFitScore(actual, budget);
+  const fitPct = calcWeightedFit(actual, target);
   const calRatio = target.calorieTarget > 0 ? actual.calories / target.calorieTarget : 0;
-  const isOver = calRatio > 1.05;
   const calFillPct = Math.min(calRatio / MAX_DISPLAY_RATIO, 1) * 100;
   const targetLinePct = (1 / MAX_DISPLAY_RATIO) * 100; // 66.7%
+  const calNormalWidth = Math.min(calFillPct, targetLinePct);
+  const calOverflowWidth = Math.max(0, calFillPct - targetLinePct);
 
-  const calBarColor = isOver
-    ? "bg-[var(--color-terracotta)]"
-    : fitPct >= 90
+  const isOver = calRatio > 1.05;
+  const baseBarColor = fitPct >= 90
     ? "bg-[#5A6B4F]"
     : fitPct >= 80
     ? "bg-[var(--color-clay)]"
     : "bg-red-400";
-
   const textColor = isOver
     ? "text-[var(--color-terracotta)]"
     : fitPct >= 90
@@ -116,19 +121,26 @@ function DailyFitCell({
         {t("of", lang)} {target.calorieTarget} kcal
       </p>
 
-      {/* Fit bar — click to expand per-macro */}
       <button
         type="button"
         onClick={() => setExpanded((v) => !v)}
         className="w-full mt-1.5 text-left"
       >
         <div className="flex items-center gap-1.5">
-          {/* Overflow-aware bar */}
+          {/* Overflow-aware calorie bar */}
           <div className="relative flex-1 h-2 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
+            {/* Normal fill */}
             <div
-              className={cn("absolute inset-y-0 left-0 rounded-full transition-all", calBarColor)}
-              style={{ width: `${calFillPct}%` }}
+              className={cn("absolute inset-y-0 left-0 rounded-l-full", baseBarColor)}
+              style={{ width: `${calNormalWidth}%` }}
             />
+            {/* Overflow fill — terracotta */}
+            {calOverflowWidth > 0 && (
+              <div
+                className="absolute inset-y-0 bg-[var(--color-terracotta)]"
+                style={{ left: `${targetLinePct}%`, width: `${calOverflowWidth}%` }}
+              />
+            )}
             {/* Target marker line */}
             <div
               className="absolute inset-y-0 w-px bg-white dark:bg-[#1E1E1E] opacity-60"
@@ -146,36 +158,43 @@ function DailyFitCell({
           />
         </div>
 
-        {/* Per-macro breakdown (click to show) */}
+        {/* Per-macro breakdown — click to toggle */}
         {expanded && (
           <div className="mt-2 space-y-1.5">
             {macroRows.map(({ label, actual: a, target: tgt, color }) => {
               const ratio = tgt > 0 ? a / tgt : 0;
-              const over = ratio > 1.05;
               const fillPct = Math.min(ratio / MAX_DISPLAY_RATIO, 1) * 100;
+              const normalWidth = Math.min(fillPct, targetLinePct);
+              const overflowWidth = Math.max(0, fillPct - targetLinePct);
               const delta = Math.round(a - tgt);
               const deltaStr = delta >= 0 ? `+${delta}g` : `${delta}g`;
-              const barColor = over ? "bg-[var(--color-terracotta)]" : color;
+              const macroOver = ratio > 1.05;
 
               return (
                 <div key={label} className="flex items-center gap-1.5">
                   <span className="text-xs text-slate-400 dark:text-[#A0998E] w-3 shrink-0">{label}</span>
                   <div className="relative flex-1 h-1.5 rounded-full bg-[#E8E0D4] dark:bg-[#3A3A3A] overflow-hidden">
                     <div
-                      className={cn("absolute inset-y-0 left-0 rounded-full transition-all", barColor)}
-                      style={{ width: `${fillPct}%` }}
+                      className={cn("absolute inset-y-0 left-0 rounded-l-full", color)}
+                      style={{ width: `${normalWidth}%` }}
                     />
+                    {overflowWidth > 0 && (
+                      <div
+                        className="absolute inset-y-0 bg-[var(--color-terracotta)]"
+                        style={{ left: `${targetLinePct}%`, width: `${overflowWidth}%` }}
+                      />
+                    )}
                     <div
                       className="absolute inset-y-0 w-px bg-white dark:bg-[#1E1E1E] opacity-60"
                       style={{ left: `${targetLinePct}%` }}
                     />
                   </div>
                   <span className={cn(
-                    "text-[10px] tabular-nums font-data shrink-0 w-24 text-right",
-                    over ? "text-[var(--color-terracotta)]" : "text-slate-400 dark:text-[#A0998E]"
+                    "text-[10px] tabular-nums font-data shrink-0 w-28 text-right",
+                    macroOver ? "text-[var(--color-terracotta)]" : "text-slate-400 dark:text-[#A0998E]"
                   )}>
                     {Math.round(a)} / {Math.round(tgt)}g{" "}
-                    <span className={over ? "text-[var(--color-terracotta)]" : "text-slate-300 dark:text-[#5A5A5A]"}>
+                    <span className={macroOver ? "text-[var(--color-terracotta)]" : "text-slate-300 dark:text-[#5A5A5A]"}>
                       ({deltaStr})
                     </span>
                   </span>
@@ -189,7 +208,12 @@ function DailyFitCell({
   );
 }
 
-type ModalState = { dayIndex: number; mealSlot: string } | null;
+type ModalState = {
+  dayIndex: number;
+  mealSlot: string;
+  dayAssignedMacros: MacroTotals;
+  emptySlotCount: number;
+} | null;
 
 type Props = {
   planId: string;
@@ -371,6 +395,16 @@ export function WeeklyPlanEditor({
     }, 600);
   }
 
+  function openModal(dayIndex: number, slot: string) {
+    const dayCells = visibleSlots
+      .filter((s) => s !== slot)
+      .map((s) => cells.get(cellKey(dayIndex, s)))
+      .filter(Boolean) as AssignmentCell[];
+    const dayAssignedMacros = sumMacros(dayCells);
+    const emptySlotCount = visibleSlots.filter((s) => !cells.get(cellKey(dayIndex, s))).length;
+    setModal({ dayIndex, mealSlot: slot, dayAssignedMacros, emptySlotCount });
+  }
+
   const dailyMacros = Array.from({ length: DAYS_COUNT }, (_, i) => {
     const dayCells = visibleSlots
       .map((s) => cells.get(cellKey(i, s)))
@@ -387,117 +421,102 @@ export function WeeklyPlanEditor({
       }
     : null;
 
-  // Smart nudge: remaining budget hint if empty slots + > 100 kcal remaining
+  // Smart nudge: show remaining budget details when empty slots have >100 kcal
   const dailyNudges = Array.from({ length: DAYS_COUNT }, (_, i) => {
     if (!targetMacros) return null;
     const emptySlots = visibleSlots.filter((s) => !cells.get(cellKey(i, s)));
     if (emptySlots.length === 0) return null;
-    const calories = Math.round(
-      emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.calories ?? 0), 0)
-    );
+    const calories = Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.calories ?? 0), 0));
     if (calories <= 100) return null;
-    const protein = Math.round(
-      emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.protein ?? 0), 0)
-    );
-    const hasSnack = emptySlots.some((s) => s === "snack1" || s === "snack2");
-    return { calories, protein, hasSnack };
+    return {
+      calories,
+      protein: Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.protein ?? 0), 0)),
+      carbs:   Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.carbs   ?? 0), 0)),
+      fat:     Math.round(emptySlots.reduce((sum, s) => sum + (slotBudgets[s]?.fat     ?? 0), 0)),
+      count:   emptySlots.length,
+    };
   });
 
-  const modalSlotBudget: MacroTotals | null = modal
-    ? (slotBudgets[modal.mealSlot] ?? null)
+  const modalDailyTarget: MacroTotals | null = targetMacros
+    ? {
+        calories: targetMacros.calorieTarget,
+        protein:  targetMacros.proteinTarget,
+        carbs:    targetMacros.carbsTarget,
+        fat:      targetMacros.fatTarget,
+      }
     : null;
 
-  /** Renders the inline serving editor card when a cell is in edit mode */
+  /** Compact inline serving editor: title + number input + one-line macros + delete */
   function renderEditingCell(key: CellKey, cell: AssignmentCell, isRemoving: boolean) {
+    const servingsNum = parseFloat(editServings) || cell.servings;
     const editRecipe = recipes.find((r) => r.id === cell.recipeId);
-    const servingsNum = Math.min(3.0, Math.max(0.5, parseFloat(editServings) || cell.servings));
     const editMacros = editRecipe
       ? {
           calories: Math.round(editRecipe.macrosPerServing.calories * servingsNum),
           protein: Math.round(editRecipe.macrosPerServing.protein * servingsNum * 10) / 10,
-          carbs: Math.round(editRecipe.macrosPerServing.carbs * servingsNum * 10) / 10,
-          fat: Math.round(editRecipe.macrosPerServing.fat * servingsNum * 10) / 10,
+          carbs:   Math.round(editRecipe.macrosPerServing.carbs   * servingsNum * 10) / 10,
+          fat:     Math.round(editRecipe.macrosPerServing.fat     * servingsNum * 10) / 10,
         }
       : null;
 
     return (
-      <div className="rounded-lg border border-[var(--color-olive)] bg-white dark:bg-[#242424] shadow-sm">
-        <div className="relative p-2.5">
+      <div
+        className="rounded-lg border border-[var(--color-olive)] bg-white dark:bg-[#242424] shadow-sm p-2"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Row 1: title + servings input + spinner + close */}
+        <div className="flex items-center gap-1.5">
+          <p className="text-xs font-medium text-slate-800 dark:text-[#E8E2DA] flex-1 min-w-0 truncate leading-snug">
+            {cell.recipeTitle}
+          </p>
+          <Input
+            type="number"
+            min={0.5}
+            max={10}
+            step={0.25}
+            value={editServings}
+            onChange={(e) => handleServingsChange(key, cell, e.target.value)}
+            onKeyDown={(e) => {
+              if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
+            }}
+            className="w-14 h-6 text-xs px-1.5 bg-white dark:bg-[#1E1E1E]"
+          />
+          {savingKey === key && (
+            <Loader2 className="h-3 w-3 animate-spin text-[var(--color-olive)] shrink-0" />
+          )}
           <button
             onClick={(e) => { e.stopPropagation(); closeEdit(); }}
-            className="absolute top-1 right-1 rounded p-0.5 hover:bg-slate-100 dark:hover:bg-[#3A3A3A] text-slate-400 hover:text-slate-600 cursor-pointer"
+            className="rounded p-0.5 hover:bg-slate-100 dark:hover:bg-[#3A3A3A] text-slate-400 hover:text-slate-600 shrink-0"
           >
             <X className="h-3 w-3" />
           </button>
-          <p className="text-xs font-medium text-slate-800 dark:text-[#E8E2DA] leading-snug pr-4">
-            {cell.recipeTitle}
+        </div>
+        {/* Row 2: resulting macros at current servings */}
+        {editMacros && (
+          <p className="text-[10px] text-slate-400 dark:text-[#6A6460] tabular-nums font-data mt-0.5">
+            {servingsNum}× · {editMacros.calories} kcal · {editMacros.protein}g P · {editMacros.carbs}g C · {editMacros.fat}g F
           </p>
-          {savingKey === key ? (
-            <p className="text-xs text-slate-400 flex items-center gap-1 mt-0.5">
-              <Loader2 className="h-3 w-3 animate-spin" />
-              {editServings}×
-            </p>
-          ) : (
-            <p className="text-xs text-slate-400 dark:text-[#A0998E] mt-0.5">
-              {editServings}×
-            </p>
-          )}
-        </div>
-        <div
-          className="px-2.5 pb-2.5 space-y-1.5 border-t border-[var(--color-sand)]"
-          onClick={(e) => e.stopPropagation()}
+        )}
+        {/* Row 3: delete */}
+        <button
+          onClick={(e) => { e.stopPropagation(); handleRemove(key, cell.id); }}
+          disabled={isRemoving}
+          className="flex items-center gap-1 text-[10px] text-red-400 hover:text-red-600 transition-colors mt-1"
         >
-          <div className="flex items-center gap-2 pt-2">
-            <input
-              type="range"
-              min={0.5}
-              max={3.0}
-              step={0.25}
-              value={servingsNum}
-              onChange={(e) => handleServingsChange(key, cell, e.target.value)}
-              style={{ accentColor: "var(--color-olive)" }}
-              className="flex-1 cursor-pointer"
-            />
-            <Input
-              type="number"
-              min={0.5}
-              max={10}
-              step={0.25}
-              value={editServings}
-              onChange={(e) => handleServingsChange(key, cell, e.target.value)}
-              onKeyDown={(e) => {
-                if (["e", "E", "+", "-"].includes(e.key)) e.preventDefault();
-              }}
-              className="w-16 text-xs bg-white dark:bg-[#1E1E1E] h-7"
-            />
-          </div>
-          {editMacros && (
-            <p className="text-[10px] text-slate-400 dark:text-[#6A6460] tabular-nums font-data">
-              {editMacros.calories} kcal · {editMacros.protein}g P · {editMacros.carbs}g C · {editMacros.fat}g F
-            </p>
-          )}
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              handleRemove(key, cell.id);
-            }}
-            disabled={isRemoving}
-            className="flex items-center gap-1 text-[10px] text-red-400 hover:text-red-600 transition-colors mt-1"
-          >
-            {isRemoving ? <Loader2 className="h-3 w-3 animate-spin" /> : <X className="h-3 w-3" />}
-            {t("Delete", lang)}
-          </button>
-        </div>
+          {isRemoving ? <Loader2 className="h-3 w-3 animate-spin" /> : <X className="h-3 w-3" />}
+          {t("Delete", lang)}
+        </button>
       </div>
     );
   }
 
-  function renderNudge(nudge: { calories: number; protein: number; hasSnack: boolean } | null) {
+  function renderNudge(nudge: { calories: number; protein: number; carbs: number; fat: number; count: number } | null) {
     if (!nudge) return null;
-    const suggestion = nudge.hasSnack ? t("a snack", lang) : t("a meal", lang);
+    const mealLabel = nudge.count === 1 ? t("meal singular", lang) : t("meal plural", lang);
     return (
       <p className="text-[11px] italic text-[var(--color-olive)] dark:text-[#8FAB7D] mt-1">
-        {t("Remaining", lang)}: ~{nudge.calories} kcal · {nudge.protein}g P — {t("try adding", lang)} {suggestion}
+        {t("Remaining", lang)}: ~{nudge.calories} kcal · {nudge.protein}g P · {nudge.carbs}g C · {nudge.fat}g F{" "}
+        {t("across", lang)} {nudge.count} {mealLabel}
       </p>
     );
   }
@@ -560,7 +579,7 @@ export function WeeklyPlanEditor({
                         )
                       ) : (
                         <button
-                          onClick={() => setModal({ dayIndex, mealSlot: slot })}
+                          onClick={() => openModal(dayIndex, slot)}
                           className="w-full h-14 rounded-lg border border-dashed border-[var(--color-sand)] flex items-center justify-center text-slate-300 hover:text-slate-400 hover:border-slate-300 dark:hover:border-[#5A5A5A] hover:bg-slate-50 dark:hover:bg-[#2A2A2A] transition-colors"
                         >
                           <Plus className="h-4 w-4" />
@@ -664,7 +683,7 @@ export function WeeklyPlanEditor({
                         )
                       ) : (
                         <button
-                          onClick={() => setModal({ dayIndex, mealSlot: slot })}
+                          onClick={() => openModal(dayIndex, slot)}
                           className="flex-1 flex items-center gap-1.5 text-xs text-slate-400 hover:text-[var(--color-clay)] transition-colors"
                         >
                           <Plus className="h-3.5 w-3.5" />
@@ -694,7 +713,9 @@ export function WeeklyPlanEditor({
           dayIndex={modal.dayIndex}
           mealSlot={modal.mealSlot}
           recipes={recipes}
-          slotBudget={modalSlotBudget}
+          dailyTarget={modalDailyTarget}
+          dayAssignedMacros={modal.dayAssignedMacros}
+          emptySlotCount={modal.emptySlotCount}
           onAssigned={handleAssigned}
           lang={lang}
         />
