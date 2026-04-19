@@ -72,9 +72,10 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
   const router = useRouter();
   const [search, setSearch] = useState("");
   const [planFilter, setPlanFilter] = useState("all");
+  const [statusTab, setStatusTab] = useState<"active" | "archived">("active");
 
   const filtered = useMemo(() => {
-    let list = clients;
+    let list = clients.filter((c) => c.status === statusTab);
     if (search.trim()) {
       const q = search.trim().toLowerCase();
       list = list.filter((c) => c.name.toLowerCase().includes(q));
@@ -85,10 +86,35 @@ export function ClientListClient({ clients, lang }: { clients: ClientListItem[];
       );
     }
     return list;
-  }, [clients, search, planFilter]);
+  }, [clients, search, planFilter, statusTab]);
+
+  const archivedCount = useMemo(() => clients.filter((c) => c.status === "archived").length, [clients]);
 
   return (
     <div>
+      {/* Status tabs */}
+      <div className="flex items-center gap-1 mb-4 border-b border-[var(--color-sand)]">
+        {(["active", "archived"] as const).map((tab) => (
+          <button
+            key={tab}
+            onClick={() => { setStatusTab(tab); setPlanFilter("all"); setSearch(""); }}
+            className={cn(
+              "px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors",
+              statusTab === tab
+                ? "border-[var(--color-olive)] text-[var(--color-olive)]"
+                : "border-transparent text-slate-500 dark:text-[#A0998E] hover:text-slate-700 dark:hover:text-[#C0B8B0]"
+            )}
+          >
+            {t(tab === "active" ? "Active" : "Archived", lang)}
+            {tab === "archived" && archivedCount > 0 && (
+              <span className="ml-1.5 text-xs bg-slate-100 dark:bg-[#2A2A2A] text-slate-400 dark:text-[#6A6460] rounded-full px-1.5 py-0.5">
+                {archivedCount}
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+
       {/* Toolbar */}
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center mb-4">
         <div className="relative flex-1 max-w-sm">
