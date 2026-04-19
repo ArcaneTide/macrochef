@@ -252,6 +252,7 @@ const dict = {
   "ingredient plural":       { en: "ingredients",             el: "υλικά" },
   "serving singular":        { en: "serving",                 el: "μερίδα" },
   "serving plural":          { en: "servings",                el: "μερίδες" },
+  "piece":                   { en: "piece",                   el: "τεμ." },
   "Recent activity empty hint": { en: "No activity yet",      el: "Καμία δραστηριότητα ακόμη" },
   "Overview":                { en: "Overview",                el: "Επισκόπηση" },
   "Workspace":               { en: "Workspace",               el: "Χώρος Εργασίας" },
