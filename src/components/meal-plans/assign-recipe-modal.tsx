@@ -132,7 +132,7 @@ export function AssignRecipeModal({
 
   function handleTapRecipe(recipe: RecipeOption) {
     if (isPending) return;
-    const s = suggestedMap.get(recipe.id) ?? 1;
+    const s = 1;
     setAssigningId(recipe.id);
     setError(null);
     startTransition(async () => {
@@ -165,12 +165,11 @@ export function AssignRecipeModal({
   }
 
   function renderRecipeButton(recipe: RecipeOption) {
-    const suggested = suggestedMap.get(recipe.id) ?? 1;
     const isAssigning = assigningId === recipe.id;
-    const kcal  = Math.round(recipe.macrosPerServing.calories * suggested);
-    const prot  = (recipe.macrosPerServing.protein * suggested).toFixed(1);
-    const carbs = (recipe.macrosPerServing.carbs   * suggested).toFixed(1);
-    const fat   = (recipe.macrosPerServing.fat     * suggested).toFixed(1);
+    const kcal  = Math.round(recipe.macrosPerServing.calories);
+    const prot  = recipe.macrosPerServing.protein.toFixed(1);
+    const carbs = recipe.macrosPerServing.carbs.toFixed(1);
+    const fat   = recipe.macrosPerServing.fat.toFixed(1);
     return (
       <button
         key={recipe.id}

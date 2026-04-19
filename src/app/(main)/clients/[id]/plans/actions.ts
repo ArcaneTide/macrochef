@@ -343,3 +343,48 @@ export async function updateMealServings(
     return { success: false, error: "Failed to update servings" };
   }
 }
+
+type AutoBalanceResult =
+  | { success: true; updates: Array<{ assignmentId: string; servings: number; macrosPerServing: MacroTotals }> }
+  | { success: false; error: string };
+
+export async function autoBalanceMeals(
+  planId: string,
+  updates: Array<{ assignmentId: string; servings: number }>
+): Promise<AutoBalanceResult> {
+  try {
+    const coachId = await getAuthedCoachId();
+    const clientId = await assertPlanOwnership(planId, coachId);
+
+    const results = await db.$transaction(
+      updates.map(({ assignmentId, servings }) =>
+        db.mealAssignment.update({
+          where: { id: assignmentId },
+          data: { servings },
+          include: {
+            recipe: { include: { ingredients: { include: { ingredient: true } } } },
+          },
+        })
+      )
+    );
+
+    revalidatePath(`/clients/${clientId}/plans/${planId}`);
+    return {
+      success: true,
+      updates: results.map((a) => ({
+        assignmentId: a.id,
+        servings: a.servings,
+        macrosPerServing: calcRecipeMacrosPerServing(
+          a.recipe.ingredients.map((ri) => ({
+            ingredient: ri.ingredient,
+            quantityGrams: ri.quantityGrams,
+          })),
+          a.recipe.servings
+        ),
+      })),
+    };
+  } catch (err) {
+    console.error("autoBalanceMeals:", err);
+    return { success: false, error: "Failed to balance meals" };
+  }
+}

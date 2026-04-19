@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useTransition, useCallback, useRef } from "react";
-import { Plus, X, Loader2, ChevronDown } from "lucide-react";
+import { useState, useTransition, useRef } from "react";
+import { Plus, X, Loader2, ChevronDown, SlidersHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { type MacroTotals } from "@/lib/macros";
-import { computeSlotBudgets, type SlotBudgets } from "@/lib/slot-budget";
-import { removeMeal, updateMealServings } from "@/app/(main)/clients/[id]/plans/actions";
+import { computeSlotBudgets, autoBalanceDay, type SlotBudgets } from "@/lib/slot-budget";
+import { removeMeal, updateMealServings, autoBalanceMeals } from "@/app/(main)/clients/[id]/plans/actions";
 import {
   AssignRecipeModal,
   type RecipeOption,
@@ -53,18 +53,6 @@ type DailyTarget = {
   fatTarget: number;
 };
 
-/** Weighted fit score: cal 40%, protein 30%, carbs 15%, fat 15% */
-function calcWeightedFit(actual: MacroTotals, target: DailyTarget): number {
-  const dev = (a: number, tgt: number) =>
-    tgt > 0 ? Math.abs(a - tgt) / tgt : a > 0 ? 1.0 : 0;
-  const score =
-    0.4  * dev(actual.calories, target.calorieTarget) +
-    0.3  * dev(actual.protein,  target.proteinTarget) +
-    0.15 * dev(actual.carbs,    target.carbsTarget)   +
-    0.15 * dev(actual.fat,      target.fatTarget);
-  return Math.max(0, Math.round((1 - score) * 100));
-}
-
 /** Overflow-aware fit bar + per-macro expand on click. */
 function DailyFitCell({
   actual,
@@ -85,24 +73,26 @@ function DailyFitCell({
     );
   }
 
-  const fitPct = calcWeightedFit(actual, target);
   const calRatio = target.calorieTarget > 0 ? actual.calories / target.calorieTarget : 0;
+  const calFitPct = Math.round(calRatio * 100);
+  const isGreen = calFitPct >= 90 && calFitPct <= 105;
+  const isAmber = (calFitPct >= 80 && calFitPct < 90) || (calFitPct > 105 && calFitPct <= 110);
   const calFillPct = Math.min(calRatio / MAX_DISPLAY_RATIO, 1) * 100;
   const targetLinePct = (1 / MAX_DISPLAY_RATIO) * 100; // 66.7%
   const calNormalWidth = Math.min(calFillPct, targetLinePct);
   const calOverflowWidth = Math.max(0, calFillPct - targetLinePct);
 
   const isOver = calRatio > 1.05;
-  const baseBarColor = fitPct >= 90
+  const baseBarColor = isGreen
     ? "bg-[#5A6B4F]"
-    : fitPct >= 80
+    : isAmber
     ? "bg-[var(--color-clay)]"
     : "bg-red-400";
   const textColor = isOver
     ? "text-[var(--color-terracotta)]"
-    : fitPct >= 90
+    : isGreen
     ? "text-[#5A6B4F]"
-    : fitPct >= 80
+    : isAmber
     ? "text-[var(--color-clay)]"
     : "text-red-500";
 
@@ -148,7 +138,7 @@ function DailyFitCell({
             />
           </div>
           <span className={cn("text-[10px] tabular-nums font-data shrink-0", textColor)}>
-            {fitPct}%
+            {calFitPct}%
           </span>
           <ChevronDown
             className={cn(
@@ -296,6 +286,9 @@ export function WeeklyPlanEditor({
   const [, startSaveTransition] = useTransition();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  const [balancingDay, setBalancingDay] = useState<number | null>(null);
+  const [, startBalanceTransition] = useTransition();
+
   const dayLabels = Array.from({ length: DAYS_COUNT }, (_, i) => {
     const d = new Date(startDate + "T00:00:00");
     d.setDate(d.getDate() + i);
@@ -308,26 +301,88 @@ export function WeeklyPlanEditor({
     return d.toLocaleDateString("en-US", { month: "short", day: "numeric" });
   });
 
-  const handleAssigned = useCallback((assignment: AssignmentResult) => {
+  function handleAssigned(assignment: AssignmentResult) {
     const key = cellKey(assignment.dayIndex, assignment.mealSlot);
     const s = assignment.servings;
-    setCells((prev) => {
-      const next = new Map(prev);
-      next.set(key, {
-        id: assignment.id,
-        recipeId: assignment.recipe.id,
-        recipeTitle: assignment.recipe.title,
-        servings: s,
-        macros: {
-          calories: Math.round(assignment.recipe.macrosPerServing.calories * s),
-          protein: Math.round(assignment.recipe.macrosPerServing.protein * s * 10) / 10,
-          carbs: Math.round(assignment.recipe.macrosPerServing.carbs * s * 10) / 10,
-          fat: Math.round(assignment.recipe.macrosPerServing.fat * s * 10) / 10,
-        },
-      });
-      return next;
+    const newCell: AssignmentCell = {
+      id: assignment.id,
+      recipeId: assignment.recipe.id,
+      recipeTitle: assignment.recipe.title,
+      servings: s,
+      macros: {
+        calories: Math.round(assignment.recipe.macrosPerServing.calories * s),
+        protein: Math.round(assignment.recipe.macrosPerServing.protein * s * 10) / 10,
+        carbs: Math.round(assignment.recipe.macrosPerServing.carbs * s * 10) / 10,
+        fat: Math.round(assignment.recipe.macrosPerServing.fat * s * 10) / 10,
+      },
+    };
+    const updatedMap = new Map(cells);
+    updatedMap.set(key, newCell);
+    setCells(updatedMap);
+
+    const dayMealCount = visibleSlots.filter((slot) => updatedMap.get(cellKey(assignment.dayIndex, slot))).length;
+    if (targetMacros && dayMealCount >= 2) {
+      runAutoBalance(assignment.dayIndex, updatedMap);
+    }
+  }
+
+  function runAutoBalance(dayIndex: number, currentCells: Map<CellKey, AssignmentCell>) {
+    if (!targetMacros) return;
+    const recipeMap = new Map(recipes.map((r) => [r.id, r]));
+    const dayCells: Array<{ slot: string; cell: AssignmentCell }> = visibleSlots
+      .map((s) => ({ slot: s, cell: currentCells.get(cellKey(dayIndex, s)) }))
+      .filter((x) => x.cell != null)
+      .map((x) => ({ slot: x.slot, cell: x.cell! }));
+    if (dayCells.length < 2) return;
+
+    const recipeInputs = dayCells.map(({ cell }) => {
+      const recipe = recipeMap.get(cell.recipeId);
+      return { macrosPerServing: recipe?.macrosPerServing ?? { calories: 0, protein: 0, carbs: 0, fat: 0 } };
     });
-  }, []);
+    const target: MacroTotals = {
+      calories: targetMacros.calorieTarget,
+      protein: targetMacros.proteinTarget,
+      carbs: targetMacros.carbsTarget,
+      fat: targetMacros.fatTarget,
+    };
+    const newServings = autoBalanceDay(recipeInputs, target);
+    const updates = dayCells.map(({ cell }, idx) => ({
+      assignmentId: cell.id,
+      servings: newServings[idx],
+    }));
+
+    setBalancingDay(dayIndex);
+    startBalanceTransition(async () => {
+      try {
+        const result = await autoBalanceMeals(planId, updates);
+        if (result.success) {
+          setCells((prev) => {
+            const next = new Map(prev);
+            for (const update of result.updates) {
+              for (const [k, c] of next.entries()) {
+                if (c.id === update.assignmentId) {
+                  next.set(k, {
+                    ...c,
+                    servings: update.servings,
+                    macros: {
+                      calories: Math.round(update.macrosPerServing.calories * update.servings),
+                      protein: Math.round(update.macrosPerServing.protein * update.servings * 10) / 10,
+                      carbs: Math.round(update.macrosPerServing.carbs * update.servings * 10) / 10,
+                      fat: Math.round(update.macrosPerServing.fat * update.servings * 10) / 10,
+                    },
+                  });
+                  break;
+                }
+              }
+            }
+            return next;
+          });
+        }
+      } finally {
+        setBalancingDay(null);
+      }
+    });
+  }
 
   function handleRemove(key: CellKey, assignmentId: string) {
     if (editingKey === key) setEditingKey(null);
@@ -421,26 +476,27 @@ export function WeeklyPlanEditor({
       }
     : null;
 
-  // Smart nudge: compare assigned to daily target; show when empty slots remain and >100 kcal needed
+  // Smart nudge: show when calorie fit is outside green range (90–105%) or a macro is significantly over
   const dailyNudges = Array.from({ length: DAYS_COUNT }, (_, i) => {
     if (!targetMacros) return null;
-    const emptySlots = visibleSlots.filter((s) => !cells.get(cellKey(i, s)));
-    if (emptySlots.length === 0) return null;
     const assigned = dailyMacros[i];
-    const calories = Math.round(targetMacros.calorieTarget - assigned.calories);
-    if (calories <= 100) return null;
+    if (assigned.calories === 0) return null;
+    const calRatio = targetMacros.calorieTarget > 0 ? assigned.calories / targetMacros.calorieTarget : 0;
+    const isGreenCal = calRatio >= 0.9 && calRatio <= 1.05;
+    const hasOverage =
+      (targetMacros.carbsTarget > 0 && assigned.carbs / targetMacros.carbsTarget > 1.15) ||
+      (targetMacros.fatTarget > 0 && assigned.fat / targetMacros.fatTarget > 1.15) ||
+      (targetMacros.proteinTarget > 0 && assigned.protein / targetMacros.proteinTarget > 1.15);
+    if (isGreenCal && !hasOverage) return null;
     return {
-      calories,
-      protein: Math.round((targetMacros.proteinTarget - assigned.protein) * 10) / 10,
-      carbs:   Math.round((targetMacros.carbsTarget   - assigned.carbs  ) * 10) / 10,
-      fat:     Math.round((targetMacros.fatTarget      - assigned.fat    ) * 10) / 10,
-      count:   emptySlots.length,
+      actual: assigned,
       target: {
         calories: targetMacros.calorieTarget,
         protein:  targetMacros.proteinTarget,
         carbs:    targetMacros.carbsTarget,
         fat:      targetMacros.fatTarget,
       },
+      calRatio,
     };
   });
 
@@ -518,40 +574,44 @@ export function WeeklyPlanEditor({
   }
 
   function renderNudge(nudge: {
-    calories: number; protein: number; carbs: number; fat: number;
-    count: number; target: { calories: number; protein: number; carbs: number; fat: number };
+    actual: MacroTotals;
+    target: { calories: number; protein: number; carbs: number; fat: number };
+    calRatio: number;
   } | null) {
     if (!nudge) return null;
-    const { calories, protein, carbs, fat, count, target } = nudge;
+    const { actual, target, calRatio } = nudge;
     const hints: string[] = [];
 
-    // Overflow hints: a macro already exceeds daily target
-    if (carbs < -10 && hints.length < 2) {
-      hints.push(t("hint carbs over", lang).replace("{n}", String(Math.round(-carbs))));
-    }
-    if (fat < -10 && hints.length < 2) {
-      hints.push(t("hint fat over", lang).replace("{n}", String(Math.round(-fat))));
-    }
-    if (protein < -10 && hints.length < 2) {
-      hints.push(t("hint protein over", lang).replace("{n}", String(Math.round(-protein))));
+    if (calRatio < 0.9) {
+      hints.push(
+        t("hint day light", lang)
+          .replace("{actual}", String(Math.round(actual.calories)))
+          .replace("{target}", String(target.calories))
+      );
     }
 
-    // Deficit hints: which macro is most needed relative to target
-    if (hints.length < 2) {
-      const protPct  = target.protein > 0 ? protein  / target.protein  : 0;
-      const carbsPct = target.carbs   > 0 ? carbs    / target.carbs    : 0;
-      if (protPct >= carbsPct && protPct > 0.2) {
-        hints.push(t("hint protein low", lang));
-      } else if (carbsPct > protPct && carbsPct > 0.2) {
-        hints.push(t("hint carbs low", lang));
-      } else if (calories > 0) {
-        hints.push(count === 1 ? t("hint light snack", lang) : t("hint light meal", lang));
-      }
+    const carbRatio = target.carbs > 0 ? actual.carbs / target.carbs : 0;
+    const fatRatio = target.fat > 0 ? actual.fat / target.fat : 0;
+    const protRatio = target.protein > 0 ? actual.protein / target.protein : 0;
+
+    if (carbRatio > 1.15 && hints.length < 2) {
+      hints.push(t("hint carbs over", lang).replace("{n}", String(Math.round(actual.carbs - target.carbs))));
+    }
+    if (fatRatio > 1.15 && hints.length < 2) {
+      hints.push(t("hint fat over", lang).replace("{n}", String(Math.round(actual.fat - target.fat))));
+    }
+    if (protRatio > 1.15 && hints.length < 2) {
+      hints.push(t("hint protein over", lang).replace("{n}", String(Math.round(actual.protein - target.protein))));
+    }
+    if (protRatio < 0.75 && calRatio >= 0.9 && hints.length < 2) {
+      hints.push(t("hint protein low", lang));
+    }
+    if (carbRatio < 0.75 && calRatio >= 0.9 && hints.length < 2) {
+      hints.push(t("hint carbs low", lang));
     }
 
     if (hints.length === 0) return null;
 
-    const mealLabel = count === 1 ? t("meal singular", lang) : t("meal plural", lang);
     return (
       <div className="mt-1.5">
         {hints.map((h, idx) => (
@@ -559,10 +619,6 @@ export function WeeklyPlanEditor({
             {h}
           </p>
         ))}
-        <p className="text-[10px] italic text-slate-400 dark:text-[#6A6460] tabular-nums mt-0.5">
-          {t("Remaining", lang)}: ~{Math.round(calories)} kcal · {protein}g P · {carbs}g C · {fat}g F{" "}
-          {t("across", lang)} {count} {mealLabel}
-        </p>
       </div>
     );
   }
@@ -642,12 +698,30 @@ export function WeeklyPlanEditor({
               <td className="p-2 text-xs font-medium text-slate-500 dark:text-[#A0998E] uppercase tracking-wide align-top">
                 {t("Daily Total", lang)}
               </td>
-              {dailyMacros.map((m, i) => (
-                <td key={i} className="p-2 align-top">
-                  <DailyFitCell actual={m} target={dailyTarget} lang={lang} />
-                  {renderNudge(dailyNudges[i])}
-                </td>
-              ))}
+              {dailyMacros.map((m, i) => {
+                const dayCellCount = visibleSlots.filter((s) => cells.get(cellKey(i, s))).length;
+                const showBalance = targetMacros && dayCellCount >= 2;
+                return (
+                  <td key={i} className="p-2 align-top">
+                    <DailyFitCell actual={m} target={dailyTarget} lang={lang} />
+                    {renderNudge(dailyNudges[i])}
+                    {showBalance && (
+                      <button
+                        onClick={() => runAutoBalance(i, cells)}
+                        disabled={balancingDay === i}
+                        className="mt-1.5 flex items-center gap-1 text-[11px] text-[var(--color-olive)] dark:text-[#8FAB7D] hover:opacity-80 transition-opacity disabled:opacity-50"
+                      >
+                        {balancingDay === i ? (
+                          <Loader2 className="h-3 w-3 animate-spin" />
+                        ) : (
+                          <SlidersHorizontal className="h-3 w-3" />
+                        )}
+                        {balancingDay === i ? t("Balancing", lang) : t("Auto-balance", lang)}
+                      </button>
+                    )}
+                  </td>
+                );
+              })}
             </tr>
           </tbody>
         </table>
@@ -655,13 +729,16 @@ export function WeeklyPlanEditor({
 
       {/* Mobile: day cards */}
       <div className="lg:hidden space-y-6">
-        {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => (
+        {Array.from({ length: DAYS_COUNT }, (_, dayIndex) => {
+          const dayCellCount = visibleSlots.filter((s) => cells.get(cellKey(dayIndex, s))).length;
+          const showBalance = targetMacros && dayCellCount >= 2;
+          return (
           <div
             key={dayIndex}
             className="rounded-xl border border-[var(--color-sand)] bg-white dark:bg-[#242424] overflow-hidden shadow-sm"
           >
             <div className="px-4 py-3 bg-slate-50 dark:bg-[#1E1E1E] border-b border-[var(--color-sand)]">
-              <div className="flex items-baseline justify-between mb-2">
+              <div className="flex items-center justify-between mb-2">
                 <div>
                   <span className="font-semibold text-slate-800 dark:text-[#F5F1EB]">
                     {dayLabels[dayIndex]}
@@ -670,9 +747,20 @@ export function WeeklyPlanEditor({
                     {dayDates[dayIndex]}
                   </span>
                 </div>
-                <span className="text-sm tabular-nums font-data font-medium text-slate-600 dark:text-[#A0998E]">
-                  {Math.round(dailyMacros[dayIndex].calories)} kcal
-                </span>
+                {showBalance && (
+                  <button
+                    onClick={() => runAutoBalance(dayIndex, cells)}
+                    disabled={balancingDay === dayIndex}
+                    className="flex items-center gap-1 text-[11px] text-[var(--color-olive)] dark:text-[#8FAB7D] hover:opacity-80 transition-opacity disabled:opacity-50"
+                  >
+                    {balancingDay === dayIndex ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <SlidersHorizontal className="h-3 w-3" />
+                    )}
+                    {balancingDay === dayIndex ? t("Balancing", lang) : t("Auto-balance", lang)}
+                  </button>
+                )}
               </div>
               <DailyFitCell
                 actual={dailyMacros[dayIndex]}
@@ -748,7 +836,8 @@ export function WeeklyPlanEditor({
               </div>
             )}
           </div>
-        ))}
+          );
+        })}
       </div>
 
       {modal && (

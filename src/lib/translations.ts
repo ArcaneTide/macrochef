@@ -117,6 +117,9 @@ const dict = {
   "hint carbs low":          { en: "Needs more carbs — try rice, pasta, or oats", el: "Χρειάζεται υδατάνθρακες — ρύζι, ζυμαρικά ή βρώμη" },
   "hint light snack":        { en: "A bit light — try adding a snack", el: "Λίγο ελαφρύ — πρόσθεσε σνακ" },
   "hint light meal":         { en: "A bit light — try adding a meal", el: "Λίγο ελαφρύ — πρόσθεσε γεύμα" },
+  "hint day light":          { en: "Day is light ({actual}/{target} kcal) — increase portions or add a recipe", el: "Η ημέρα είναι ελαφριά ({actual}/{target} kcal) — αύξησε μερίδες ή πρόσθεσε συνταγή" },
+  "Auto-balance":            { en: "Auto-balance",                 el: "Αυτο-ισορρόπηση" },
+  "Balancing":               { en: "Balancing…",                  el: "Ισορρόπηση…" },
 
   // ── Dashboard greetings ───────────────────────────────────
   "Welcome":                 { en: "Welcome",                 el: "Καλώς ήρθες" },
