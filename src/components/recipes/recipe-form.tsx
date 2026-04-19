@@ -177,7 +177,7 @@ function UnitToggle({
               : "bg-slate-100 dark:bg-[#3A3A3A] text-slate-500 dark:text-[#A0998E] hover:bg-slate-200 dark:hover:bg-[#4A4A4A]"
           )}
         >
-          {u === "pinch" ? t("pinch", lang) : u}
+          {u === "pinch" ? t("pinch", lang) : u === "piece" ? t("piece", lang) : u}
         </button>
       ))}
     </div>
