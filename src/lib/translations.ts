@@ -183,6 +183,10 @@ const dict = {
   "Reset link invalid":      { en: "This reset link is invalid or missing.", el: "Ο σύνδεσμος επαναφοράς δεν είναι έγκυρος." },
   "Request a new link":      { en: "Request a new link",      el: "Αίτηση νέου συνδέσμου" },
   "Enter your email for reset":{ en: "Enter your email and we'll send you a link to reset your password.", el: "Εισάγετε το email σας για να λάβετε σύνδεσμο επαναφοράς." },
+  "Every plate tells a number.":{ en: "Every plate tells a number.", el: "Every plate tells a number." },
+  "auth bullet recipes":       { en: "Build macro-accurate recipes", el: "Build macro-accurate recipes" },
+  "auth bullet portions":      { en: "Auto-scale portions per client", el: "Auto-scale portions per client" },
+  "auth bullet share":         { en: "Share plans directly with clients", el: "Share plans directly with clients" },
 
   // ── Recipe form ───────────────────────────────────────────
   "Edit Recipe":             { en: "Edit Recipe",             el: "Επεξεργασία Συνταγής" },
