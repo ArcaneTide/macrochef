@@ -199,7 +199,7 @@ const SCREENS = [
   {
     key: "pdf",
     component: <ScreenPdf />,
-    caption: <>Export a branded, print-ready PDF in one click.</>,
+    caption: <><strong>Meal plan delivery:</strong> Export a branded PDF or share directly via the app. Clients access their plan anytime from their own page.</>,
   },
 ];
 

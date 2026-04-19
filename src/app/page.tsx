@@ -256,7 +256,7 @@ export default async function LandingPage() {
                 </svg>
               </div>
               <h3>Share meal plan</h3>
-              <p>Export a beautiful branded PDF your clients will love. Professional, clean and ready to print or share.</p>
+              <p>Export a beautiful branded PDF or share plans directly via the app. Clients access their plan and history anytime from their own dedicated page.</p>
             </div>
           </div>
         </div>
@@ -295,7 +295,7 @@ export default async function LandingPage() {
               <div className="lp-step-number">4</div>
               <div className="lp-step-content">
                 <h3>Share your meal plan</h3>
-                <p>Send a clean, branded PDF. Professional enough to print, easy enough to share.</p>
+                <p>Send a clean, branded PDF or share directly via the app. Clients access their plan and history anytime from their own page.</p>
               </div>
             </div>
           </div>
