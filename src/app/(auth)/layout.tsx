@@ -15,15 +15,15 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
         <div className="flex flex-col items-center gap-4">
           <div className="flex items-center gap-3">
             <svg viewBox="0 0 50 50" fill="none" className="h-12 w-12">
-              <circle cx="25" cy="25" r="22" stroke="white" strokeWidth="1.8" opacity="0.2" fill="none"/>
-              <circle cx="25" cy="25" r="16" stroke="white" strokeWidth="0.8" opacity="0.1" fill="none"/>
-              <path d="M25 9 A16 16 0 0 1 39.5 19.5 L25 25 Z" fill="white" opacity="0.7"/>
-              <path d="M39.5 19.5 A16 16 0 0 1 30 40 L25 25 Z" fill="white" opacity="0.5"/>
-              <path d="M30 40 A16 16 0 0 1 10.5 20 L25 25 Z" fill="white" opacity="0.6"/>
-              <path d="M10.5 20 A16 16 0 0 1 25 9 L25 25 Z" fill="white" opacity="0.35"/>
-              <circle cx="25" cy="25" r="4" fill="white" opacity="0.9"/>
+              <circle cx="25" cy="25" r="22" stroke="#2C2C2C" strokeWidth="1.8" opacity="0.15" fill="none"/>
+              <circle cx="25" cy="25" r="16" stroke="#2C2C2C" strokeWidth="0.8" opacity="0.08" fill="none"/>
+              <path d="M25 9 A16 16 0 0 1 39.5 19.5 L25 25 Z" fill="#7A8B6F" opacity="0.8"/>
+              <path d="M39.5 19.5 A16 16 0 0 1 30 40 L25 25 Z" fill="#B8907A" opacity="0.8"/>
+              <path d="M30 40 A16 16 0 0 1 10.5 20 L25 25 Z" fill="#C4724E" opacity="0.8"/>
+              <path d="M10.5 20 A16 16 0 0 1 25 9 L25 25 Z" fill="#C4B9A8" opacity="0.6"/>
+              <circle cx="25" cy="25" r="4" fill="#FDFBF8"/>
             </svg>
-            <span className="font-serif text-3xl text-white">MacroΠie</span>
+            <span className="font-serif text-3xl text-white">Macro<span style={{ color: "#C4724E" }}>Πie</span></span>
           </div>
 
           <p className="font-tagline italic text-base text-white/80 mt-1">
