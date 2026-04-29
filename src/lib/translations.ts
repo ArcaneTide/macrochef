@@ -204,8 +204,10 @@ const dict = {
   "Low":                              { en: "Low",                               el: "Λίγος" },
   "Medium":                           { en: "Medium",                            el: "Μέτριος" },
   "High":                             { en: "High",                              el: "Πολύς" },
-  "Comma-separated":                  { en: "Comma-separated, e.g. fish, mushrooms", el: "Χωρισμένα με κόμμα, π.χ. ψάρι, μανιτάρια" },
-  "e.g. omnivore, vegetarian, vegan": { en: "e.g. omnivore, vegetarian, vegan",  el: "π.χ. παμφάγος, χορτοφάγος, vegan" },
+  "Comma-separated excluded":         { en: "Comma-separated, e.g. fish, mushrooms", el: "Χωρισμένα με κόμμα, π.χ. ψάρι, μανιτάρια" },
+  "Comma-separated preferred":        { en: "Comma-separated, e.g. chicken, oats",    el: "Χωρισμένα με κόμμα, π.χ. κοτόπουλο, βρώμη" },
+  "e.g. omnivore, vegetarian, vegan": { en: "e.g. omnivore, vegetarian, vegan",        el: "π.χ. παμφάγος, χορτοφάγος, vegan" },
+  "e.g. 4":                           { en: "e.g. 4",                                  el: "π.χ. 4" },
   "Yes":                              { en: "Yes",                               el: "Ναι" },
 
   // ── Recipe form ───────────────────────────────────────────

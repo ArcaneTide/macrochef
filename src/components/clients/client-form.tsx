@@ -172,11 +172,11 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         {/* Excluded / preferred foods */}
         <div className="space-y-1.5">
           <Label htmlFor="excludedFoods">{t("Excluded foods", lang)}</Label>
-          <Textarea id="excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+          <Textarea id="excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="preferredFoods">{t("Preferred foods", lang)}</Label>
-          <Textarea id="preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+          <Textarea id="preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} />
         </div>
 
         {/* Training row */}
@@ -193,7 +193,7 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
           </div>
           <div className="space-y-1.5">
             <Label htmlFor="trainingDays">{t("Training days/week", lang)}</Label>
-            <Input id="trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder="0–7" />
+            <Input id="trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder={t("e.g. 4", lang)} />
           </div>
         </div>
 
@@ -320,11 +320,11 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="edit-excludedFoods">{t("Excluded foods", lang)}</Label>
-        <Textarea id="edit-excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+        <Textarea id="edit-excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="edit-preferredFoods">{t("Preferred foods", lang)}</Label>
-        <Textarea id="edit-preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+        <Textarea id="edit-preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -340,7 +340,7 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="edit-trainingDays">{t("Training days/week", lang)}</Label>
-          <Input id="edit-trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder="0–7" />
+          <Input id="edit-trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder={t("e.g. 4", lang)} />
         </div>
       </div>
 
