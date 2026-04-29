@@ -2,13 +2,14 @@
 
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { createClient, updateClient } from "@/app/(main)/clients/actions";
 import { t, type Lang } from "@/lib/translations";
+import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────
 
@@ -17,7 +18,19 @@ export type ClientInitialData = {
   name: string;
   email: string | null;
   notes: string | null;
+  dietType?: string | null;
+  excludedFoods?: string | null;
+  preferredFoods?: string | null;
+  trainingTime?: string | null;
+  trainingDays?: number | null;
+  cookingTime?: string | null;
+  mealPrepFriendly?: boolean | null;
 };
+
+// ─── Shared select style ──────────────────────────────────
+
+const selectClassName =
+  "flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 text-slate-900 dark:text-[#F5F1EB] dark:bg-[#1E1E1E] dark:border-[#3A3A3A]";
 
 // ─── Create Form (with initial target profile) ────────────
 
@@ -30,6 +43,15 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [notes, setNotes] = useState("");
+
+  // Preference fields
+  const [dietType, setDietType] = useState("");
+  const [excludedFoods, setExcludedFoods] = useState("");
+  const [preferredFoods, setPreferredFoods] = useState("");
+  const [trainingTime, setTrainingTime] = useState("");
+  const [trainingDays, setTrainingDays] = useState("");
+  const [cookingTime, setCookingTime] = useState("");
+  const [mealPrepFriendly, setMealPrepFriendly] = useState(false);
 
   // Profile fields
   const [label, setLabel] = useState("");
@@ -46,7 +68,18 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
     startTransition(async () => {
       try {
         const result = await createClient(
-          { name: name.trim(), email: email.trim() || "", notes: notes.trim() || "" },
+          {
+            name: name.trim(),
+            email: email.trim() || "",
+            notes: notes.trim() || "",
+            dietType: dietType || undefined,
+            excludedFoods: excludedFoods || undefined,
+            preferredFoods: preferredFoods || undefined,
+            trainingTime: (trainingTime as "morning" | "afternoon" | "evening" | "none") || undefined,
+            trainingDays: trainingDays !== "" ? Number(trainingDays) : undefined,
+            cookingTime: (cookingTime as "low" | "medium" | "high") || undefined,
+            mealPrepFriendly: mealPrepFriendly || undefined,
+          },
           {
             label: label.trim() || undefined,
             calorieTarget: Number(calorieTarget),
@@ -122,6 +155,80 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         </div>
       </div>
 
+      {/* Preferences */}
+      <div className="rounded-2xl border border-[#E8E0D4] dark:border-[#3A3A3A] bg-white dark:bg-[#242424] p-6 shadow space-y-5">
+        <div>
+          <h2 className="text-sm font-semibold text-slate-900 dark:text-[#F5F1EB] uppercase tracking-wide">
+            {t("Preferences", lang)} <span className="text-slate-400 dark:text-[#6A6460] font-normal normal-case text-xs">(optional)</span>
+          </h2>
+        </div>
+
+        {/* Diet */}
+        <div className="space-y-1.5">
+          <Label htmlFor="dietType">{t("Diet", lang)}</Label>
+          <Input id="dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} />
+        </div>
+
+        {/* Excluded / preferred foods */}
+        <div className="space-y-1.5">
+          <Label htmlFor="excludedFoods">{t("Excluded foods", lang)}</Label>
+          <Textarea id="excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="preferredFoods">{t("Preferred foods", lang)}</Label>
+          <Textarea id="preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+        </div>
+
+        {/* Training row */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="space-y-1.5">
+            <Label htmlFor="trainingTime">{t("Training time", lang)}</Label>
+            <select id="trainingTime" value={trainingTime} onChange={(e) => setTrainingTime(e.target.value)} className={selectClassName}>
+              <option value="">—</option>
+              <option value="morning">{t("Morning", lang)}</option>
+              <option value="afternoon">{t("Afternoon", lang)}</option>
+              <option value="evening">{t("Evening", lang)}</option>
+              <option value="none">{t("None", lang)}</option>
+            </select>
+          </div>
+          <div className="space-y-1.5">
+            <Label htmlFor="trainingDays">{t("Training days/week", lang)}</Label>
+            <Input id="trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder="0–7" />
+          </div>
+        </div>
+
+        {/* Cooking row */}
+        <div className="grid grid-cols-2 gap-4 items-end">
+          <div className="space-y-1.5">
+            <Label htmlFor="cookingTime">{t("Cooking time available", lang)}</Label>
+            <select id="cookingTime" value={cookingTime} onChange={(e) => setCookingTime(e.target.value)} className={selectClassName}>
+              <option value="">—</option>
+              <option value="low">{t("Low", lang)}</option>
+              <option value="medium">{t("Medium", lang)}</option>
+              <option value="high">{t("High", lang)}</option>
+            </select>
+          </div>
+          <div className="flex items-center gap-2.5 pb-1">
+            <button
+              type="button"
+              onClick={() => setMealPrepFriendly((v) => !v)}
+              className={cn(
+                "h-5 w-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
+                mealPrepFriendly
+                  ? "bg-[var(--color-olive)] border-[var(--color-olive)] text-white"
+                  : "border-slate-300 dark:border-[#4A4A4A] bg-white dark:bg-[#1E1E1E]"
+              )}
+              aria-label={t("Prefers batch-cookable recipes", lang)}
+            >
+              {mealPrepFriendly && <Check className="h-3 w-3" />}
+            </button>
+            <span className="text-sm text-slate-700 dark:text-[#D4CEC7] leading-tight">
+              {t("Prefers batch-cookable recipes", lang)}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {error && (
         <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           <AlertCircle className="h-4 w-4 shrink-0" />
@@ -152,6 +259,15 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
   const [email, setEmail] = useState(initialData.email ?? "");
   const [notes, setNotes] = useState(initialData.notes ?? "");
 
+  // Preference fields
+  const [dietType, setDietType] = useState(initialData.dietType ?? "");
+  const [excludedFoods, setExcludedFoods] = useState(initialData.excludedFoods ?? "");
+  const [preferredFoods, setPreferredFoods] = useState(initialData.preferredFoods ?? "");
+  const [trainingTime, setTrainingTime] = useState(initialData.trainingTime ?? "");
+  const [trainingDays, setTrainingDays] = useState(initialData.trainingDays != null ? String(initialData.trainingDays) : "");
+  const [cookingTime, setCookingTime] = useState(initialData.cookingTime ?? "");
+  const [mealPrepFriendly, setMealPrepFriendly] = useState(initialData.mealPrepFriendly ?? false);
+
   function handleSubmit() {
     if (!name.trim()) { setError("Name is required."); return; }
     setError(null);
@@ -161,6 +277,13 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
           name: name.trim(),
           email: email.trim() || "",
           notes: notes.trim() || "",
+          dietType: dietType || undefined,
+          excludedFoods: excludedFoods || undefined,
+          preferredFoods: preferredFoods || undefined,
+          trainingTime: (trainingTime as "morning" | "afternoon" | "evening" | "none") || undefined,
+          trainingDays: trainingDays !== "" ? Number(trainingDays) : undefined,
+          cookingTime: (cookingTime as "low" | "medium" | "high") || undefined,
+          mealPrepFriendly: mealPrepFriendly || undefined,
         });
         if (!result.success) { setError(result.error); return; }
         router.refresh();
@@ -185,6 +308,72 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
         <Label htmlFor="edit-notes">{t("Notes", lang)}</Label>
         <Textarea id="edit-notes" value={notes} onChange={(e) => setNotes(e.target.value)} rows={3} />
       </div>
+
+      {/* Preferences section */}
+      <p className="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-[#A0998E] pt-1">
+        {t("Preferences", lang)}
+      </p>
+
+      <div className="space-y-1.5">
+        <Label htmlFor="edit-dietType">{t("Diet", lang)}</Label>
+        <Input id="edit-dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="edit-excludedFoods">{t("Excluded foods", lang)}</Label>
+        <Textarea id="edit-excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor="edit-preferredFoods">{t("Preferred foods", lang)}</Label>
+        <Textarea id="edit-preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated", lang)} rows={2} />
+      </div>
+
+      <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-1.5">
+          <Label htmlFor="edit-trainingTime">{t("Training time", lang)}</Label>
+          <select id="edit-trainingTime" value={trainingTime} onChange={(e) => setTrainingTime(e.target.value)} className={selectClassName}>
+            <option value="">—</option>
+            <option value="morning">{t("Morning", lang)}</option>
+            <option value="afternoon">{t("Afternoon", lang)}</option>
+            <option value="evening">{t("Evening", lang)}</option>
+            <option value="none">{t("None", lang)}</option>
+          </select>
+        </div>
+        <div className="space-y-1.5">
+          <Label htmlFor="edit-trainingDays">{t("Training days/week", lang)}</Label>
+          <Input id="edit-trainingDays" type="number" min={0} max={7} value={trainingDays} onChange={(e) => setTrainingDays(e.target.value)} onKeyDown={(e) => { if (["e","E","+","-","."].includes(e.key)) e.preventDefault(); }} placeholder="0–7" />
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 items-end">
+        <div className="space-y-1.5">
+          <Label htmlFor="edit-cookingTime">{t("Cooking time available", lang)}</Label>
+          <select id="edit-cookingTime" value={cookingTime} onChange={(e) => setCookingTime(e.target.value)} className={selectClassName}>
+            <option value="">—</option>
+            <option value="low">{t("Low", lang)}</option>
+            <option value="medium">{t("Medium", lang)}</option>
+            <option value="high">{t("High", lang)}</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2.5 pb-1">
+          <button
+            type="button"
+            onClick={() => setMealPrepFriendly((v) => !v)}
+            className={cn(
+              "h-5 w-5 rounded border-2 flex items-center justify-center transition-colors shrink-0",
+              mealPrepFriendly
+                ? "bg-[var(--color-olive)] border-[var(--color-olive)] text-white"
+                : "border-slate-300 dark:border-[#4A4A4A] bg-white dark:bg-[#1E1E1E]"
+            )}
+            aria-label={t("Prefers batch-cookable recipes", lang)}
+          >
+            {mealPrepFriendly && <Check className="h-3 w-3" />}
+          </button>
+          <span className="text-sm text-slate-700 dark:text-[#D4CEC7] leading-tight">
+            {t("Prefers batch-cookable recipes", lang)}
+          </span>
+        </div>
+      </div>
+
       {error && (
         <div className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           <AlertCircle className="h-4 w-4 shrink-0" />

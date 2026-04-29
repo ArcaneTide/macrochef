@@ -27,6 +27,13 @@ const clientSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   notes: z.string().optional(),
+  dietType: z.string().optional(),
+  excludedFoods: z.string().optional(),
+  preferredFoods: z.string().optional(),
+  trainingTime: z.enum(["morning", "afternoon", "evening", "none"]).optional(),
+  trainingDays: z.number().int().min(0).max(7).optional(),
+  cookingTime: z.enum(["low", "medium", "high"]).optional(),
+  mealPrepFriendly: z.boolean().optional(),
 });
 
 const targetProfileSchema = z.object({
@@ -39,6 +46,8 @@ const targetProfileSchema = z.object({
 
 export type ClientInput = z.infer<typeof clientSchema>;
 export type TargetProfileInput = z.infer<typeof targetProfileSchema>;
+
+const nullIfEmpty = (s?: string) => s?.trim() || null;
 
 // ─── Actions ──────────────────────────────────────────────
 
@@ -57,7 +66,14 @@ export async function createClient(
           coachId,
           name: client.name,
           email: client.email || null,
-          notes: client.notes || null,
+          notes: nullIfEmpty(client.notes),
+          dietType: nullIfEmpty(client.dietType),
+          excludedFoods: nullIfEmpty(client.excludedFoods),
+          preferredFoods: nullIfEmpty(client.preferredFoods),
+          trainingTime: client.trainingTime ?? null,
+          trainingDays: client.trainingDays ?? null,
+          cookingTime: client.cookingTime ?? null,
+          mealPrepFriendly: client.mealPrepFriendly ?? null,
         },
       });
       await tx.clientTargetProfile.create({
@@ -93,7 +109,14 @@ export async function updateClient(id: string, data: ClientInput): Promise<Actio
       data: {
         name: parsed.name,
         email: parsed.email || null,
-        notes: parsed.notes || null,
+        notes: nullIfEmpty(parsed.notes),
+        dietType: nullIfEmpty(parsed.dietType),
+        excludedFoods: nullIfEmpty(parsed.excludedFoods),
+        preferredFoods: nullIfEmpty(parsed.preferredFoods),
+        trainingTime: parsed.trainingTime ?? null,
+        trainingDays: parsed.trainingDays ?? null,
+        cookingTime: parsed.cookingTime ?? null,
+        mealPrepFriendly: parsed.mealPrepFriendly ?? null,
       },
     });
 

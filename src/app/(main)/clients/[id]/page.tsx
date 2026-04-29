@@ -54,6 +54,13 @@ export default async function ClientPage({
           status: client.status as string,
           notes: client.notes,
           createdAt: client.createdAt.toISOString(),
+          dietType: client.dietType,
+          excludedFoods: client.excludedFoods,
+          preferredFoods: client.preferredFoods,
+          trainingTime: client.trainingTime,
+          trainingDays: client.trainingDays,
+          cookingTime: client.cookingTime,
+          mealPrepFriendly: client.mealPrepFriendly,
         }}
         profiles={client.targetProfiles.map((p) => ({
           id: p.id,

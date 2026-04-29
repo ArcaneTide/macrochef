@@ -38,6 +38,13 @@ export type ClientDetailProps = {
     status: string;
     notes: string | null;
     createdAt: string;
+    dietType?: string | null;
+    excludedFoods?: string | null;
+    preferredFoods?: string | null;
+    trainingTime?: string | null;
+    trainingDays?: number | null;
+    cookingTime?: string | null;
+    mealPrepFriendly?: boolean | null;
   };
   profiles: TargetProfile[];
   plans: MealPlanSummary[];
@@ -113,7 +120,7 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               {t("Edit Client", lang)}
             </h2>
             <EditClientForm
-              initialData={client as ClientInitialData}
+              initialData={client}
               onCancel={() => setIsEditing(false)}
               lang={lang}
             />
@@ -170,6 +177,45 @@ export function ClientDetail({ client, profiles, plans, lang }: ClientDetailProp
               <p className="text-sm text-slate-600 dark:text-[#C0B8B0] bg-slate-50 dark:bg-[#1E1E1E] rounded-lg p-3 whitespace-pre-wrap">
                 {client.notes}
               </p>
+            )}
+
+            {/* Preferences — only shown when at least one field has a value */}
+            {(client.dietType || client.excludedFoods || client.preferredFoods ||
+              client.trainingTime || client.trainingDays != null ||
+              client.cookingTime || client.mealPrepFriendly === true) && (
+              <div className="mt-4 space-y-1">
+                <p className="text-xs font-semibold uppercase tracking-wide text-slate-400 dark:text-[#6A6460] mb-2">
+                  {t("Preferences", lang)}
+                </p>
+                {[
+                  client.dietType && { label: t("Diet", lang), value: client.dietType },
+                  client.excludedFoods && { label: t("Excluded foods", lang), value: client.excludedFoods },
+                  client.preferredFoods && { label: t("Preferred foods", lang), value: client.preferredFoods },
+                  client.trainingTime && {
+                    label: t("Training time", lang),
+                    value: client.trainingTime === "morning" ? t("Morning", lang)
+                      : client.trainingTime === "afternoon" ? t("Afternoon", lang)
+                      : client.trainingTime === "evening" ? t("Evening", lang)
+                      : t("None", lang),
+                  },
+                  client.trainingDays != null && { label: t("Training days/week", lang), value: String(client.trainingDays) },
+                  client.cookingTime && {
+                    label: t("Cooking time available", lang),
+                    value: client.cookingTime === "low" ? t("Low", lang)
+                      : client.cookingTime === "medium" ? t("Medium", lang)
+                      : t("High", lang),
+                  },
+                  client.mealPrepFriendly === true && { label: t("Prefers batch-cookable recipes", lang), value: t("Yes", lang) },
+                ].filter(Boolean).map((row) => {
+                  const { label, value } = row as { label: string; value: string };
+                  return (
+                    <div key={label} className="flex items-start justify-between gap-4 py-1 text-sm border-b border-[var(--color-sand)] last:border-0">
+                      <span className="text-slate-500 dark:text-[#A0998E] shrink-0">{label}</span>
+                      <span className="text-slate-700 dark:text-[#D4CEC7] text-right">{value}</span>
+                    </div>
+                  );
+                })}
+              </div>
             )}
           </>
         )}
