@@ -166,17 +166,17 @@ export function CreateClientForm({ lang }: { lang: Lang }) {
         {/* Diet */}
         <div className="space-y-1.5">
           <Label htmlFor="dietType">{t("Diet", lang)}</Label>
-          <Input id="dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} />
+          <Input id="dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} maxLength={100} />
         </div>
 
         {/* Excluded / preferred foods */}
         <div className="space-y-1.5">
           <Label htmlFor="excludedFoods">{t("Excluded foods", lang)}</Label>
-          <Textarea id="excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} />
+          <Textarea id="excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} maxLength={500} />
         </div>
         <div className="space-y-1.5">
           <Label htmlFor="preferredFoods">{t("Preferred foods", lang)}</Label>
-          <Textarea id="preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} />
+          <Textarea id="preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} maxLength={500} />
         </div>
 
         {/* Training row */}
@@ -316,15 +316,15 @@ export function EditClientForm({ initialData, onCancel, lang }: { initialData: C
 
       <div className="space-y-1.5">
         <Label htmlFor="edit-dietType">{t("Diet", lang)}</Label>
-        <Input id="edit-dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} />
+        <Input id="edit-dietType" value={dietType} onChange={(e) => setDietType(e.target.value)} placeholder={t("e.g. omnivore, vegetarian, vegan", lang)} maxLength={100} />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="edit-excludedFoods">{t("Excluded foods", lang)}</Label>
-        <Textarea id="edit-excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} />
+        <Textarea id="edit-excludedFoods" value={excludedFoods} onChange={(e) => setExcludedFoods(e.target.value)} placeholder={t("Comma-separated excluded", lang)} rows={2} maxLength={500} />
       </div>
       <div className="space-y-1.5">
         <Label htmlFor="edit-preferredFoods">{t("Preferred foods", lang)}</Label>
-        <Textarea id="edit-preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} />
+        <Textarea id="edit-preferredFoods" value={preferredFoods} onChange={(e) => setPreferredFoods(e.target.value)} placeholder={t("Comma-separated preferred", lang)} rows={2} maxLength={500} />
       </div>
 
       <div className="grid grid-cols-2 gap-4">

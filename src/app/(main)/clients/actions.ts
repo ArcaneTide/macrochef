@@ -27,12 +27,16 @@ const clientSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   notes: z.string().optional(),
-  dietType: z.string().optional(),
-  excludedFoods: z.string().optional(),
-  preferredFoods: z.string().optional(),
-  trainingTime: z.enum(["morning", "afternoon", "evening", "none"]).optional(),
-  trainingDays: z.number().int().min(0).max(7).optional(),
-  cookingTime: z.enum(["low", "medium", "high"]).optional(),
+  dietType: z.string().max(100, "max 100 characters").optional(),
+  excludedFoods: z.string().max(500, "max 500 characters").optional(),
+  preferredFoods: z.string().max(500, "max 500 characters").optional(),
+  trainingTime: z.enum(["morning", "afternoon", "evening", "none"], {
+    error: "must be morning, afternoon, evening, or none",
+  }).optional(),
+  trainingDays: z.number().int().min(0, "cannot be negative").max(7, "cannot be more than 7").optional(),
+  cookingTime: z.enum(["low", "medium", "high"], {
+    error: "must be low, medium, or high",
+  }).optional(),
   mealPrepFriendly: z.boolean().optional(),
 });
 
@@ -93,6 +97,11 @@ export async function createClient(
     revalidatePath("/clients");
     return { success: true, id: result.id };
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      const issues = err.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+      console.error("Validation failed:", issues);
+      return { success: false, error: `Invalid input: ${issues}` };
+    }
     console.error("createClient:", err);
     return { success: false, error: "Failed to create client" };
   }
@@ -124,6 +133,11 @@ export async function updateClient(id: string, data: ClientInput): Promise<Actio
     revalidatePath("/clients");
     return { success: true, id };
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      const issues = err.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+      console.error("Validation failed:", issues);
+      return { success: false, error: `Invalid input: ${issues}` };
+    }
     console.error("updateClient:", err);
     return { success: false, error: "Failed to update client" };
   }
