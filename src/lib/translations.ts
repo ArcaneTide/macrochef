@@ -188,6 +188,28 @@ const dict = {
   "auth bullet portions":      { en: "Auto-scale portions per client", el: "Auto-scale portions per client" },
   "auth bullet share":         { en: "Share plans directly with clients", el: "Share plans directly with clients" },
 
+  // ── Client preferences ────────────────────────────────────
+  "Preferences":                      { en: "Preferences",                       el: "Προτιμήσεις" },
+  "Diet":                             { en: "Diet",                              el: "Διατροφή" },
+  "Excluded foods":                   { en: "Excluded foods",                    el: "Τροφές προς αποφυγή" },
+  "Preferred foods":                  { en: "Preferred foods",                   el: "Αγαπημένες τροφές" },
+  "Training time":                    { en: "Training time",                     el: "Ώρα προπόνησης" },
+  "Training days/week":               { en: "Training days/week",                el: "Ημέρες προπόνησης/εβδομάδα" },
+  "Cooking time available":           { en: "Cooking time available",            el: "Διαθέσιμος χρόνος μαγειρέματος" },
+  "Prefers batch-cookable recipes":   { en: "Prefers batch-cookable recipes",    el: "Προτιμά συνταγές για meal prep" },
+  "Morning":                          { en: "Morning",                           el: "Πρωί" },
+  "Afternoon":                        { en: "Afternoon",                         el: "Απόγευμα" },
+  "Evening":                          { en: "Evening",                           el: "Βράδυ" },
+  "None":                             { en: "None",                              el: "Καμία" },
+  "Low":                              { en: "Low",                               el: "Λίγος" },
+  "Medium":                           { en: "Medium",                            el: "Μέτριος" },
+  "High":                             { en: "High",                              el: "Πολύς" },
+  "Comma-separated excluded":         { en: "Comma-separated, e.g. fish, mushrooms", el: "Χωρισμένα με κόμμα, π.χ. ψάρι, μανιτάρια" },
+  "Comma-separated preferred":        { en: "Comma-separated, e.g. chicken, oats",    el: "Χωρισμένα με κόμμα, π.χ. κοτόπουλο, βρώμη" },
+  "e.g. omnivore, vegetarian, vegan": { en: "e.g. omnivore, vegetarian, vegan",        el: "π.χ. παμφάγος, χορτοφάγος, vegan" },
+  "e.g. 4":                           { en: "e.g. 4",                                  el: "π.χ. 4" },
+  "Yes":                              { en: "Yes",                               el: "Ναι" },
+
   // ── Recipe form ───────────────────────────────────────────
   "Edit Recipe":             { en: "Edit Recipe",             el: "Επεξεργασία Συνταγής" },
   "Build a macro-accurate recipe": { en: "Build a macro-accurate recipe", el: "Δημιούργησε μακροακριβή συνταγή" },

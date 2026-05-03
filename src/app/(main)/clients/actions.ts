@@ -27,6 +27,17 @@ const clientSchema = z.object({
   name: z.string().min(1, "Name is required").max(255),
   email: z.string().email("Invalid email").optional().or(z.literal("")),
   notes: z.string().optional(),
+  dietType: z.string().max(100, "max 100 characters").optional(),
+  excludedFoods: z.string().max(500, "max 500 characters").optional(),
+  preferredFoods: z.string().max(500, "max 500 characters").optional(),
+  trainingTime: z.enum(["morning", "afternoon", "evening", "none"], {
+    error: "must be morning, afternoon, evening, or none",
+  }).optional(),
+  trainingDays: z.number().int().min(0, "cannot be negative").max(7, "cannot be more than 7").optional(),
+  cookingTime: z.enum(["low", "medium", "high"], {
+    error: "must be low, medium, or high",
+  }).optional(),
+  mealPrepFriendly: z.boolean().optional(),
 });
 
 const targetProfileSchema = z.object({
@@ -39,6 +50,8 @@ const targetProfileSchema = z.object({
 
 export type ClientInput = z.infer<typeof clientSchema>;
 export type TargetProfileInput = z.infer<typeof targetProfileSchema>;
+
+const nullIfEmpty = (s?: string) => s?.trim() || null;
 
 // ─── Actions ──────────────────────────────────────────────
 
@@ -57,7 +70,14 @@ export async function createClient(
           coachId,
           name: client.name,
           email: client.email || null,
-          notes: client.notes || null,
+          notes: nullIfEmpty(client.notes),
+          dietType: nullIfEmpty(client.dietType),
+          excludedFoods: nullIfEmpty(client.excludedFoods),
+          preferredFoods: nullIfEmpty(client.preferredFoods),
+          trainingTime: client.trainingTime ?? null,
+          trainingDays: client.trainingDays ?? null,
+          cookingTime: client.cookingTime ?? null,
+          mealPrepFriendly: client.mealPrepFriendly ?? null,
         },
       });
       await tx.clientTargetProfile.create({
@@ -77,6 +97,11 @@ export async function createClient(
     revalidatePath("/clients");
     return { success: true, id: result.id };
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      const issues = err.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+      console.error("Validation failed:", issues);
+      return { success: false, error: `Invalid input: ${issues}` };
+    }
     console.error("createClient:", err);
     return { success: false, error: "Failed to create client" };
   }
@@ -93,7 +118,14 @@ export async function updateClient(id: string, data: ClientInput): Promise<Actio
       data: {
         name: parsed.name,
         email: parsed.email || null,
-        notes: parsed.notes || null,
+        notes: nullIfEmpty(parsed.notes),
+        dietType: nullIfEmpty(parsed.dietType),
+        excludedFoods: nullIfEmpty(parsed.excludedFoods),
+        preferredFoods: nullIfEmpty(parsed.preferredFoods),
+        trainingTime: parsed.trainingTime ?? null,
+        trainingDays: parsed.trainingDays ?? null,
+        cookingTime: parsed.cookingTime ?? null,
+        mealPrepFriendly: parsed.mealPrepFriendly ?? null,
       },
     });
 
@@ -101,6 +133,11 @@ export async function updateClient(id: string, data: ClientInput): Promise<Actio
     revalidatePath("/clients");
     return { success: true, id };
   } catch (err) {
+    if (err instanceof z.ZodError) {
+      const issues = err.issues.map(i => `${i.path.join(".")}: ${i.message}`).join("; ");
+      console.error("Validation failed:", issues);
+      return { success: false, error: `Invalid input: ${issues}` };
+    }
     console.error("updateClient:", err);
     return { success: false, error: "Failed to update client" };
   }
